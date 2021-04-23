@@ -1,0 +1,10 @@
+name: 'Your name here'
+description: 'Provide a description here'
+author: 'Your name or organization here'
+inputs:
+  configuration_file:
+    required: false
+    description: 'Provide an alternative configuration file from the included version'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
