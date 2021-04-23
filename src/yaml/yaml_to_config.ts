@@ -1,6 +1,6 @@
 import {errors} from './errors'
-import {yaml_to_json_object} from './to-json-object'
-import {config} from '../config/classes'
+import {yaml_to_json_object} from './yaml_to_json_object'
+import {config} from '../config'
 
 // convert yaml configuration file over to a config class
 export async function yaml_to_config(filename: string, encoding = 'utf8'): Promise<config> {
