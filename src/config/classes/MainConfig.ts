@@ -1,12 +1,13 @@
 import * as core from '@actions/core'
-import { ManifestAndLock } from "./ManifestAndLock"
-
 import 'reflect-metadata';
 import { jsonObject, jsonMember, jsonArrayMember} from 'typedjson';
 
+import {Validateable} from '../interfaces'
+import { ManifestAndLock } from "./ManifestAndLock"
+
 
 @jsonObject
-export class Config {
+export class Config implements Validateable{
     @jsonMember
     follow_symlinks: boolean = false
     @jsonArrayMember(ManifestAndLock)

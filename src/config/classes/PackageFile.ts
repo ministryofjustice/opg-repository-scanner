@@ -3,6 +3,7 @@ import * as core from '@actions/core'
 import 'reflect-metadata';
 import { jsonObject, jsonMember, jsonArrayMember} from 'typedjson';
 
+import {Validateable} from '../interfaces'
 import {PackageFileTypes} from '../enums'
 
 
@@ -14,7 +15,7 @@ import {PackageFileTypes} from '../enums'
 //   the file
 // - found is a list of whats been found on the file system
 @jsonObject
-export class PackageFile {
+export class PackageFile implements Validateable {
     // come from config
     @jsonMember
     file: string = ''

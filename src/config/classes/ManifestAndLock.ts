@@ -2,12 +2,13 @@ import * as core from '@actions/core'
 import 'reflect-metadata';
 import { jsonObject, jsonMember} from 'typedjson';
 
+import {Validateable} from '../interfaces'
 import {PackageFile} from './PackageFile'
 
 
 // class describes the name (like composer), its manifest & lock files
 @jsonObject
-export class ManifestAndLock{
+export class ManifestAndLock implements Validateable{
     @jsonMember
     name: string = ''
     @jsonMember(PackageFile)
