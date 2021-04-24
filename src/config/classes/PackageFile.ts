@@ -1,7 +1,10 @@
 import * as glob from '@actions/glob'
 import * as core from '@actions/core'
-import {package_file_types} from '../enums'
-import {base} from './base'
+import 'reflect-metadata';
+import { jsonObject, jsonMember, jsonArrayMember} from 'typedjson';
+
+import {PackageFileTypes} from '../enums'
+import {Base} from './BaseConfig'
 
 
 // class that describes what and where to find manifest / locks
@@ -11,33 +14,37 @@ import {base} from './base'
 // - selectors is array of jq syntax to find items within the
 //   the file
 // - found is a list of whats been found on the file system
-export class package_file extends base {
+@jsonObject
+export class PackageFile extends Base {
     // come from config
-    file?: string
-    type?: package_file_types
-    selectors?: string[]
+    @jsonMember
+    file: string = ''
+    @jsonMember
+    type: PackageFileTypes = PackageFileTypes.none
+    @jsonArrayMember(String)
+    selectors: string[] = []
     // loaded from find_files
-    files_found?: string[]
+    files_found: string[] = []
 
     //-- validation by field
     valid_file(): boolean {
-        const valid: boolean = ( (this.file ?? '').length > 0 )
+        const valid: boolean = ( this.file.length > 0 )
         core.debug('package_file valid_file(): ' + valid)
         return valid
     }
+
     valid_type(): boolean {
-        const type = (this.type || package_file_types.none)
-        const len:boolean = (type.length > 0)
-        const known:boolean = Object.values(package_file_types).includes(type) && type !== package_file_types.none
-        const valid:boolean = len && known
+        const type = this.type
+        const len:boolean = (this.type.length > 0)
+        const known:boolean = Object.values(PackageFileTypes).includes(type) && type !== PackageFileTypes.none
+        const valid:boolean = (len && known)
         core.debug('package_file valid_type(): len - ' + len)
         core.debug('package_file valid_type(): known - ' + known)
         core.debug('package_file valid_type(): valid - ' + valid)
         return valid
     }
     valid_selectors(): boolean {
-        const selectors: string[] = this.selectors || []
-        const valid:boolean = (selectors.length > 0)
+        const valid:boolean = (this.selectors.length > 0)
         core.debug('package_file valid_selectors(): valid - ' + valid)
         return valid
     }
@@ -55,8 +62,7 @@ export class package_file extends base {
         // only run if valid
         if (this.valid()) {
             const dir = base_directory.replace(/\/+$/, '') + '/'
-            const file = (this.file ?? '')
-            const pattern: string =  dir + file
+            const pattern: string =  dir + this.file
             core.debug('package_file find_files(): pattern - ' + pattern)
             const globber = await glob.create(pattern, { followSymbolicLinks: follow_symlinks })
             this.files_found = await globber.glob()

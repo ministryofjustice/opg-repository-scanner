@@ -1,35 +1,47 @@
 import * as core from '@actions/core'
-import {package_file_types} from '../enums'
-import {package_file} from './package_file'
-import {base} from './base'
+import 'reflect-metadata';
+import { jsonObject, jsonMember} from 'typedjson';
+
+import {PackageFile} from './PackageFile'
+import {Base} from './BaseConfig'
 
 
 // class describes the name (like composer), its manifest & lock files
-export class manifest_and_lock extends base {
-    name?: string
-    manifest?: package_file
-    lock?: package_file
+@jsonObject
+export class ManifestAndLock extends Base {
+    @jsonMember
+    name: string = ''
+    @jsonMember(PackageFile)
+    manifest: PackageFile = new PackageFile()
+    @jsonMember(PackageFile)
+    lock?: PackageFile
 
     //--- validation for each part of the class
     valid_name(): boolean {
-        const valid: boolean = ( (this.name ?? '').length > 0 )
+        const valid: boolean = ( this.name.length > 0 )
         core.debug('manifest_and_lock valid_name(): ' + valid)
         return valid
     }
     valid_manifest(): boolean {
-        const valid: boolean = (this.manifest?.valid() ?? false)
+        const valid: boolean = this.manifest.valid()
         core.debug('manifest_and_lock valid_manifest(): ' + valid)
         return valid
     }
+    // lock is optional, so harder to validate
+    // - true = undefined | not set at all
+    // - true = instance of packagefile, but name is empty
+    // - true = instance of packagefile, with a name and passes .valid()
     valid_lock(): boolean {
-        const hasValues: boolean = this.lock?.hasValues() ?? false
-        // as lock is optional, if it reports no values then presume
-        // its not been set and we're just getting an empty class
-        if (!hasValues) {
-            core.debug('manifest_and_lock valid_lock(): no values - ' + true)
-            return true
+        const is_instance = (this.lock instanceof PackageFile)
+        const undef = (typeof this.lock == 'undefined')
+        let valid:boolean = true
+        core.debug('manifest_and_lock valid_lock(): is_instance ' + is_instance)
+        core.debug('manifest_and_lock valid_lock(): undefined ' + undef)
+        let file: string = (this.lock?.file ?? '')
+        if (file.length > 0) {
+            valid = this.lock?.valid() ?? false
         }
-        const valid = this.lock?.valid() ?? false
+        valid = ( (is_instance || undef) && valid )
         core.debug('manifest_and_lock valid_lock(): ' + valid)
         return valid
     }
@@ -39,15 +51,6 @@ export class manifest_and_lock extends base {
         const valid = this.valid_name() && this.valid_manifest() && this.valid_lock()
         core.debug('manifest_and_lock valid(): ' + valid)
         return valid
-    }
-    // fix package files being classes
-    convert(): void {
-        core.debug('manifest_and_lock convert() starting')
-        const manifest = this.manifest || {}
-        const lock = this.lock || {}
-        this.manifest = new package_file(manifest)
-        this.lock = new package_file(lock)
-        core.debug('manifest_and_lock convert() ending')
     }
 
     // find the files for both manifest & lock

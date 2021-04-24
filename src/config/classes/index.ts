@@ -1,4 +1,4 @@
-export { base } from './base';
-export { package_file } from './package_file';
-export { manifest_and_lock } from './manifest_and_lock';
-export { config } from './config';
+export { Base } from './BaseConfig';
+export { PackageFile } from './PackageFile';
+export { ManifestAndLock } from './ManifestAndLock';
+export { Config } from './MainConfig';

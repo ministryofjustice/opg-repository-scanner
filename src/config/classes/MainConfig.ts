@@ -1,20 +1,26 @@
 import * as core from '@actions/core'
-import { base } from "./base"
-import { manifest_and_lock } from "./manifest_and_lock"
+import { Base } from "./BaseConfig"
+import { ManifestAndLock } from "./ManifestAndLock"
 
-// As the config class is pulled from a yaml file and uses
-// Object.assign it has a conversion method to ensure
-export class config extends base {
-    follow_symlinks?: boolean
-    manifests_and_locks?: manifest_and_lock[]
+import 'reflect-metadata';
+import { jsonObject, jsonMember, jsonArrayMember} from 'typedjson';
+
+
+@jsonObject
+export class Config extends Base {
+    @jsonMember
+    follow_symlinks: boolean = false
+    @jsonArrayMember(ManifestAndLock)
+    manifests_and_locks: ManifestAndLock[] = []
+
+
 
     // ensure this is a valid class and contains all we want
     valid(): boolean {
         let valid = true
         const is_array = this.manifests_and_locks_is_array()
         if (is_array) {
-            const existing = this.manifests_and_locks ?? []
-            for (const m of existing) {
+            for (const m of this.manifests_and_locks) {
                 if (!m.valid()) valid = false
             }
         } else {
@@ -30,29 +36,6 @@ export class config extends base {
         return is_array
     }
 
-    // Fix this. to be classes correctly
-    convert(): void {
-        core.debug('config convert(): starting')
-        const is_array = this.manifests_and_locks_is_array()
-        // if it has not detected the symlinks setting, default to false
-        if (typeof this.follow_symlinks === undefined){
-            core.debug('config convert(): follow_symlinks defaulting to false')
-            this.follow_symlinks = false
-        }
-        // only try to parse if this is an array
-        if (is_array) {
-            core.debug('config convert(): manifests_and_locks_is_array is true')
-            const existing = this.manifests_and_locks ?? []
-            const manifest_classes: manifest_and_lock[] = []
-
-            for (const item of existing) {
-                const m = new manifest_and_lock(item)
-                manifest_classes.push(m)
-            }
-            this.manifests_and_locks = manifest_classes
-        }
-        core.debug('config convert(): ending')
-    }
 
     // load all the files for the manifests and locks based on the
     // directory passed (defaults to ./)

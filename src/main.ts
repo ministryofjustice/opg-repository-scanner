@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import {config} from './config'
+import {Config} from './config'
 import {yaml_to_config} from './yaml'
 // import * as glob from '@actions/glob'
 
@@ -8,7 +8,7 @@ async function run(): Promise<void> {
         // -- Load configuration
         const configuration_file: string =
             core.getInput('configuration_file') ?? './configuration.yml'
-        const configuration: config = await yaml_to_config(configuration_file)
+        const configuration: Config = await yaml_to_config(configuration_file)
 
         core.debug('configuration file loaded: ' + configuration_file)
 
