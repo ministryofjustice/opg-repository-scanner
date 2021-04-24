@@ -1,19 +1,22 @@
 import * as process from 'process'
 import * as cp from 'child_process'
 import * as path from 'path'
-import {package_file, package_file_types} from '../../src/config'
+import {PackageFile, PackageFileTypes} from '../../src/config'
+import { TypedJSON } from 'typedjson';
 
 const sample_dir: string = './__samples__/'
 
+// test('test', async () => {})
 
 test('test a package_file class reports true when configured correctly', async () => {
     // test package config
     const package_config = {
         file: 'composer.json',
-        type: package_file_types.key_value_pair,
+        type: PackageFileTypes.key_value_pair,
         selectors: ['.[]']
     }
-    const pkg = new package_file(package_config)
+
+    const pkg = TypedJSON.parse(package_config, PackageFile) as PackageFile
     expect(pkg.valid_file()).toBeTruthy()
     expect(pkg.valid_type()).toBeTruthy()
     expect(pkg.valid_selectors()).toBeTruthy()
@@ -23,7 +26,7 @@ test('test a package_file class reports true when configured correctly', async (
 test('test a package_file class reports false when configured incorrectly', async () => {
     // test package config
     const package_config = {}
-    const pkg = new package_file(package_config)
+    const pkg = TypedJSON.parse(package_config, PackageFile) as PackageFile
     expect(pkg.valid_file()).toBeFalsy()
     expect(pkg.valid_type()).toBeFalsy()
     expect(pkg.valid_selectors()).toBeFalsy()
@@ -35,12 +38,12 @@ test('test a package_file class successfully finding matching files', async () =
     // test package config
     const package_config = {
         file: 'composer.json',
-        type: package_file_types.key_value_pair,
+        type: PackageFileTypes.key_value_pair,
         selectors: ['.[]']
     }
-    let pkg = new package_file(package_config)
+    const pkg = TypedJSON.parse(package_config, PackageFile) as PackageFile
     await pkg.find_files(dir)
-    const len = pkg.files_found?.length ?? 0
+    const len = pkg.files_found.length
     expect(len).toBe(1)
 })
 
@@ -50,12 +53,11 @@ test('test a package_file class failes to matching files', async () => {
     // test package config
     const package_config = {
         file: 'composer.json',
-        type: package_file_types.key_value_pair,
+        type: PackageFileTypes.key_value_pair,
         selectors: []
     }
-    let pkg = new package_file(package_config)
+    const pkg = TypedJSON.parse(package_config, PackageFile) as PackageFile
     await pkg.find_files(dir)
-    expect( typeof pkg.files_found ).toBe("undefined")
-    const len = pkg.files_found?.length ?? 0
+    const len = pkg.files_found.length
     expect(len).toBe(0)
 })
