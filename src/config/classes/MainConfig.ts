@@ -1,5 +1,4 @@
 import * as core from '@actions/core'
-import { Base } from "./BaseConfig"
 import { ManifestAndLock } from "./ManifestAndLock"
 
 import 'reflect-metadata';
@@ -7,7 +6,7 @@ import { jsonObject, jsonMember, jsonArrayMember} from 'typedjson';
 
 
 @jsonObject
-export class Config extends Base {
+export class Config {
     @jsonMember
     follow_symlinks: boolean = false
     @jsonArrayMember(ManifestAndLock)

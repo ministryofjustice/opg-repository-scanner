@@ -4,7 +4,6 @@ import 'reflect-metadata';
 import { jsonObject, jsonMember, jsonArrayMember} from 'typedjson';
 
 import {PackageFileTypes} from '../enums'
-import {Base} from './BaseConfig'
 
 
 // class that describes what and where to find manifest / locks
@@ -15,7 +14,7 @@ import {Base} from './BaseConfig'
 //   the file
 // - found is a list of whats been found on the file system
 @jsonObject
-export class PackageFile extends Base {
+export class PackageFile {
     // come from config
     @jsonMember
     file: string = ''

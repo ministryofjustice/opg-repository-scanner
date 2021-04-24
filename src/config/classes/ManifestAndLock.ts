@@ -3,12 +3,11 @@ import 'reflect-metadata';
 import { jsonObject, jsonMember} from 'typedjson';
 
 import {PackageFile} from './PackageFile'
-import {Base} from './BaseConfig'
 
 
 // class describes the name (like composer), its manifest & lock files
 @jsonObject
-export class ManifestAndLock extends Base {
+export class ManifestAndLock{
     @jsonMember
     name: string = ''
     @jsonMember(PackageFile)
