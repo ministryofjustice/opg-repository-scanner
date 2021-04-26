@@ -12,18 +12,32 @@ function loader(filename:string){
     return JSON.parse(content)
 }
 
+test('test jq composer sanitise_selector', async () => {
+    let jk = new JsonKeyValuePair()
+    let test_selectors = new Map([
+        ['require',  '."require"'],
+        [".require-dev",  '."require-dev"']
+    ])
 
-// test('test a working composer json file for laminas', async () => {
-//     const pkg: PackageFile = new PackageFile()
-//     pkg.file = sample_dir + 'app/php/laminas/composer.json'
-//     pkg.selectors = ['.require']
-//     const laminas_composer = loader(pkg.file)
-//     const parser = new JsonKeyValuePair(pkg, PackageFileTypes.manifest,  laminas_composer)
-//     await parser.parse()
+    for(let [original, expected] of test_selectors.entries() ) {
+        let res:string = jk.sanitise_selector(original)
+        expect(res).toEqual(expected)
+    }
 
-//     expect(parser.results.length).toEqual(3)
+})
 
-// })
+
+test('test a working composer json file for laminas', async () => {
+    const pkg: PackageFile = new PackageFile()
+    pkg.file = sample_dir + 'app/php/laminas/composer.json'
+    pkg.selectors = ['.require']
+    const laminas_composer = loader(pkg.file)
+    const parser = new JsonKeyValuePair(pkg, PackageFileTypes.manifest,  laminas_composer)
+    await parser.parse()
+
+    expect(parser.results.length).toEqual(3)
+
+})
 
 
 test('test a working composer json file for laminas with dev dependancies too', async () => {
@@ -33,7 +47,7 @@ test('test a working composer json file for laminas with dev dependancies too', 
     const laminas_composer = loader(pkg.file)
     const parser = new JsonKeyValuePair(pkg, PackageFileTypes.manifest,  laminas_composer)
     await parser.parse()
-    console.log(parser.results)
-    expect(parser.results.length).toEqual(16)
+
+    expect(parser.results.length).toEqual(17)
 
 })

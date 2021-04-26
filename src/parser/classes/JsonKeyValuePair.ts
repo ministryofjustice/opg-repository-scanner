@@ -10,6 +10,7 @@ export class JsonKeyValuePair implements Parser{
     json_object: object = {}
     results: Result[] = []
 
+    constructor(package_file?: PackageFile , package_type?:PackageFileTypes, json_object?: object)
     constructor(package_file: PackageFile , package_type:PackageFileTypes, json_object: object){
         this.package_file = package_file
         this.package_type = package_type
@@ -49,10 +50,6 @@ export class JsonKeyValuePair implements Parser{
         return updated
     }
 
-    trim(original:string, char:string): string {
-        if (original.charAt(0) === char) original = original.substring(1, original.length);
-        if (original.charAt(original.length -1) === char) original = original.substring(0, original.length-1);
-        return original
-    }
+
 
 }
