@@ -35,8 +35,8 @@ test('test symlink settings are mapped', async () => {
     const positive: Config = await yaml_to_config(postive_file)
     const negative: Config = await yaml_to_config(negative_file)
     // this config should be set to follow symlinks
-    expect(positive.follow_symlinks).toBeTruthy()
-    expect(negative.follow_symlinks).toBeFalsy()
+    expect(positive.filesystem.follow_symlinks).toBeTruthy()
+    expect(negative.filesystem.follow_symlinks).toBeFalsy()
 
 })
 // loop over all invalid yaml files and ensure they generate a single
