@@ -1,2 +1,2 @@
 export {Parser} from './interfaces'
-export {JsonKeyValuePair} from './classes'
+export {ComposerManifest} from './classes'

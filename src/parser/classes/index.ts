@@ -1,11 +1,10 @@
-import { JsonKeyValuePair } from './JsonKeyValuePair';
-
 import { Result } from './Result'
+import { ComposerManifest } from './ComposerManifest';
 
-export { JsonKeyValuePair } from './JsonKeyValuePair';
+export { ComposerManifest } from './ComposerManifest';
 
 
 // export a string indexable set of the classes
 export const Parsers = {
-    'JsonKeyValuePair' : JsonKeyValuePair
+    'ComposerManifest' : ComposerManifest
 }

@@ -8,7 +8,7 @@ manifests_and_locks:
         - '.require-dev'
     lock:
       file: '**/composer.lock'
-      parser: JsonKeyValuePair
+      parser: Composer
       selectors:
         - '.packages'
         - '.packages-dev'

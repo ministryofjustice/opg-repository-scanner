@@ -12,7 +12,7 @@ test('test a package_file class reports true when configured correctly', async (
     // test package config
     const package_config = {
         file: 'composer.json',
-        parser:  PackageFileParsers.json_key_value_pair,
+        parser:  PackageFileParsers.ComposerManifest,
         selectors: ['.[]']
     }
 

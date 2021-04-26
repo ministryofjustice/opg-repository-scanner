@@ -4,7 +4,7 @@ import * as jq from 'node-jq'
 import { Result } from './Result'
 import { PackageFile, PackageFileTypes } from '../../config'
 
-export class JsonKeyValuePair implements Parser{
+export class ComposerManifest implements Parser {
     package_file: PackageFile = new PackageFile()
     package_type: PackageFileTypes = PackageFileTypes.none
     json_object: object = {}
