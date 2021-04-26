@@ -4,7 +4,7 @@ import 'reflect-metadata';
 import { jsonObject, jsonMember, jsonArrayMember} from 'typedjson';
 
 import {Validateable} from '../interfaces'
-import {PackageFileTypes} from '../enums'
+import {PackageFileParsers} from '../enums'
 
 
 // class that describes what and where to find manifest / locks
@@ -20,9 +20,10 @@ export class PackageFile implements Validateable {
     @jsonMember
     file: string = ''
     @jsonMember
-    parser: PackageFileTypes = PackageFileTypes.none
+    parser: PackageFileParsers = PackageFileParsers.none
     @jsonArrayMember(String)
     selectors: string[] = []
+
     // loaded from find_files
     files_found: string[] = []
 
@@ -36,7 +37,7 @@ export class PackageFile implements Validateable {
     valid_parser(): boolean {
         const parser = this.parser
         const len:boolean = (parser.length > 0)
-        const known:boolean = Object.values(PackageFileTypes).includes(parser) && parser !== PackageFileTypes.none
+        const known:boolean = Object.values(PackageFileParsers).includes(parser) && parser !== PackageFileParsers.none
         const valid:boolean = (len && known)
         core.debug('package_file valid_parser(): len - ' + len)
         core.debug('package_file valid_parser(): known - ' + known)

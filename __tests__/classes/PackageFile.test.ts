@@ -1,7 +1,7 @@
 import * as process from 'process'
 import * as cp from 'child_process'
 import * as path from 'path'
-import {PackageFile, PackageFileTypes} from '../../src/config'
+import {PackageFile, PackageFileParsers} from '../../src/config'
 import { TypedJSON } from 'typedjson';
 
 const sample_dir: string = './__samples__/'
@@ -12,7 +12,7 @@ test('test a package_file class reports true when configured correctly', async (
     // test package config
     const package_config = {
         file: 'composer.json',
-        parser:  PackageFileTypes.json_key_value_pair,
+        parser:  PackageFileParsers.json_key_value_pair,
         selectors: ['.[]']
     }
 
@@ -38,7 +38,7 @@ test('test a package_file class successfully finding matching files', async () =
     // test package config
     const package_config = {
         file: 'composer.json',
-        parser:  PackageFileTypes.json_key_value_pair,
+        parser:  PackageFileParsers.json_key_value_pair,
         selectors: ['.[]']
     }
     const pkg = TypedJSON.parse(package_config, PackageFile) as PackageFile
@@ -53,7 +53,7 @@ test('test a package_file class failes to matching files', async () => {
     // test package config
     const package_config = {
         file: 'composer.json',
-        parser:  PackageFileTypes.json_key_value_pair,
+        parser:  PackageFileParsers.json_key_value_pair,
         selectors: []
     }
     const pkg = TypedJSON.parse(package_config, PackageFile) as PackageFile

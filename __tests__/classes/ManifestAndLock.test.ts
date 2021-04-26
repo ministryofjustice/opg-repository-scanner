@@ -1,7 +1,7 @@
 import * as process from 'process'
 import * as cp from 'child_process'
 import * as path from 'path'
-import {PackageFile, PackageFileTypes, ManifestAndLock} from '../../src/config'
+import {PackageFile, PackageFileParsers, ManifestAndLock} from '../../src/config'
 import { TypedJSON } from 'typedjson';
 
 const sample_dir: string = './__samples__/'
@@ -29,7 +29,7 @@ test('test manifest_and_lock is valid without lock', async () => {
         name: 'test-is-valid-is-true',
         manifest: {
             file: 'composer.json',
-            parser: PackageFileTypes.json_key_value_pair,
+            parser: PackageFileParsers.json_key_value_pair,
             selectors: ['.[]']
         }
     }
@@ -55,7 +55,7 @@ test('test manifest_and_lock is invalid with invalid manifest', async () => {
     const json = {
         name: 'test-is-valid-is-true',
         manifest: {
-            parser: PackageFileTypes.json_key_value_pair,
+            parser: PackageFileParsers.json_key_value_pair,
             selectors: ['.[]']
         }
     }
@@ -70,12 +70,12 @@ test('test valid manifest_and_lock valid with valid lock', async () => {
         name: 'test-is-valid-is-true',
         manifest: {
             file: 'composer.json',
-            parser: PackageFileTypes.json_key_value_pair,
+            parser: PackageFileParsers.json_key_value_pair,
             selectors: ['.[]']
         },
         lock: {
             file: 'composer.lock',
-            parser: PackageFileTypes.json_key_value_pair,
+            parser: PackageFileParsers.json_key_value_pair,
             selectors: ['.[]']
         }
     }
@@ -91,7 +91,7 @@ test('test valid manifest_and_lock reports true with an empty lock', async () =>
         name: 'test-is-valid-is-true',
         manifest: {
             file: 'composer.json',
-            parser: PackageFileTypes.json_key_value_pair,
+            parser: PackageFileParsers.json_key_value_pair,
             selectors: ['.[]']
         },
         lock: {}
@@ -107,7 +107,7 @@ test('test valid manifest_and_lock reports false with an invalid lock', async ()
         name: 'test-is-valid-is-true',
         manifest: {
             file: 'composer.json',
-            parser: PackageFileTypes.json_key_value_pair,
+            parser: PackageFileParsers.json_key_value_pair,
             selectors: ['.[]']
         },
         lock: { file: 'test' }
@@ -125,12 +125,12 @@ test('test a manifest_and_lock class successfully finding manifest files, failin
         name: 'test',
         manifest: {
             file: 'composer.json',
-            parser: PackageFileTypes.json_key_value_pair,
+            parser: PackageFileParsers.json_key_value_pair,
             selectors: ['.[]']
         },
         lock: {
             file: 'foo.bar',
-            parser: PackageFileTypes.json_key_value_pair,
+            parser: PackageFileParsers.json_key_value_pair,
             selectors: ['.[]']
         }
     }
