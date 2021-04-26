@@ -20,7 +20,7 @@ export class PackageFile implements Validateable {
     @jsonMember
     file: string = ''
     @jsonMember
-    type: PackageFileTypes = PackageFileTypes.none
+    parser: PackageFileTypes = PackageFileTypes.none
     @jsonArrayMember(String)
     selectors: string[] = []
     // loaded from find_files
@@ -33,14 +33,14 @@ export class PackageFile implements Validateable {
         return valid
     }
 
-    valid_type(): boolean {
-        const type = this.type
-        const len:boolean = (this.type.length > 0)
-        const known:boolean = Object.values(PackageFileTypes).includes(type) && type !== PackageFileTypes.none
+    valid_parser(): boolean {
+        const parser = this.parser
+        const len:boolean = (parser.length > 0)
+        const known:boolean = Object.values(PackageFileTypes).includes(parser) && parser !== PackageFileTypes.none
         const valid:boolean = (len && known)
-        core.debug('package_file valid_type(): len - ' + len)
-        core.debug('package_file valid_type(): known - ' + known)
-        core.debug('package_file valid_type(): valid - ' + valid)
+        core.debug('package_file valid_parser(): len - ' + len)
+        core.debug('package_file valid_parser(): known - ' + known)
+        core.debug('package_file valid_parser(): valid - ' + valid)
         return valid
     }
     valid_selectors(): boolean {
@@ -51,7 +51,7 @@ export class PackageFile implements Validateable {
 
     // only valid if file, type and selectors are setup
     valid(): boolean {
-        const valid = (this.valid_file() && this.valid_type() && this.valid_selectors())
+        const valid = (this.valid_file() && this.valid_parser() && this.valid_selectors())
         core.debug('package_file valid(): ' + valid)
         return valid
     }

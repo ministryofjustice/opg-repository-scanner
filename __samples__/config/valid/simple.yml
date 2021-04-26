@@ -3,25 +3,25 @@ manifests_and_locks:
   - name: composer
     manifest:
       file: '**/composer.json'
-      type: key-value
+      parser: json-key-value
       selectors:
         - '.require'
         - '.require-dev'
     lock:
       file: '**/composer.lock'
-      type: key-value
+      parser: json-key-value
       selectors:
         - '.packages'
         - '.packages-dev'
   - name: package
     manifest:
       file: '**/package.json'
-      type: key-value
+      parser: json-key-value
       selectors:
         - '.dependencies'
         - '.devDependencies'
     lock:
       file: '**/package.lock'
-      type: key-value
+      parser: json-key-value
       selectors:
         - '.dependencies'

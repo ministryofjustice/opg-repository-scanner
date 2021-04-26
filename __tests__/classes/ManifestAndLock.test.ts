@@ -29,7 +29,7 @@ test('test manifest_and_lock is valid without lock', async () => {
         name: 'test-is-valid-is-true',
         manifest: {
             file: 'composer.json',
-            type: PackageFileTypes.key_value_pair,
+            parser: PackageFileTypes.json_key_value_pair,
             selectors: ['.[]']
         }
     }
@@ -55,7 +55,7 @@ test('test manifest_and_lock is invalid with invalid manifest', async () => {
     const json = {
         name: 'test-is-valid-is-true',
         manifest: {
-            type: PackageFileTypes.key_value_pair,
+            parser: PackageFileTypes.json_key_value_pair,
             selectors: ['.[]']
         }
     }
@@ -70,12 +70,12 @@ test('test valid manifest_and_lock valid with valid lock', async () => {
         name: 'test-is-valid-is-true',
         manifest: {
             file: 'composer.json',
-            type: PackageFileTypes.key_value_pair,
+            parser: PackageFileTypes.json_key_value_pair,
             selectors: ['.[]']
         },
         lock: {
             file: 'composer.lock',
-            type: PackageFileTypes.key_value_pair,
+            parser: PackageFileTypes.json_key_value_pair,
             selectors: ['.[]']
         }
     }
@@ -91,7 +91,7 @@ test('test valid manifest_and_lock reports true with an empty lock', async () =>
         name: 'test-is-valid-is-true',
         manifest: {
             file: 'composer.json',
-            type: PackageFileTypes.key_value_pair,
+            parser: PackageFileTypes.json_key_value_pair,
             selectors: ['.[]']
         },
         lock: {}
@@ -107,7 +107,7 @@ test('test valid manifest_and_lock reports false with an invalid lock', async ()
         name: 'test-is-valid-is-true',
         manifest: {
             file: 'composer.json',
-            type: PackageFileTypes.key_value_pair,
+            parser: PackageFileTypes.json_key_value_pair,
             selectors: ['.[]']
         },
         lock: { file: 'test' }
@@ -125,12 +125,12 @@ test('test a manifest_and_lock class successfully finding manifest files, failin
         name: 'test',
         manifest: {
             file: 'composer.json',
-            type: PackageFileTypes.key_value_pair,
+            parser: PackageFileTypes.json_key_value_pair,
             selectors: ['.[]']
         },
         lock: {
             file: 'foo.bar',
-            type: PackageFileTypes.key_value_pair,
+            parser: PackageFileTypes.json_key_value_pair,
             selectors: ['.[]']
         }
     }

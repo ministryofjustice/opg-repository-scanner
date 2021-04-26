@@ -2,7 +2,7 @@ manifests_and_locks:
   - name: composer
     lock:
       file: '**/composer.json'
-      type: key-value
+      parser: json-key-value
       selectors:
         - '.require'
         - '.require-dev'
