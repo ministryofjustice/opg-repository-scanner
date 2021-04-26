@@ -6,14 +6,13 @@ import { PackageFile, PackageFileTypes } from '../../config'
 
 export class ComposerManifest implements Parser {
     package_file: PackageFile = new PackageFile()
-    package_type: PackageFileTypes = PackageFileTypes.none
+    package_type: PackageFileTypes = PackageFileTypes.manifest
     json_object: object = {}
     results: Result[] = []
 
-    constructor(package_file?: PackageFile , package_type?:PackageFileTypes, json_object?: object)
-    constructor(package_file: PackageFile , package_type:PackageFileTypes, json_object: object){
+    constructor(package_file?: PackageFile , json_object?: object)
+    constructor(package_file: PackageFile , json_object: object){
         this.package_file = package_file
-        this.package_type = package_type
         this.json_object = json_object
     }
     // convert the json object passed in (content of package.json etc)

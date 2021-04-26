@@ -33,7 +33,7 @@ test('test a working composer.json file for laminas', async () => {
     pkg.file = sample_dir + 'app/php/laminas/composer.json'
     pkg.selectors = ['.require']
     const laminas_composer = loader(pkg.file)
-    const parser = new ComposerManifest(pkg, PackageFileTypes.manifest,  laminas_composer)
+    const parser = new ComposerManifest(pkg, laminas_composer)
     await parser.parse()
 
     expect(parser.results.length).toEqual(3)
@@ -47,7 +47,7 @@ test('test a working composer.lock file for laminas', async () => {
     pkg.file = sample_dir + 'app/php/laminas/composer.lock'
     pkg.selectors = ['.packages', '.packages-dev']
     const laminas_composer = loader(pkg.file)
-    const parser = new ComposerManifest(pkg, PackageFileTypes.manifest,  laminas_composer)
+    const parser = new ComposerManifest(pkg, laminas_composer)
     await parser.parse()
 
     expect(parser.results.length).toEqual(3)
@@ -60,7 +60,7 @@ test('test a working composer json file for laminas with dev dependancies too', 
     pkg.file = sample_dir + 'app/php/laminas/composer.json'
     pkg.selectors = ['.require', '.require-dev']
     const laminas_composer = loader(pkg.file)
-    const parser = new ComposerManifest(pkg, PackageFileTypes.manifest,  laminas_composer)
+    const parser = new ComposerManifest(pkg, laminas_composer)
     await parser.parse()
 
     expect(parser.results.length).toEqual(17)
