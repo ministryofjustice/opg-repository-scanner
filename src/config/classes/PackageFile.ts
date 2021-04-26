@@ -25,9 +25,6 @@ export class PackageFile implements Validateable {
     @jsonArrayMember(String)
     selectors: string[] = []
 
-    // loaded from find_files
-    files_found: string[] = []
-
     //-- validation by field
     valid_file(): boolean {
         const valid: boolean = ( this.file.length > 0 )
