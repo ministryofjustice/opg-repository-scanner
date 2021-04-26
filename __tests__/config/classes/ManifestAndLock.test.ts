@@ -1,7 +1,7 @@
 import * as process from 'process'
 import * as cp from 'child_process'
 import * as path from 'path'
-import {PackageFile, PackageFileParsers, ManifestAndLock} from '../../src/config'
+import {PackageFile, PackageFileParsers, ManifestAndLock} from '../../../src/config'
 import { TypedJSON } from 'typedjson';
 
 const sample_dir: string = './__samples__/'
