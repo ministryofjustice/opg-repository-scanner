@@ -37,6 +37,7 @@ export class PackageFile implements Validateable {
         const len:boolean = (parser.length > 0)
         const known:boolean = Object.values(PackageFileParsers).includes(parser) && parser !== PackageFileParsers.none
         const valid:boolean = (len && known)
+
         core.debug('package_file valid_parser(): len - ' + len)
         core.debug('package_file valid_parser(): known - ' + known)
         core.debug('package_file valid_parser(): valid - ' + valid)

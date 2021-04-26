@@ -29,7 +29,7 @@ test('test manifest_and_lock is valid without lock', async () => {
         name: 'test',
         manifest: {
             file: 'composer.json',
-            parser: PackageFileParsers.json_key_value_pair,
+            parser: PackageFileParsers.ComposerManifest,
             selectors: ['.[]']
         }
     }
@@ -55,7 +55,7 @@ test('test manifest_and_lock is invalid with invalid manifest', async () => {
     const json = {
         name: 'test',
         manifest: {
-            parser: PackageFileParsers.json_key_value_pair,
+            parser: PackageFileParsers.ComposerManifest,
             selectors: ['.[]']
         }
     }
@@ -70,12 +70,12 @@ test('test valid manifest_and_lock valid with valid lock', async () => {
         name: 'test',
         manifest: {
             file: 'composer.json',
-            parser: PackageFileParsers.json_key_value_pair,
+            parser: PackageFileParsers.ComposerManifest,
             selectors: ['.[]']
         },
         lock: {
             file: 'composer.lock',
-            parser: PackageFileParsers.json_key_value_pair,
+            parser: PackageFileParsers.ComposerManifest,
             selectors: ['.[]']
         }
     }
@@ -94,7 +94,7 @@ test('test valid manifest_and_lock reports true with an empty lock', async () =>
         name: 'test',
         manifest: {
             file: 'composer.json',
-            parser: PackageFileParsers.json_key_value_pair,
+            parser: PackageFileParsers.ComposerManifest,
             selectors: ['.[]']
         },
         lock: {}
@@ -110,7 +110,7 @@ test('test valid manifest_and_lock reports false with an invalid lock', async ()
         name: 'test',
         manifest: {
             file: 'composer.json',
-            parser: PackageFileParsers.json_key_value_pair,
+            parser: PackageFileParsers.ComposerManifest,
             selectors: ['.[]']
         },
         lock: { file: 'test' }
@@ -127,7 +127,7 @@ test('test empty lock reports as undefined', async () => {
         name: 'test',
         manifest: {
             file: 'composer.json',
-            parser: PackageFileParsers.json_key_value_pair,
+            parser: PackageFileParsers.ComposerManifest,
             selectors: ['.[]']
         }
     }

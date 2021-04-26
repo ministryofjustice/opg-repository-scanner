@@ -17,7 +17,7 @@ test('test a working config object parsing', async () => {
             name: 'test-manifest',
             manifest: {
                 file: 'composer.json',
-                parser: PackageFileParsers.json_key_value_pair,
+                parser: PackageFileParsers.ComposerManifest,
                 selectors: ['[].test']
             }
         }]
