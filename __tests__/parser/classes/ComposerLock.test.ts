@@ -17,11 +17,11 @@ function loader(filename:string){
 test('test a working composer.lock file for laminas', async () => {
     const pkg: PackageFile = new PackageFile()
     pkg.file = sample_dir + 'app/php/laminas/composer.lock'
-    pkg.selectors = ['.packages', '.packages-dev']
+    pkg.selectors = ['.packages']
     const laminas_composer = loader(pkg.file)
     const parser = new ComposerLock(pkg, laminas_composer)
     await parser.parse()
 
-    //expect(parser.results.length).toEqual(3)
+    expect(parser.results.length).toEqual(2)
 
 })
