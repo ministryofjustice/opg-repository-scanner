@@ -32,32 +32,3 @@ test('test a package_file class reports false when configured incorrectly', asyn
     expect(pkg.valid_selectors()).toBeFalsy()
     expect(pkg.valid()).toBeFalsy()
 })
-
-test('test a package_file class successfully finding matching files', async () => {
-    const dir = sample_dir + 'app/php/laminas/'
-    // test package config
-    const package_config = {
-        file: 'composer.json',
-        parser:  PackageFileParsers.json_key_value_pair,
-        selectors: ['.[]']
-    }
-    const pkg = TypedJSON.parse(package_config, PackageFile) as PackageFile
-    await pkg.find_files(dir)
-    const len = pkg.files_found.length
-    expect(len).toBe(1)
-})
-
-
-test('test a package_file class failes to matching files', async () => {
-    const dir = sample_dir + 'app/go/'
-    // test package config
-    const package_config = {
-        file: 'composer.json',
-        parser:  PackageFileParsers.json_key_value_pair,
-        selectors: []
-    }
-    const pkg = TypedJSON.parse(package_config, PackageFile) as PackageFile
-    await pkg.find_files(dir)
-    const len = pkg.files_found.length
-    expect(len).toBe(0)
-})

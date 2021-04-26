@@ -1,4 +1,3 @@
-import * as glob from '@actions/glob'
 import * as core from '@actions/core'
 import 'reflect-metadata';
 import { jsonObject, jsonMember, jsonArrayMember} from 'typedjson';
@@ -19,8 +18,10 @@ export class PackageFile implements Validateable {
     // come from config
     @jsonMember
     file: string = ''
+
     @jsonMember
     parser: PackageFileParsers = PackageFileParsers.none
+
     @jsonArrayMember(String)
     selectors: string[] = []
 
@@ -57,18 +58,4 @@ export class PackageFile implements Validateable {
         return valid
     }
 
-    // get the actual files from
-    async find_files(base_directory: string = './', follow_symlinks:boolean = false): Promise<void> {
-        core.debug('package_file find_files() starting - base_directory: ' + base_directory)
-        // only run if valid
-        if (this.valid()) {
-            const dir = base_directory.replace(/\/+$/, '') + '/'
-            const pattern: string =  dir + this.file
-            core.debug('package_file find_files(): pattern - ' + pattern)
-            const globber = await glob.create(pattern, { followSymbolicLinks: follow_symlinks })
-            this.files_found = await globber.glob()
-        }
-        // return void anyway
-        return new Promise<void>((resolve) => { resolve() })
-    }
 }

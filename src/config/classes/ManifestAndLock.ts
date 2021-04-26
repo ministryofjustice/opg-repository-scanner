@@ -9,7 +9,7 @@ import {PackageFile} from './PackageFile'
 // class describes the name (like composer), its manifest & lock files
 @jsonObject
 export class ManifestAndLock implements Validateable{
-    @jsonMember
+    @jsonMember(String)
     name: string = ''
     @jsonMember(PackageFile)
     manifest: PackageFile = new PackageFile()
@@ -53,13 +53,5 @@ export class ManifestAndLock implements Validateable{
         return valid
     }
 
-    // find the files for both manifest & lock
-    async find_files(base_directory: string = './', follow_symlinks:boolean = false) : Promise<void> {
-        core.debug('manifest_and_lock find_files() starting - base_directory: ' + base_directory)
-        await this.manifest?.find_files(base_directory, follow_symlinks)
-        await this.lock?.find_files(base_directory, follow_symlinks)
-        core.debug('manifest_and_lock find_files() ending')
-        // return void anyway
-        return new Promise<void>((resolve) => { resolve() })
-    }
+
 }
