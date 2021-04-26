@@ -1,3 +1,3 @@
 export {Validateable} from './interfaces'
-export {PackageFile, ManifestAndLock, Config} from './classes'
+export {Filesystem, PackageFile, ManifestAndLock, Config} from './classes'
 export {PackageFileParsers} from './enums'
