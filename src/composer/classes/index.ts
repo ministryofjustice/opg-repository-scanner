@@ -1,0 +1,1 @@
+export { ComposerSpecificationHandler } from './ComposerSpecificationHandler'

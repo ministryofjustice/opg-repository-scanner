@@ -1,11 +1,10 @@
 import * as core from '@actions/core'
 import 'reflect-metadata';
 import { jsonObject, jsonMember} from 'typedjson';
-import { Named, Validateable } from '../../interfaces'
-import {Parsers} from '../../parser'
+import { IValidateable } from '../../generics/interfaces'
 
 @jsonObject
-export class Manifest implements Validateable, Named {
+export class Manifest implements IValidateable {
     @jsonMember
     name: string = ''
 
@@ -14,14 +13,10 @@ export class Manifest implements Validateable, Named {
 
     valid(): boolean{
         const valid_name = (this.name.length > 0)
-        const valid_parser = Parsers.has(this.uses)
-        core.debug('Manifest.valid(): valid_name = ' + valid_name)
-        core.debug('Manifest.valid(): valid_parser = ' + valid_parser)
+        core.debug('valid_name: ' + valid_name)
 
-        return (valid_name && valid_parser)
+        return (valid_name)
     }
 
-    named(): string{
-        return this.constructor.name
-    }
+
 }

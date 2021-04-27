@@ -1,10 +1,10 @@
 import * as core from '@actions/core'
 import 'reflect-metadata';
 import { jsonObject, jsonMember} from 'typedjson';
-import { Named, Validateable } from '../../interfaces'
+import { IValidateable } from '../../generics/interfaces'
 
 @jsonObject
-export class Filesystem implements Validateable, Named {
+export class Filesystem implements IValidateable {
     @jsonMember
     directory: string = ''
 
@@ -19,12 +19,9 @@ export class Filesystem implements Validateable, Named {
     }
 
     valid(): boolean{
-        const valid = (this.directory.length > 0)
-        core.debug('Filesystem.valid(): valid = ' + valid)
-        return valid
+        const valid_directory = (this.directory.length > 0)
+        core.debug('valid_directory: ' + valid_directory)
+        return valid_directory
     }
 
-    named(): string{
-        return this.constructor.name
-    }
 }
