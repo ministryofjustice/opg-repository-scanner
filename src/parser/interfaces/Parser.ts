@@ -1,9 +1,19 @@
-import { PackageFile } from "../../config";
-import { Result } from "../classes/Result";
+import { PackageFile } from "./Packagefile";
+import { Spec } from "./Spec";
 
 export interface Parser {
-    get_results( pkg:PackageFile, selector:string, packages:object[] ): Promise<Result[]>
-    add_results(results: Result[]): void
-    add_result(result: Result): void
-    parse(): Promise<void>
+    //-- Manifest functions
+    // get the spec
+    manifest_spec(): Spec
+    // manifest class
+    manifest(): PackageFile
+
+    //-- Lock functions
+    // get the spec
+    lock_spec(): Spec
+    // get the lock
+    lock(): PackageFile
+
+
+    //this.manifest().load().parse()
 }

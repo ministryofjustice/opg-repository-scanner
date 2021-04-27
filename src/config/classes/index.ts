@@ -1,4 +1,3 @@
 export { Filesystem } from './Filesystem'
-export { PackageFile } from './PackageFile';
-export { ManifestAndLock } from './ManifestAndLock';
+export { Manifest } from './Manifest';
 export { Config } from './Config';

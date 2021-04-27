@@ -12,9 +12,7 @@ async function run(): Promise<void> {
 
         core.debug('configuration file loaded: ' + configuration_file)
 
-        // find all the manifest and lock files
-        core.debug('configuration finding manifest and lock files')
-        configuration.find_manifest_and_lock_files()
+        // get all package files
 
         console.debug(configuration)
         // const ms: string = core.getInput('milliseconds')

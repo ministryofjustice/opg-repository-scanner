@@ -2,17 +2,6 @@ filesystem:
   directory: './'
   follow_symlinks: false
 
-manifests_and_locks:
+manifests:
   - name: composer
-    manifest:
-      file: '**/composer.json'
-      parser: ComposerManifest
-      selectors:
-        - '.require'
-        - '.require-dev'
-    lock:
-      file: '**/composer.lock'
-      parser: ComposerLock
-      selectors:
-        - '.packages'
-        - '.packages-dev'
+    uses: ComposerParser
