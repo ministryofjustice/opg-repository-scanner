@@ -7,5 +7,3 @@ export {
     ISpecificationHandler,
     IValidateable
 } from './interfaces'
-
-export {specificationHandler} from './Factory'

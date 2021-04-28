@@ -11,7 +11,9 @@ export async function composerManifest(
     content:string,
     selector:string,
     source:string,
-    type:string = 'manifest'): Promise<IResult[]> {
+    type:string = 'manifest',
+    recursive_selectors?:string[]
+    ): Promise<IResult[]> {
 
     /* eslint-disable no-console */
     let results:Result[] = []

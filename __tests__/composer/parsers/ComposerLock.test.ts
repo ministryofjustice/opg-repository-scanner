@@ -32,3 +32,25 @@ test('postive: parsed sample composer.lock correctly with recursion', async () =
     const res = await composerLock(content, LockSelectors.Main, file, 'testlock', recursive)
     expect(res.length).toBeGreaterThan(5)
 })
+
+
+test('postive: parsed sample composer.lock correctly with recursion', async () => {
+    const file:string = sample_dir + 'app/php/laminas/composer.lock'
+    const content = fs.readFileSync(file, {encoding: 'utf8', flag: 'r'}) as string
+
+    const recursive:string[] = [
+        LockSelectorsRecursive.PackageDevRequireDev
+    ]
+    const res = await composerLock(content, LockSelectors.Main, file, 'testlock', recursive)
+    expect(res.length).toBeGreaterThan(5)
+})
+
+
+
+test('postive: parsed doctrine-instantiator/composer.lock correctly', async () => {
+    const file:string = sample_dir + 'app/php/doctrine-instantiator/composer.lock'
+    const content = fs.readFileSync(file, {encoding: 'utf8', flag: 'r'}) as string
+
+    const res = await composerLock(content, LockSelectors.Main, file, 'testlock')
+    expect(res.length).toEqual(1)
+})

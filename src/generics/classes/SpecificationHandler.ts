@@ -10,7 +10,6 @@ import { IValidateable } from "../interfaces/IValidateable";
 // The .processor would be different for every type of manifest / file
 // Generally only extended to change the sanitise method
 export class SpecificationHandler implements ISpecificationHandler, IValidateable{
-
     filesystem:Filesystem = new Filesystem()
     filepattern: Required<string> = ''
     selector: Required<string> = ''
