@@ -17,6 +17,7 @@ async function handleRecursive(
     /* eslint-disable no-console */
     if (typeof selectors !== 'undefined' && selectors.length > 0){
         for (const selector of selectors){
+            // call manifest and force type to be 3rd party
             let found:IResult[] = await composerManifest(
                 content,
                 selector,

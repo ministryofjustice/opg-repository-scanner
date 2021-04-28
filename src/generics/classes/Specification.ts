@@ -2,6 +2,9 @@ import { Filesystem } from "../../config";
 import { IResult, ISpecification, ISpecificationHandler } from "../interfaces";
 import * as fs from 'fs'
 
+// Specification handles parsing of a manifest / lock file
+// Uses a SpecificationHandler to get the packages out of the manifest / lock
+
 export class Specification<T extends ISpecificationHandler, R extends IResult>
     implements ISpecification<T, R> {
 

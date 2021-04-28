@@ -4,6 +4,11 @@ import { Filesystem } from '../../config';
 import { ISpecificationHandler } from "../interfaces/ISpecificationHandler";
 import { IValidateable } from "../interfaces/IValidateable";
 
+// SpecificationHandler provide method to find files of its type and
+// uses a function (.processor) to parse the the content of the files it
+// finds
+// The .processor would be different for every type of manifest / file
+// Generally only extended to change the sanitise method
 export class SpecificationHandler implements ISpecificationHandler, IValidateable{
 
     filesystem:Filesystem = new Filesystem()
@@ -29,9 +34,7 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
         })
     }
 
-
-
-    // used to clear up the selectors or anything else
+    // used to clear up the selectors and data of the class before use
     sanitise(): void {}
 
     // check if this is valid class

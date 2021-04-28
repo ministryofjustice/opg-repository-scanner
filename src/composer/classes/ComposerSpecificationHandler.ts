@@ -6,8 +6,8 @@ export class ComposerSpecificationHandler extends SpecificationHandler
         implements ISpecificationHandler, IValidateable {
 
     processor: Function = composerManifest
-    // jq needs selectors to have "" around them if - are present
-    // enfoce array result
+    // - jq needs selectors to have "" around them if - are present
+    // - enforce array result
     sanitise(): void {
         const first = this.selector.charAt(0)
         const explode = this.selector.split(".").filter(i => i)

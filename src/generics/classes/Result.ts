@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import { IValidateable } from "../interfaces";
 import { IResult } from "../interfaces/IResult";
 
+// Results is used to capture details about every package found
 export class Result implements IResult, IValidateable{
     name:Required<string> = ''
     version:string = ''
