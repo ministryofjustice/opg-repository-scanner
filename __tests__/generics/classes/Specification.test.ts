@@ -50,23 +50,4 @@ test('postive: test parsing results fixed results correctly', async () => {
     await spec.parse()
     expect(spec.results().length).toEqual(1)
 
-
-    /*
-    const composerParse = function(filepath:string, selector:string): IResult{}
-    const composerHandler = new SpecificationHandler (
-        filesystem,
-        'composer.json',
-        composerHandler
-    )
-    const composerSpec = new Specification<SpecificationHandler, Result(
-        'test',
-        [composerHandler]
-    )
-
-    const composerManifest = new PackageFile<Specification>(
-        composerSpec
-    )
-
-    composerManifest.parse()
-    */
 })

@@ -5,7 +5,6 @@ import { composerManifest } from "../parsers/ComposerManifest";
 export class ComposerSpecificationHandler extends SpecificationHandler
         implements ISpecificationHandler, IValidateable {
 
-    processor: Function = composerManifest
     // - jq needs selectors to have "" around them if - are present
     // - enforce array result
     sanitise(): void {
