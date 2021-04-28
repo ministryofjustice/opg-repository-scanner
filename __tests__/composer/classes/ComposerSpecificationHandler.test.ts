@@ -4,6 +4,7 @@ import * as cp from 'child_process'
 import * as path from 'path'
 
 import { ComposerSpecificationHandler } from "../../../src/composer/classes"
+import { LockSelectorsRecursive, LockSelectors  } from "../../../src/composer/selectors"
 import { Filesystem } from '../../../src/config'
 
 // base all file scanning on this diretory
@@ -18,7 +19,8 @@ test('postive: the composer selector is sanitised correctly with simple layout',
         ".require-dev"
     )
     expect(handler.valid()).toBeTruthy()
-    expect(handler.selector).toEqual('."require-dev"')
+    // enforce array results
+    expect(handler.selector).toEqual('[."require-dev"]')
 
 })
 
@@ -29,6 +31,18 @@ test('postive: the composer selector is sanitised correctly with more complex fo
         ".require-dev.test.level-1"
     )
     expect(handler.valid()).toBeTruthy()
-    expect(handler.selector).toEqual('."require-dev"."test"."level-1"')
+    expect(handler.selector).toEqual('[."require-dev".test."level-1"]')
+
+})
+
+
+test('postive: the composer selector is sanitised correctly with array notation for lock', async () => {
+    const handler = new ComposerSpecificationHandler(
+        new Filesystem(),
+        "**/composer.json",
+        LockSelectorsRecursive.PackageDevRequireDev
+    )
+    expect(handler.valid()).toBeTruthy()
+    expect(handler.selector).toEqual(LockSelectorsRecursive.PackageDevRequireDev)
 
 })

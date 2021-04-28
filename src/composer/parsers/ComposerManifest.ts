@@ -7,29 +7,37 @@ import { values } from "lodash";
 
 // Composer.json packages are key value pairs in
 // .require & .require-dev
-export async function composerManifest(content:string, selector:string, source:string, type:string = 'first-party'): Promise<IResult[]> {
-    let results:Result[] = []
-    const obj = JSON.parse(content)
-    const res = await jq.run(selector, content, { output: 'json', input: 'string' }) as object
+export async function composerManifest(
+    content:string,
+    selector:string,
+    source:string,
+    type:string = 'manifest'): Promise<IResult[]> {
 
-    // res will be the object, so loop over the entries to get key & value
-    for( const [key, value] of Object.entries(res)) {
-        const res = new Result(
-            key,
-            value,
-            source,
-            type
-        )
-        results.push(res)
+    /* eslint-disable no-console */
+    let results:Result[] = []
+    let res:object[] = await jq.run(selector, content, { output: 'json', input: 'string' }) as object[]
+
+    // as we're forcing an array, remove empty versions
+    res = res.filter( (i) => (i !== null && i !== undefined) )
+
+    if (res !== null && res.length > 0) {
+        for (const row of res) {
+            // row will be the object, so loop over the entries to get key & value
+            for( const [key, value] of Object.entries(row)) {
+                const res:Result = new Result(
+                    key,
+                    value,
+                    source,
+                    type
+                )
+                results.push(res)
+            }
+        }
     }
 
     return new Promise<IResult[]>((resolve) => {
-        /* eslint-disable no-console */
-        console.log("--> composer", obj)
-        console.log("--> results", results)
-        /* eslint-enable no-console */
-
         resolve(results)
     })
+    /* eslint-enable no-console */
 
 }

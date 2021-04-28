@@ -11,10 +11,19 @@ import { Filesystem } from '../../../src/config'
 const sample_dir: string = './__samples__/'
 
 
-test('postive: ', async () => {
+test('postive: parsed sample composer.json correctly', async () => {
     const file:string = sample_dir + 'app/php/laminas/composer.json'
     const content = fs.readFileSync(file, {encoding: 'utf8', flag: 'r'}) as string
 
-    const res = await composerManifest(content, '.require', file, 'test')
+    const res = await composerManifest(content, '[.require]', file)
+    expect(res.length).toEqual(3)
+})
 
+
+test('postive: parsed sample composer.json correctly, but invalid selector', async () => {
+    const file:string = sample_dir + 'app/php/laminas/composer.json'
+    const content = fs.readFileSync(file, {encoding: 'utf8', flag: 'r'}) as string
+
+    const res = await composerManifest(content, '[.package]', file)
+    expect(res.length).toEqual(0)
 })
