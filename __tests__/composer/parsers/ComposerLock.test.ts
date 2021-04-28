@@ -13,13 +13,13 @@ const sample_dir: string = './__samples__/'
 
 //test('test', async () => {})
 
-// test('postive: parsed sample composer.lock correctly', async () => {
-//     const file:string = sample_dir + 'app/php/laminas/composer.lock'
-//     const content = fs.readFileSync(file, {encoding: 'utf8', flag: 'r'}) as string
+test('postive: parsed sample composer.lock correctly', async () => {
+    const file:string = sample_dir + 'app/php/laminas/composer.lock'
+    const content = fs.readFileSync(file, {encoding: 'utf8', flag: 'r'}) as string
 
-//     const res = await composerLock(content, '[.packages]', file, 'testlock')
-//     expect(res.length).toBeGreaterThan(1)
-// })
+    const res = await composerLock(content, '[.packages]', file, 'testlock')
+    expect(res.length).toBeGreaterThan(1)
+})
 
 
 test('postive: parsed sample composer.lock correctly with recursion', async () => {
