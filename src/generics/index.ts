@@ -1,8 +1,11 @@
-export {PackageFile, Result, Specification, SpecificationHandler} from './classes'
+export {Packages, Result, Specification, SpecificationHandler} from './classes'
+
 export {
-    IPackageFile,
+    IPackages,
     IResult,
     ISpecification,
     ISpecificationHandler,
     IValidateable
 } from './interfaces'
+
+export {specificationHandler} from './Factory'
