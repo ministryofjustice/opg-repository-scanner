@@ -40,11 +40,11 @@ export class Specification<T extends ISpecificationHandler, R extends IResult>
 
             for(const file of files){
                 // create a wrapper around the async function
-                const get = async (content:string, selector:string, source:string) : Promise<R[]> => {
-                    return await f(content, selector, source)
+                const get = async (content:string, selector:string, source:string, type:string) : Promise<R[]> => {
+                    return await f(content, selector, source, type)
                 }
                 const content = fs.readFileSync(file, {encoding: 'utf8', flag: 'r'}) as string
-                const res:R[] = await get(content, selector, file)
+                const res:R[] = await get(content, selector, file, this.name)
                 this._results.push(...res)
 
             }
