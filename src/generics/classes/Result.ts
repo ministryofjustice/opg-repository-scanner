@@ -8,12 +8,14 @@ export class Result implements IResult, IValidateable{
     version:string = ''
     source:string = ''
     type:string = ''
+    selector:string =''
 
-    constructor(name?: string, version?:string, source?:string, type?:string){
+    constructor(name?: string, version?:string, source?:string, type?:string, selector?: string){
         if(typeof name !== 'undefined') this.name = name
         if(typeof version !== 'undefined') this.version = version
         if(typeof source !== 'undefined') this.source = source
         if(typeof type !== 'undefined') this.type = type
+        if(typeof selector !== 'undefined') this.selector = selector
     }
 
     // valididation check

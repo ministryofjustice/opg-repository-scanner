@@ -14,12 +14,20 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
     filepattern: Required<string> = ''
     selector: Required<string> = ''
     processor: Function = async function() {}
+    recursive?: string[]
 
-    constructor(filesystem?:Filesystem, filepattern?:string, selector?:string, processor?:Function){
+    constructor(
+        filesystem?:Filesystem,
+        filepattern?:string,
+        selector?:string,
+        processor?:Function,
+        recursive?: string[]
+        ){
         if(typeof filesystem !== 'undefined') this.filesystem = filesystem
         if(typeof filepattern !== 'undefined') this.filepattern = filepattern
         if(typeof selector !== 'undefined') this.selector = selector
         if(typeof processor !== 'undefined') this.processor = processor
+        if(typeof recursive !== 'undefined') this.recursive = recursive
         this.sanitise()
     }
 

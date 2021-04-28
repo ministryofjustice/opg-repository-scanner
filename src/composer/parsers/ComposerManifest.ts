@@ -30,7 +30,8 @@ export async function composerManifest(
                     key,
                     value,
                     source,
-                    type
+                    type,
+                    selector
                 )
                 results.push(res)
             }

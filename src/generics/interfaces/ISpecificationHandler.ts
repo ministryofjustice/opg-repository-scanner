@@ -4,6 +4,7 @@ export interface ISpecificationHandler{
     filepattern: Required<string>
     selector: Required<string>
     processor: Function
+    recursive?: string[]
 
     sanitise(): void
     files(): Promise<string[]>

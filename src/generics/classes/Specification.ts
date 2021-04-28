@@ -40,11 +40,17 @@ export class Specification<T extends ISpecificationHandler, R extends IResult>
 
             for(const file of files){
                 // create a wrapper around the async function
-                const get = async (content:string, selector:string, source:string, type:string) : Promise<R[]> => {
-                    return await f(content, selector, source, type)
+                const get = async (
+                    content:string,
+                    selector:string,
+                    source:string,
+                    type:string,
+                    recursive?: string[]
+                    ) : Promise<R[]> => {
+                    return await f(content, selector, source, type, recursive)
                 }
                 const content = fs.readFileSync(file, {encoding: 'utf8', flag: 'r'}) as string
-                const res:R[] = await get(content, selector, file, this.name)
+                const res:R[] = await get(content, selector, file, this.name, handler.recursive)
                 this._results.push(...res)
 
             }

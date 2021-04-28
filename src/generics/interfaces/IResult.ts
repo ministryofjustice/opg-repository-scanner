@@ -3,4 +3,5 @@ export interface IResult {
     version:string
     source:string
     type:string
+    selector:string
 }

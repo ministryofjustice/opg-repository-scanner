@@ -11,6 +11,7 @@ import { composerManifest } from "./ComposerManifest";
 async function handleRecursive(
     content:string,
     source:string,
+    type:string,
     selectors?:string[]
 ): Promise<IResult[]> {
     let results:IResult[] = []
@@ -22,7 +23,7 @@ async function handleRecursive(
                 content,
                 selector,
                 source,
-                'third-party'
+                'third-party-' + type
             )
             if(found.length > 0) results.push(...found)
         }
@@ -60,11 +61,12 @@ export async function composerLock(
                         map.get('name'),
                         map.get('version'),
                         source,
-                        type
+                        type,
+                        selector
                     )
                     results.push(res)
                     // Deal with recursive elements of composer lock files
-                    let recursive:Result[] = await handleRecursive(content, source, recursive_selectors) as Result[]
+                    let recursive:Result[] = await handleRecursive(content, source, type, recursive_selectors) as Result[]
                     if (recursive.length > 0 ) results.push( ...recursive )
                 }
 
