@@ -36,7 +36,7 @@ export class Specification<T extends ISpecificationHandler, R extends IResult>
         for (const handler of this.handlers() ) {
             const files = await handler.files()
             const f = handler.processor
-            const selector = handler.selector
+            const selectors = handler.selector
 
             for(const file of files){
                 // create a wrapper around the async function
@@ -50,9 +50,11 @@ export class Specification<T extends ISpecificationHandler, R extends IResult>
                     return await f(content, selector, source, type, recursive)
                 }
                 const content = fs.readFileSync(file, {encoding: 'utf8', flag: 'r'}) as string
-                const res:R[] = await get(content, selector, file, this.name, handler.recursive)
-                this._results.push(...res)
 
+                for(const selector of selectors){
+                    const res:R[] = await get(content, selector, file, this.name, handler.recursive)
+                    this._results.push(...res)
+                }
             }
         }
         return new Promise< void >( (resolve) => {

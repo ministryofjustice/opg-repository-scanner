@@ -20,7 +20,7 @@ test('postive: the composer selector is sanitised correctly with simple layout',
     )
     expect(handler.valid()).toBeTruthy()
     // enforce array results
-    expect(handler.selector).toEqual('[."require-dev"]')
+    expect(handler.selector.pop()).toEqual('[."require-dev"]')
 
 })
 
@@ -31,7 +31,7 @@ test('postive: the composer selector is sanitised correctly with more complex fo
         ".require-dev.test.level-1"
     )
     expect(handler.valid()).toBeTruthy()
-    expect(handler.selector).toEqual('[."require-dev".test."level-1"]')
+    expect(handler.selector.pop()).toEqual('[."require-dev".test."level-1"]')
 
 })
 
@@ -43,6 +43,6 @@ test('postive: the composer selector is sanitised correctly with array notation 
         LockSelectorsRecursive.PackageDevRequireDev
     )
     expect(handler.valid()).toBeTruthy()
-    expect(handler.selector).toEqual(LockSelectorsRecursive.PackageDevRequireDev)
+    expect(handler.selector.pop()).toEqual(LockSelectorsRecursive.PackageDevRequireDev)
 
 })

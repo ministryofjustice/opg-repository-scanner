@@ -5,13 +5,12 @@ import { composerManifest } from "../parsers/ComposerManifest";
 export class ComposerSpecificationHandler extends SpecificationHandler
         implements ISpecificationHandler, IValidateable {
 
-    // - jq needs selectors to have "" around them if - are present
-    // - enforce array result
-    sanitise(): void {
-        const first = this.selector.charAt(0)
-        const explode = this.selector.split(".").filter(i => i)
+    // process each selector thats been set
+    per_selector(selector:string): string {
+        const first = selector.charAt(0)
+        const explode = selector.split(".").filter(i => i)
 
-        this.selector = explode.map(function(val, i) {
+        selector = explode.map(function(val, i) {
             const containsQuote = val.indexOf('"') >= 0
             const containsHyphen = val.indexOf('-') >= 0
             const containsArray = val.indexOf('[') >= 0
@@ -28,7 +27,15 @@ export class ComposerSpecificationHandler extends SpecificationHandler
         }).join('')
 
         // ensure its an array selector
-        if (first !== '[') this.selector = `[${this.selector}]`
+        if (first !== '[') selector = `[${selector}]`
+
+        return selector
+    }
+
+    // - jq needs selectors to have "" around them if - are present
+    // - enforce array result
+    sanitise(): void {
+        this.selector = this.selector.map(i => this.per_selector(i) )
 
     }
 

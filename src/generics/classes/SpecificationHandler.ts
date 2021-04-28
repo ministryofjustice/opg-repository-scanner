@@ -12,22 +12,27 @@ import { IValidateable } from "../interfaces/IValidateable";
 export class SpecificationHandler implements ISpecificationHandler, IValidateable{
     filesystem:Filesystem = new Filesystem()
     filepattern: Required<string> = ''
-    selector: Required<string> = ''
+    selector: Required<string[]> = []
     processor: Function = async function() {}
     recursive?: string[]
 
     constructor(
         filesystem?:Filesystem,
         filepattern?:string,
-        selector?:string,
+        selector?:string[]|string,
         processor?:Function,
         recursive?: string[]
         ){
         if(typeof filesystem !== 'undefined') this.filesystem = filesystem
         if(typeof filepattern !== 'undefined') this.filepattern = filepattern
-        if(typeof selector !== 'undefined') this.selector = selector
         if(typeof processor !== 'undefined') this.processor = processor
         if(typeof recursive !== 'undefined') this.recursive = recursive
+
+        if(typeof selector !== 'undefined') {
+            if(typeof selector == 'string') this.selector = [selector] ?? []
+            else this.selector = selector ?? []
+        }
+
         this.sanitise()
     }
 
