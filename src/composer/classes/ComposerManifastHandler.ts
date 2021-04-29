@@ -73,6 +73,7 @@ export class ComposerManifestHandler extends ComposerSpecificationHandler
     //
     protected async process_files(files:string[], selectors:string[]): Promise<IResult[]> {
         let results: IResult[] = []
+
         for (const file of files) {
             const found = await this.process_file_and_selectors(file, selectors)
             results.push(...found)
