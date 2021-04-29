@@ -1,6 +1,9 @@
-import { ISpecificationHandler, IValidateable } from "../../generics";
-import { SpecificationHandler } from "../../generics";
-import { composerManifest } from "../parsers/ComposerManifest";
+import {
+    ISpecificationHandler,
+    IValidateable,
+    SpecificationHandler
+} from "../../generics";
+
 
 export class ComposerSpecificationHandler extends SpecificationHandler
         implements ISpecificationHandler, IValidateable {

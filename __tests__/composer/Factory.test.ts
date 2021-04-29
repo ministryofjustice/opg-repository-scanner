@@ -26,7 +26,7 @@ import { Filesystem } from '../../src/config'
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
 
-test('test', async () => {})
+// test('test', async () => {})
 
 test('postive: test construction raw and reporting with a known & small file', async () => {
     const filesys = new Filesystem(sample_dir)
@@ -67,20 +67,30 @@ test('postive: test construction raw and reporting with a known & small file', a
         lockSpec
     )
 
-    const res = await packages.get()
+    const res = await packages.get(false)
     expect(res.length).toEqual(10)
 
 })
 
 
-test('postive: test construction via factory with a known file', async () => {
+test('postive: test construction via factory with a known file without cleanup', async () => {
     const dir = sample_dir + "app/php/doctrine-instantiator/"
     const filesys = new Filesystem(dir)
-    const packages = ComposerParser(filesys)
-
-    const res = await packages.get()
+    let packages = ComposerParser(filesys)
 
     expect(packages).toBeInstanceOf(Packages)
+    // dont de-deup
+    const res = await packages.get(false)
     expect(res.length).toEqual(10)
+})
 
+
+test('postive: test construction via factory with a known file with cleanup', async () => {
+    const dir = sample_dir + "app/php/doctrine-instantiator/"
+    const filesys = new Filesystem(dir)
+    let packages = ComposerParser(filesys)
+
+    expect(packages).toBeInstanceOf(Packages)
+    const res = await packages.get()
+    expect(res.length).toEqual(9)
 })

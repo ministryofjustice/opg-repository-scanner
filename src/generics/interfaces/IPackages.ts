@@ -8,5 +8,5 @@ export interface IPackages<M,L>{
     lock?: L
 
     // returns all packages found
-    get(): Promise<IResult[]>
+    get(combine: boolean): Promise<IResult[]>
 }

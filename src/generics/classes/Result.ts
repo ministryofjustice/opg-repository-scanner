@@ -25,4 +25,13 @@ export class Result implements IResult, IValidateable{
         core.debug('valid_name: ' + valid_name)
         return (valid_name)
     }
+
+    // join the fields from extra into this one
+    expand(extra: IResult): void {
+        this.version = this.version + '\n' + extra.version
+        this.source = this.source + '\n' + extra.source
+        this.selector = this.selector + '\n' + extra.selector
+        this.type = this.type + '\n' + extra.type
+
+    }
 }

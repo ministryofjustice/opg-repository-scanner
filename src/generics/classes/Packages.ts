@@ -28,30 +28,49 @@ export class Packages <M extends ISpecification<ISpecificationHandler, IResult>,
         if(typeof lock !== 'undefined') this.lock = lock
     }
 
-
-    async get(): Promise<IResult[]> {
-        /* eslint-disable no-console */
+    // fetches the package data from both lock & manifest files and
+    // merge into one result set
+    // - does not do any processing
+    async get(combine: boolean = true): Promise<IResult[]> {
 
         let manifest:IResult[] = []
         let lock:IResult[] = []
+        let combined:IResult[] = []
 
         await this.manifest.parse()
         await this.lock?.parse()
 
-        // console.log("--LOCK--\n", typeof this.lock, this.lock)
-
         manifest.push(...this.manifest.results())
-        if (typeof this.lock !== 'undefined'){
-            lock = this.lock?.results() ?? []
-        }
+        // set lock
+        if (typeof this.lock !== 'undefined') lock = this.lock?.results() ?? []
 
-        this.all.push(...manifest, ...lock)
+        if(combine && lock.length > 0 ) this.all = this.combine(manifest, lock)
+        else this.all.push(...manifest, ...lock)
 
         return new Promise<IResult[]>(resolve => {
             resolve(this.all)
         })
 
-        /* eslint-enable no-console */
+    }
+
+    // takes the manifest and lock, merges them together
+    combine(manifest:IResult[], lock:IResult[]): IResult[] {
+        let combined: IResult[] = []
+        // remove from lock files things that exist in manifest
+        // and then expand the data in the manifest entry
+        lock = lock.filter(function(l:IResult, i:number) {
+            let record:IResult = manifest.find( m => m.name === l.name) as IResult
+            // if we found a record that matches - expand and remove
+            if (typeof record !== 'undefined' && record.name === l.name){
+                record.expand(l)
+                return false
+            }
+            return true
+        })
+
+        combined.push(...manifest, ...lock)
+        return combined
+
     }
 
 

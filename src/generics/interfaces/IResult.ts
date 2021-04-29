@@ -4,4 +4,6 @@ export interface IResult {
     source:string
     type:string
     selector:string
+
+    expand(extra: IResult): void
 }

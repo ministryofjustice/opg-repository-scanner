@@ -30,14 +30,12 @@ test('postive: test construction forms a valid package when creating directly', 
     const manifestHandler = new SpecificationHandler(
         filesys,
         mFile,
-        ManifestSelectors.Main,
-        tester
+        ManifestSelectors.Main
     )
     const lockHandler = new SpecificationHandler(
         filesys,
         lFile,
-        LockSelectors.Main,
-        tester
+        LockSelectors.Main
     )
 
     const manifestSpec = new Specification<SpecificationHandler, Result>(
