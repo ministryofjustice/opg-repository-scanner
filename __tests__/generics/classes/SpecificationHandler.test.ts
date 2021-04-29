@@ -25,8 +25,7 @@ test('positve: test specification handler based on composer', async () => {
     const handler = new SpecificationHandler(
         new Filesystem(),
         "**/composer.json",
-        '.require',
-        test
+        '.require'
     )
     expect(handler.valid()).toBeTruthy()
 
@@ -46,8 +45,7 @@ test('positve: test file look up', async () => {
     const handler = new SpecificationHandler(
         new Filesystem(sample_dir),
         "app/php/laminas/composer.json",
-        '.require',
-        test
+        '.require'
     )
 
     const files = await handler.files()

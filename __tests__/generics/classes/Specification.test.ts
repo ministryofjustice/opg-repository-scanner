@@ -28,26 +28,3 @@ test('postive: test instanceof handlers', async () => {
     expect(spec.name).toEqual(name)
     expect(res).toBeInstanceOf(SpecificationHandler)
 })
-
-
-test('postive: test parsing results fixed results correctly', async () => {
-    const name = 'test-spec'
-    // test function that always returns same result
-    const test = function(): Result[]{
-        return [new Result('test')]
-    }
-    // base handler to load a file
-    const handler = new SpecificationHandler(
-        new Filesystem(sample_dir),
-        "app/php/laminas/composer.json",
-        '.require',
-        test
-    )
-    const spec = new Specification<SpecificationHandler, Result>(
-                        name,
-                        [handler]
-                    )
-    await spec.parse()
-    expect(spec.results().length).toEqual(1)
-
-})

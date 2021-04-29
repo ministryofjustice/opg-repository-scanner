@@ -3,20 +3,21 @@ import * as process from 'process'
 import * as cp from 'child_process'
 import * as path from 'path'
 
-import {SpecificationHandler,
-        Specification,
-        Result,
-        Packages
+import {
+    SpecificationHandler,
+    Specification,
+    Result,
+    Packages
 } from "../../src/generics"
 import {
-    ComposerSpecificationHandler,
+    ComposerLockHandler,
+    ComposerManifestHandler,
 
-    ManifestSelectors,
-    LockSelectors,
     LockSelectorsRecursive,
+    ManifestSelectorsArray,
+    LockSelectorsRecursiveArray,
+    LockSelectorsArray,
 
-    composerLock,
-    composerManifest
 } from "../../src/composer"
 import { Filesystem } from '../../src/config'
 import { ComposerParser } from '../../src/composer/Factory'
@@ -24,6 +25,7 @@ import { ComposerParser } from '../../src/composer/Factory'
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
 
+test('test', async () => {})
 
 test('postive: test construction raw and reporting with a known & small file', async () => {
     const filesys = new Filesystem(sample_dir)
@@ -34,38 +36,31 @@ test('postive: test construction raw and reporting with a known & small file', a
     const lName:string = 'composer-lock-spec'
 
     // handlers to load a file
-    const manifestHandler = new ComposerSpecificationHandler(
+    const manifestHandler = new ComposerManifestHandler(
         filesys,
         mFile,
-        [ ManifestSelectors.Main] ,
-        composerManifest
-    )
-    const recursive = [
-        LockSelectorsRecursive.PackageRequire,
-        LockSelectorsRecursive.PackageRequireDev,
-        LockSelectorsRecursive.PackageDevRequire,
-        LockSelectorsRecursive.PackageDevRequireDev
-    ]
-    const lockHandler = new ComposerSpecificationHandler(
-        filesys,
-        lFile,
-        [ LockSelectors.Main ],
-        composerLock,
-        recursive
+        ManifestSelectorsArray
     )
 
-    const manifestSpec = new Specification<ComposerSpecificationHandler, Result>(
+    const lockHandler = new ComposerLockHandler(
+        filesys,
+        lFile,
+        LockSelectorsArray,
+        LockSelectorsRecursiveArray
+    )
+
+    const manifestSpec = new Specification<ComposerManifestHandler, Result>(
                         mName,
                         [manifestHandler]
     )
 
-    const lockSpec = new Specification<ComposerSpecificationHandler, Result>(
+    const lockSpec = new Specification<ComposerLockHandler, Result>(
                         lName,
                         [lockHandler]
     )
 
-    const packages = new Packages<Specification<ComposerSpecificationHandler, Result>,
-                                  Specification<ComposerSpecificationHandler, Result> >(
+    const packages = new Packages<Specification<ComposerManifestHandler, Result>,
+                                  Specification<ComposerLockHandler, Result> >(
         'test-composer-package',
         manifestSpec,
         lockSpec
@@ -73,7 +68,6 @@ test('postive: test construction raw and reporting with a known & small file', a
 
     const res = await packages.get()
     expect(res.length).toEqual(10)
-
 
 })
 
