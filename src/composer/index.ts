@@ -12,3 +12,6 @@ export {
     LockSelectorsArray,
     LockSelectorsRecursiveArray
 } from './selectors'
+
+
+export { ComposerParser } from './Factory'

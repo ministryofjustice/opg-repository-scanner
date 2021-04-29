@@ -18,9 +18,10 @@ import {
     LockSelectorsRecursiveArray,
     LockSelectorsArray,
 
+    ComposerParser
+
 } from "../../src/composer"
 import { Filesystem } from '../../src/config'
-import { ComposerParser } from '../../src/composer/Factory'
 
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
