@@ -9,3 +9,4 @@ export {
 export {NpmPatterns} from './patterns'
 
 export {NpmManifestHandler, NpmLockHandler} from './classes'
+export {PackageParser} from './Factory'
