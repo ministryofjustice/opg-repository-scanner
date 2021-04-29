@@ -87,8 +87,6 @@ export class ComposerManifestHandler extends ComposerSpecificationHandler
         const primary:IResult[] = await this.process_files(files, selectors)
         this._results.push(...primary)
 
-        if(typeof this.recursive !== 'undefined') await this.recurse()
-
         return new Promise<void>( resolve => { resolve() } )
     }
 }
