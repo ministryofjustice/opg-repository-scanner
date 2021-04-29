@@ -1,4 +1,9 @@
-export {ComposerSpecificationHandler} from './classes'
+export {
+    ComposerSpecificationHandler,
+    ComposerLockHandler,
+    ComposerManifestHandler
+} from './classes'
+
 export {
     ManifestSelectors,
     LockSelectors,
@@ -7,4 +12,3 @@ export {
     LockSelectorsArray,
     LockSelectorsRecursiveArray
 } from './selectors'
-export {composerLock, composerManifest} from './parsers'

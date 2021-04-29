@@ -1,7 +1,6 @@
 import {Filesystem} from '../config'
 import {Packages, Specification, Result} from '../generics'
-import {ComposerSpecificationHandler} from './classes'
-import {composerLock, composerManifest} from './parsers'
+import {ComposerLockHandler, ComposerManifestHandler} from './classes'
 import {ComposerPatterns} from './patterns'
 import {LockSelectorsArray, LockSelectorsRecursiveArray, ManifestSelectorsArray} from './selectors'
 
@@ -19,33 +18,29 @@ export function ComposerParser(
 
     recursive_lock_selectors: string[] = LockSelectorsRecursiveArray
 ): Packages<
-    Specification<ComposerSpecificationHandler, Result>,
-    Specification<ComposerSpecificationHandler, Result>
+    Specification<ComposerManifestHandler, Result>,
+    Specification<ComposerLockHandler, Result>
 > {
     //-- Create the specification handlers
-    const manifestHandler = new ComposerSpecificationHandler(
+    const manifestHandler = new ComposerManifestHandler(
         filesystem,
         manifest_file_pattern,
-        manifest_selectors,
-        composerManifest
+        manifest_selectors
     )
-    const lockHandler = new ComposerSpecificationHandler(
+    const lockHandler = new ComposerLockHandler(
         filesystem,
         lock_file_pattern,
         lock_selectors,
-        composerLock,
         recursive_lock_selectors
     )
     //-- Create the specs
-    const manifestSpec = new Specification<ComposerSpecificationHandler, Result>(manifest_name, [
+    const manifestSpec = new Specification<ComposerManifestHandler, Result>(manifest_name, [
         manifestHandler
     ])
-    const lockSpec = new Specification<ComposerSpecificationHandler, Result>(lock_name, [
-        lockHandler
-    ])
+    const lockSpec = new Specification<ComposerLockHandler, Result>(lock_name, [lockHandler])
     //-- The main package
     return new Packages<
-        Specification<ComposerSpecificationHandler, Result>,
-        Specification<ComposerSpecificationHandler, Result>
+        Specification<ComposerManifestHandler, Result>,
+        Specification<ComposerLockHandler, Result>
     >('composer', manifestSpec, lockSpec)
 }

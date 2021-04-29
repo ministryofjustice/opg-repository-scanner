@@ -34,28 +34,10 @@ export class Specification<T extends ISpecificationHandler, R extends IResult>
         // find the files that match
         // process them
         for (const handler of this.handlers() ) {
-            const files = await handler.files()
-            const f = handler.processor
-            const selectors = handler.selector
+            await handler.process()
+            const handler_results = await handler.results() as R[]
+            this._results.push(...handler_results)
 
-            for(const file of files){
-                // create a wrapper around the async function
-                const get = async (
-                    content:string,
-                    selector:string,
-                    source:string,
-                    type:string,
-                    recursive?: string[]
-                    ) : Promise<R[]> => {
-                    return await f(content, selector, source, type, recursive)
-                }
-                const content = fs.readFileSync(file, {encoding: 'utf8', flag: 'r'}) as string
-
-                for(const selector of selectors){
-                    const res:R[] = await get(content, selector, file, this.name, handler.recursive)
-                    this._results.push(...res)
-                }
-            }
         }
         return new Promise< void >( (resolve) => {
             resolve()

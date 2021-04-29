@@ -5,6 +5,8 @@ import { composerManifest } from "../parsers/ComposerManifest";
 export class ComposerSpecificationHandler extends SpecificationHandler
         implements ISpecificationHandler, IValidateable {
 
+    type:string = 'composer'
+
     // process each selector thats been set
     per_selector(selector:string): string {
         const first = selector.charAt(0)
@@ -24,11 +26,11 @@ export class ComposerSpecificationHandler extends SpecificationHandler
 
             if (first === '[' && i === 0) return val
             return `.${val}`
+
         }).join('')
 
         // ensure its an array selector
         if (first !== '[') selector = `[${selector}]`
-
         return selector
     }
 
@@ -36,7 +38,6 @@ export class ComposerSpecificationHandler extends SpecificationHandler
     // - enforce array result
     sanitise(): void {
         this.selector = this.selector.map(i => this.per_selector(i) )
-
     }
 
 }

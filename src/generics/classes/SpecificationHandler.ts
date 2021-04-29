@@ -1,31 +1,29 @@
 import * as core from '@actions/core'
 import * as glob from '@actions/glob'
 import { Filesystem } from '../../config';
-import { ISpecificationHandler } from "../interfaces/ISpecificationHandler";
-import { IValidateable } from "../interfaces/IValidateable";
-
+import { ISpecificationHandler, IValidateable, IResult} from '../interfaces'
 // SpecificationHandler provide method to find files of its type and
 // uses a function (.processor) to parse the the content of the files it
 // finds
 // The .processor would be different for every type of manifest / file
 // Generally only extended to change the sanitise method
-export class SpecificationHandler implements ISpecificationHandler, IValidateable{
+export class SpecificationHandler implements ISpecificationHandler, IValidateable {
+    protected _results:IResult[] = []
+
+    type:string = ''
     filesystem:Filesystem = new Filesystem()
     filepattern: Required<string> = ''
     selector: Required<string[]> = []
-    processor: Function = async function() {}
     recursive?: string[]
 
     constructor(
         filesystem?:Filesystem,
         filepattern?:string,
         selector?:string[]|string,
-        processor?:Function,
         recursive?: string[]
         ){
         if(typeof filesystem !== 'undefined') this.filesystem = filesystem
         if(typeof filepattern !== 'undefined') this.filepattern = filepattern
-        if(typeof processor !== 'undefined') this.processor = processor
         if(typeof recursive !== 'undefined') this.recursive = recursive
 
         if(typeof selector !== 'undefined') {
@@ -46,19 +44,30 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
         })
     }
 
-    // used to clear up the selectors and data of the class before use
-    sanitise(): void {}
-
     // check if this is valid class
     valid(): boolean {
         let valid_filepattern = (this.filepattern.length > 0)
         let valid_selector = (this.selector.length > 0)
-        let valid_processor = (typeof this.processor === 'function')
 
         core.debug('valid_filepattern: ' + valid_filepattern)
         core.debug('valid_selector: ' + valid_selector)
-        core.debug('valid_processor: ' + valid_processor)
 
-        return (valid_filepattern && valid_selector && valid_processor)
+        return (valid_filepattern && valid_selector)
     }
+
+    // handle recursive selections
+    async recurse(): Promise<void> {
+        return new Promise<void>(resolve => { resolve() })
+    }
+    // do nothing in the generic handler
+    async process(): Promise<void> {
+        return new Promise<void>(resolve => { resolve() })
+    }
+
+    async results(): Promise<IResult[]> {
+        return new Promise<IResult[]>( resolve => { resolve(this._results) })
+    }
+    // used to clear up the selectors and data of the class before use
+    sanitise(): void {}
+
 }
