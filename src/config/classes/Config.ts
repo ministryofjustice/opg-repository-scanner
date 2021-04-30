@@ -5,6 +5,7 @@ import {jsonObject, jsonMember, jsonArrayMember} from 'typedjson';
 import {IValidateable} from '../../generics/interfaces'
 import {Filesystem} from './Filesystem'
 import {Manifest} from './Manifest'
+import { Output } from './Output';
 
 @jsonObject
 export class Config implements IValidateable{
@@ -15,11 +16,20 @@ export class Config implements IValidateable{
     @jsonArrayMember(Manifest)
     manifests: Manifest[] = []
 
-    constructor(filesystem?: Filesystem, manifests?: Manifest[]){
+    @jsonArrayMember(Output)
+    output: Output[] = []
+
+    constructor(filesystem?: Filesystem, manifests?: Manifest[], output?:Output[]){
         if (typeof filesystem !== 'undefined')
             this.filesystem = filesystem
         if (typeof manifests !== 'undefined')
             this.manifests = manifests
+
+        // give output a default entry
+        if (typeof output !== 'undefined')
+            this.output = output
+        else
+            this.output.push(new Output())
     }
 
     // validate the filesystem settings are correct

@@ -4,3 +4,6 @@ filesystem:
 manifests:
   - name: composer
     uses: ComposerParser
+output:
+  - location: 'scan-result'
+    as: 'json'

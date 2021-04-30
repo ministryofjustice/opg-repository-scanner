@@ -1,8 +1,11 @@
 import * as core from '@actions/core'
-import * as fs from 'fs'
+
 
 import { Config, Manifest } from "../../config";
+import { Output } from '../../config/classes';
 import { IResult, IPackages, ISpecification, ISpecificationHandler } from '../../generics';
+import { AvailableOutputers, IOutputer } from '../../outputer';
+import { Outputer } from '../../outputer/classes/Outputer';
 import { AvailableManifestParsers } from "../AvailableManifestsParsers";
 import { IManifestResults } from '../interfaces/IManifestResults';
 
@@ -69,25 +72,28 @@ export class ManifestResults implements IManifestResults{
 
     async process(): Promise<void> {
         const manifest_results:IResult[] = await this.manifests()
-
         this.output.set('packages', manifest_results)
 
         return new Promise<void>( resolve => { resolve() } )
 
     }
 
-    output_to_object(): object {
-        let json_obj = {}
-        Object.assign(json_obj, ...[...this.output.entries()].map(([k, v]) => ({[k]: v})) )
-        return json_obj
-    }
 
+    // use the output configuration data to save the result to a file
     async save(): Promise<void> {
-        const json_obj = this.output_to_object()
-        const json_string:string = JSON.stringify(json_obj)
+        const outputters = this.configuration?.output as Output[]
+        console.log('out---->', outputters)
+        for(const output of outputters) {
+            const filename = output.location ?? 'scan-result'
+            const as_name = output.as ?? 'json'
+            const as_exists = AvailableOutputers.has(as_name)
 
-        const path:string = './scan-results.json'
-        fs.writeFileSync(path, json_string)
+            if(as_exists) {
+                const out = AvailableOutputers.get(as_name) as IOutputer
+                out.write(filename, this.output )
+            }
+        }
+
 
         return new Promise<void>( resolve => { resolve() } )
     }

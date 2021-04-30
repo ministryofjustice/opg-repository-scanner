@@ -45,14 +45,15 @@ test('postive: test finding a composer set of packages correctly', async () => {
         manifests: [{
             name: 'composer',
             uses: 'ComposerParser'
-        }]
+        }],
+
     }
 
     const config = TypedJSON.parse(configObj, Config) as Config
     const results = new ManifestResults(config)
     await results.process()
 
-    results.save()
+    //results.save()
 
     //expect(results.output.hasOwnProperty('package') ).toBeTruthy()
     //const packages = results.output['packages'] as []

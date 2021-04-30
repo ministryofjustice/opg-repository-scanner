@@ -1,0 +1,1 @@
+export {IOutputer} from './IOutputer'
