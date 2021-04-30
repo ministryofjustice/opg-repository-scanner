@@ -11,6 +11,7 @@ export class Filesystem implements IValidateable {
     @jsonMember
     follow_symlinks: boolean = false
 
+
     constructor(directory?: string, follow_symlinks?: boolean){
         if (typeof directory !== 'undefined')
             this.directory = directory
