@@ -1,7 +1,8 @@
 import * as core from '@actions/core'
 import 'reflect-metadata';
 import { jsonObject, jsonMember} from 'typedjson';
-import { IValidateable } from '../../generics/interfaces'
+import { IValidateable } from '../../generics'
+
 
 @jsonObject
 export class Manifest implements IValidateable {
@@ -14,7 +15,6 @@ export class Manifest implements IValidateable {
     valid(): boolean{
         const valid_name = (this.name.length > 0)
         core.debug('valid_name: ' + valid_name)
-
         return (valid_name)
     }
 

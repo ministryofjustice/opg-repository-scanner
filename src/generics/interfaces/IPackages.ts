@@ -9,4 +9,6 @@ export interface IPackages<M,L>{
 
     // returns all packages found
     get(combine: boolean): Promise<IResult[]>
+    // used to combine manifest & lock files
+    combine(manifest:IResult[], lock:IResult[]): IResult[]
 }

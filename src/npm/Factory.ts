@@ -5,6 +5,8 @@ import {NpmPatterns} from './patterns'
 import {LockSelectorsArray, LockSelectorsRecursiveArray, ManifestSelectorsArray} from './selectors'
 
 export function PackageParser(
+    name = 'package',
+
     filesystem: Filesystem,
 
     manifest_name = 'package-json',
@@ -39,5 +41,5 @@ export function PackageParser(
     return new Packages<
         Specification<NpmManifestHandler, Result>,
         Specification<NpmLockHandler, Result>
-    >('package', manifestSpec, lockSpec)
+    >(name, manifestSpec, lockSpec)
 }

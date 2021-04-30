@@ -76,7 +76,7 @@ test('postive: test construction raw and reporting with a known & small file', a
 test('postive: test construction via factory with a known file without cleanup', async () => {
     const dir = sample_dir + "app/php/doctrine-instantiator/"
     const filesys = new Filesystem(dir)
-    let packages = ComposerParser(filesys)
+    let packages = ComposerParser('test', filesys)
 
     expect(packages).toBeInstanceOf(Packages)
     // dont de-deup
@@ -88,7 +88,7 @@ test('postive: test construction via factory with a known file without cleanup',
 test('postive: test construction via factory with a known file with cleanup', async () => {
     const dir = sample_dir + "app/php/doctrine-instantiator/"
     const filesys = new Filesystem(dir)
-    let packages = ComposerParser(filesys)
+    let packages = ComposerParser('test', filesys)
 
     expect(packages).toBeInstanceOf(Packages)
     const res = await packages.get()

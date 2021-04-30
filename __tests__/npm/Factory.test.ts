@@ -20,7 +20,7 @@ const sample_dir: string = './__samples__/'
 test('postive: test construction via factory with a known file without cleanup', async () => {
     const dir = sample_dir + "app/npm/simple/"
     const filesys = new Filesystem(dir)
-    let packages = PackageParser(filesys)
+    let packages = PackageParser('test', filesys)
 
     expect(packages).toBeInstanceOf(Packages)
     // dont de-deup
@@ -32,7 +32,7 @@ test('postive: test construction via factory with a known file without cleanup',
 test('postive: test construction via factory with a known file with cleanup', async () => {
     const dir = sample_dir + "app/npm/simple/"
     const filesys = new Filesystem(dir)
-    let packages = PackageParser(filesys)
+    let packages = PackageParser('test', filesys)
 
     expect(packages).toBeInstanceOf(Packages)
     const res = await packages.get()

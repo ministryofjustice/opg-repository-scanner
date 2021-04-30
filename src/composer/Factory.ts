@@ -5,6 +5,8 @@ import {ComposerPatterns} from './patterns'
 import {LockSelectorsArray, LockSelectorsRecursiveArray, ManifestSelectorsArray} from './selectors'
 
 export function ComposerParser(
+    name = 'composer',
+
     filesystem: Filesystem,
 
     manifest_name = 'composer-json',
@@ -42,5 +44,5 @@ export function ComposerParser(
     return new Packages<
         Specification<ComposerManifestHandler, Result>,
         Specification<ComposerLockHandler, Result>
-    >('composer', manifestSpec, lockSpec)
+    >(name, manifestSpec, lockSpec)
 }
