@@ -6,7 +6,8 @@ import * as path from 'path'
 import {SpecificationHandler,
         Specification,
         Result,
-        Packages
+        Packages,
+        IResult
 } from "../../../src/generics"
 import { ManifestSelectors, LockSelectors, LockSelectorsRecursive } from "../../../src/composer/selectors"
 import { Filesystem } from '../../../src/config'
@@ -62,5 +63,28 @@ test('postive: test construction forms a valid package when creating directly', 
 
     expect(packages.lock).toBeInstanceOf(Specification)
     expect(packages.lock?.name).toEqual(lName)
+
+})
+
+
+test('postive: combine data sets should return less numbers', async() => {
+    // slim packages setup so we can test .combine
+    const packages = new Packages<Specification<SpecificationHandler, Result>,
+                                  Specification<SpecificationHandler, Result> >(
+        'test-package',
+        new Specification<SpecificationHandler, Result>('', [])
+    )
+    const manifest:IResult[] = [
+        new Result('pkg1', '*')
+    ]
+    const lock:IResult[] = [
+        new Result('pkg1', '0.0.1'),
+        new Result('pkg2', '1'),
+        new Result('pkg3', '1'),
+    ]
+
+    const res = packages.combine(manifest, lock)
+    // pkg1 should be de-dupped
+    expect(res.length).toEqual(3)
 
 })
