@@ -17,10 +17,7 @@ export function PackageParser(
     lock_selectors: string[] = LockSelectorsArray,
 
     recursive_lock_selectors: string[] = LockSelectorsRecursiveArray
-): Packages<
-    Specification<NpmManifestHandler, Result>,
-    Specification<NpmLockHandler, Result>
-> {
+): Packages<Specification<NpmManifestHandler, Result>, Specification<NpmLockHandler, Result>> {
     //-- Create the specification handlers
     const manifestHandler = new NpmManifestHandler(
         filesystem,
