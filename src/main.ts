@@ -8,9 +8,10 @@ async function run(): Promise<void> {
     try {
         // -- Load configuration
         const configuration_file: string = './configuration.yml'
+        core.setOutput('configuration_file_used', configuration_file)
 
-        core.setOutput('file_loaded', configuration_file)
-        // const configuration: Config = await yaml_to_config(configuration_file)
+        const configuration: Config = await yaml_to_config(configuration_file)
+        core.setOutput('configuration_file_loaded', true)
 
         //core.debug('configuration file loaded: ' + configuration_file)
 
