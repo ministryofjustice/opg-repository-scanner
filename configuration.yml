@@ -9,6 +9,7 @@ manifests:
     uses: ComposerParser
   - name: package
     uses: PackageParser
-reports:
-  - location: 'scan-result'
-    as: 'json'
+artifact:
+  name: 'repository-scan-result'
+  as:
+    - 'json'

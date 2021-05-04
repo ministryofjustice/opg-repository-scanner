@@ -5,7 +5,7 @@ import {jsonObject, jsonMember, jsonArrayMember} from 'typedjson';
 import {IValidateable} from '../../generics/interfaces'
 import {Source} from './Source'
 import {Manifest} from './Manifest'
-import { Report } from './Report';
+import { Artifact } from './Artifact';
 
 @jsonObject
 export class Config implements IValidateable{
@@ -16,20 +16,18 @@ export class Config implements IValidateable{
     @jsonArrayMember(Manifest)
     manifests: Manifest[] = []
 
-    @jsonArrayMember(Report)
-    reports: Report[] = []
+    @jsonMember(Artifact)
+    artifact: Artifact = new Artifact
 
-    constructor(source?: Source, manifests?: Manifest[], reports?:Report[]){
+    constructor(source?: Source, manifests?: Manifest[], artifact?:Artifact){
         if (typeof source !== 'undefined')
             this.source = source
         if (typeof manifests !== 'undefined')
             this.manifests = manifests
 
         // give output a default entry
-        if (typeof reports !== 'undefined')
-            this.reports = reports
-        else
-            this.reports.push(new Report())
+        if (typeof artifact !== 'undefined') this.artifact = artifact
+
     }
 
     // validate the filesystem settings are correct
