@@ -26,14 +26,12 @@ async function run(): Promise<void> {
         const artifact_name = configuration.artifact?.name ?? ''
         const artifact_client = artifact.create()
 
-        if(files.length > 0 && artifact_name.length > 0) {
+        if (files.length > 0 && artifact_name.length > 0) {
             core.debug('Generating artefact: ' + artifact)
-            const response = await artifact_client.uploadArtifact(artifact_name, files, __dirname , {
+            const response = await artifact_client.uploadArtifact(artifact_name, files, __dirname, {
                 continueOnError: false
             })
-
         }
-
     } catch (error) {
         core.setFailed(error.message)
     }
