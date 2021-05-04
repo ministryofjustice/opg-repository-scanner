@@ -1,1 +1,1 @@
-export {Filesystem, Manifest, Config} from './classes'
+export {Source, Manifest, Config} from './classes'

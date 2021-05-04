@@ -5,7 +5,7 @@ import * as path from 'path'
 
 import { ComposerSpecificationHandler } from "../../../src/composer/classes"
 import { LockSelectorsRecursive, LockSelectors  } from "../../../src/composer/selectors"
-import { Filesystem } from '../../../src/config'
+import { Source } from '../../../src/config'
 
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
@@ -14,7 +14,7 @@ const sample_dir: string = './__samples__/'
 
 test('postive: the composer selector is sanitised correctly with simple layout', async () => {
     const handler = new ComposerSpecificationHandler(
-        new Filesystem(),
+        new Source(),
         "**/composer.json",
         ".require-dev"
     )
@@ -26,7 +26,7 @@ test('postive: the composer selector is sanitised correctly with simple layout',
 
 test('postive: the composer selector is sanitised correctly with more complex form', async () => {
     const handler = new ComposerSpecificationHandler(
-        new Filesystem(),
+        new Source(),
         "**/composer.json",
         ".require-dev.test.level-1"
     )
@@ -38,7 +38,7 @@ test('postive: the composer selector is sanitised correctly with more complex fo
 
 test('postive: the composer selector is sanitised correctly with array notation for lock', async () => {
     const handler = new ComposerSpecificationHandler(
-        new Filesystem(),
+        new Source(),
         "**/composer.json",
         LockSelectorsRecursive.PackageDevRequireDev
     )

@@ -10,7 +10,7 @@ import {
     PackageParser
 
 } from "../../src/npm"
-import { Filesystem } from '../../src/config'
+import { Source } from '../../src/config'
 
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
@@ -19,7 +19,7 @@ const sample_dir: string = './__samples__/'
 
 test('postive: test construction via factory with a known file without cleanup', async () => {
     const dir = sample_dir + "app/npm/simple/"
-    const filesys = new Filesystem(dir)
+    const filesys = new Source(dir)
     let packages = PackageParser('test', filesys)
 
     expect(packages).toBeInstanceOf(Packages)
@@ -31,7 +31,7 @@ test('postive: test construction via factory with a known file without cleanup',
 
 test('postive: test construction via factory with a known file with cleanup', async () => {
     const dir = sample_dir + "app/npm/simple/"
-    const filesys = new Filesystem(dir)
+    const filesys = new Source(dir)
     let packages = PackageParser('test', filesys)
 
     expect(packages).toBeInstanceOf(Packages)

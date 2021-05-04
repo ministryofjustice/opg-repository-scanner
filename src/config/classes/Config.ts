@@ -3,15 +3,15 @@ import 'reflect-metadata';
 import {jsonObject, jsonMember, jsonArrayMember} from 'typedjson';
 
 import {IValidateable} from '../../generics/interfaces'
-import {Filesystem} from './Filesystem'
+import {Source} from './Source'
 import {Manifest} from './Manifest'
 import { Output } from './Output';
 
 @jsonObject
 export class Config implements IValidateable{
 
-    @jsonMember(Filesystem, { name: 'source'} )
-    filesystem: Filesystem = new Filesystem()
+    @jsonMember(Source, { name: 'source'} )
+    filesystem: Source = new Source()
 
     @jsonArrayMember(Manifest)
     manifests: Manifest[] = []
@@ -19,7 +19,7 @@ export class Config implements IValidateable{
     @jsonArrayMember(Output, { name: 'reports'})
     output: Output[] = []
 
-    constructor(filesystem?: Filesystem, manifests?: Manifest[], output?:Output[]){
+    constructor(filesystem?: Source, manifests?: Manifest[], output?:Output[]){
         if (typeof filesystem !== 'undefined')
             this.filesystem = filesystem
         if (typeof manifests !== 'undefined')

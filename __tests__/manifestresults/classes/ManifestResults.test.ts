@@ -4,7 +4,7 @@ import * as cp from 'child_process'
 import 'reflect-metadata';
 import { TypedJSON } from 'typedjson';
 
-import { Config, Filesystem} from '../../../src/config'
+import { Config, Source} from '../../../src/config'
 import { ManifestResults } from "../../../src/manifestresults"
 import { Packages, Specification } from '../../../src/generics';
 import { ComposerSpecificationHandler } from '../../../src/composer';

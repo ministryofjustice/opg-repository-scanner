@@ -1,4 +1,4 @@
-import {Filesystem} from "../../config";
+import {Source} from "../../config";
 import {ISpecification} from "./ISpecification"
 import { IResult } from './IResult'
 

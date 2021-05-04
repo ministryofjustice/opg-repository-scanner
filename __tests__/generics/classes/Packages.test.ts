@@ -10,14 +10,14 @@ import {SpecificationHandler,
         IResult
 } from "../../../src/generics"
 import { ManifestSelectors, LockSelectors, LockSelectorsRecursive } from "../../../src/composer/selectors"
-import { Filesystem } from '../../../src/config'
+import { Source } from '../../../src/config'
 
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
 
 
 test('postive: test construction forms a valid package when creating directly', async () => {
-    const filesys = new Filesystem(sample_dir)
+    const filesys = new Source(sample_dir)
     // custom locations for the test
     const mFile:string = "app/php/laminas/composer.json"
     const mName:string = 'manifest-spec'

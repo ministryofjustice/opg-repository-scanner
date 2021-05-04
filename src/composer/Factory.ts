@@ -1,4 +1,4 @@
-import {Filesystem} from '../config'
+import {Source} from '../config'
 import {Packages, Specification, Result} from '../generics'
 import {ComposerLockHandler, ComposerManifestHandler} from './classes'
 import {ComposerPatterns} from './patterns'
@@ -7,7 +7,7 @@ import {LockSelectorsArray, LockSelectorsRecursiveArray, ManifestSelectorsArray}
 export function ComposerParser(
     name = 'composer',
 
-    filesystem: Filesystem,
+    filesystem: Source,
 
     manifest_name = 'composer-json',
     lock_name = 'composer-lock',

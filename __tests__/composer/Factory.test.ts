@@ -21,7 +21,7 @@ import {
     ComposerParser
 
 } from "../../src/composer"
-import { Filesystem } from '../../src/config'
+import { Source } from '../../src/config'
 
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
@@ -29,7 +29,7 @@ const sample_dir: string = './__samples__/'
 // test('test', async () => {})
 
 test('postive: test construction raw and reporting with a known & small file', async () => {
-    const filesys = new Filesystem(sample_dir)
+    const filesys = new Source(sample_dir)
     // custom locations for the test using known packages (and small numbers)
     const mFile:string = "app/php/doctrine-instantiator/composer.json"
     const mName:string = 'composer-manifest-spec'
@@ -75,7 +75,7 @@ test('postive: test construction raw and reporting with a known & small file', a
 
 test('postive: test construction via factory with a known file without cleanup', async () => {
     const dir = sample_dir + "app/php/doctrine-instantiator/"
-    const filesys = new Filesystem(dir)
+    const filesys = new Source(dir)
     let packages = ComposerParser('test', filesys)
 
     expect(packages).toBeInstanceOf(Packages)
@@ -87,7 +87,7 @@ test('postive: test construction via factory with a known file without cleanup',
 
 test('postive: test construction via factory with a known file with cleanup', async () => {
     const dir = sample_dir + "app/php/doctrine-instantiator/"
-    const filesys = new Filesystem(dir)
+    const filesys = new Source(dir)
     let packages = ComposerParser('test', filesys)
 
     expect(packages).toBeInstanceOf(Packages)

@@ -9,7 +9,7 @@ import {
     ManifestSelectors
 } from "../../../src/composer"
 import { Result } from '../../../src/generics'
-import { Filesystem } from '../../../src/config'
+import { Source } from '../../../src/config'
 
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
@@ -19,7 +19,7 @@ const sample_dir: string = './__samples__/'
 test('postive: test a composer manifest validates', async () => {
     const dir:string = sample_dir + 'app/php/laminas/'
     const pattern:string = '**/composer.json'
-    const filesys:Filesystem = new Filesystem(dir, false)
+    const filesys:Source = new Source(dir, false)
     const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectorsArray)
     expect(manifest.valid()).toBeTruthy()
 })
@@ -27,7 +27,7 @@ test('postive: test a composer manifest validates', async () => {
 test('negative: test a composer manifest fails', async () => {
     const dir:string = sample_dir + 'app/php/laminas/'
     const pattern:string = ''
-    const filesys:Filesystem = new Filesystem(dir, false)
+    const filesys:Source = new Source(dir, false)
     const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectorsArray)
     expect(manifest.valid()).toBeFalsy()
 })
@@ -35,7 +35,7 @@ test('negative: test a composer manifest fails', async () => {
 test('postive: test a composer manifest handler finds correct files from known dir', async () => {
     const dir:string = sample_dir + 'app/php/laminas/'
     const pattern:string = '**/composer.json'
-    const filesys:Filesystem = new Filesystem(dir, false)
+    const filesys:Source = new Source(dir, false)
     const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectorsArray)
     const files = await manifest.files()
     expect(files.length).toEqual(1)
@@ -44,7 +44,7 @@ test('postive: test a composer manifest handler finds correct files from known d
 test('negative: test a composer manifest handler finds no files in missing dir', async () => {
     const dir:string = sample_dir + 'app/php/laminas-not-there/'
     const pattern:string = 'composer.json'
-    const filesys:Filesystem = new Filesystem(dir, false)
+    const filesys:Source = new Source(dir, false)
     const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectorsArray)
     const files = await manifest.files()
     expect(files.length).toEqual(0)
@@ -54,7 +54,7 @@ test('postive: test a composer manifest handler finds packages from file', async
     const dir:string = sample_dir + 'app/php/laminas/'
     const pattern:string = 'composer.json'
     const file:string = dir + pattern
-    const filesys:Filesystem = new Filesystem(dir, false)
+    const filesys:Source = new Source(dir, false)
     const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectors.Main)
 
     await manifest.process()
@@ -71,7 +71,7 @@ test('postive: test a composer manifest handler finds packages from file with mu
     const dir:string = sample_dir + 'app/php/laminas/'
     const pattern:string = 'composer.json'
     const file:string = dir + pattern
-    const filesys:Filesystem = new Filesystem(dir, false)
+    const filesys:Source = new Source(dir, false)
     const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectorsArray)
 
     await manifest.process()

@@ -4,7 +4,7 @@ import { jsonObject, jsonMember, jsonArrayMember} from 'typedjson';
 import { IValidateable } from '../../generics/interfaces'
 
 @jsonObject
-export class Filesystem implements IValidateable {
+export class Source implements IValidateable {
     @jsonMember
     directory: string = ''
 

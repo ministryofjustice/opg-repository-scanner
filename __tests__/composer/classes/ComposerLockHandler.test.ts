@@ -10,7 +10,7 @@ import {
     LockSelectorsArray
 } from "../../../src/composer"
 import { Result } from '../../../src/generics'
-import { Filesystem } from '../../../src/config'
+import { Source } from '../../../src/config'
 
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
@@ -21,7 +21,7 @@ test('postive: test a composer lock handler finds all packages from file without
     const dir:string = sample_dir + 'app/php/doctrine-instantiator/'
     const pattern:string = 'composer.lock'
     const file:string = dir + pattern
-    const filesys:Filesystem = new Filesystem(dir, false)
+    const filesys:Source = new Source(dir, false)
     const lock = new ComposerLockHandler(filesys, pattern, LockSelectorsArray)
 
     await lock.process()
@@ -39,7 +39,7 @@ test('postive: test a composer lock handler finds all packages from file with re
     const dir:string = sample_dir + 'app/php/doctrine-instantiator/'
     const pattern:string = 'composer.lock'
     const file:string = dir + pattern
-    const filesys:Filesystem = new Filesystem(dir, false)
+    const filesys:Source = new Source(dir, false)
     const lock = new ComposerLockHandler(filesys, pattern, LockSelectorsArray, LockSelectorsRecursiveArray)
 
     await lock.process()

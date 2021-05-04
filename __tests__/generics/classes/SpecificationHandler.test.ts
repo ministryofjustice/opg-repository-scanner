@@ -5,7 +5,7 @@ import * as path from 'path'
 
 import { SpecificationHandler } from "../../../src/generics/classes/SpecificationHandler"
 import { Result } from "../../../src/generics/classes/Result"
-import { Filesystem } from '../../../src/config'
+import { Source } from '../../../src/config'
 
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
@@ -23,7 +23,7 @@ test('positve: test specification handler based on composer', async () => {
         return new Promise<Result[]>( resolve => { resolve([new Result('test')] ) } )
     }
     const handler = new SpecificationHandler(
-        new Filesystem(),
+        new Source(),
         "**/composer.json",
         '.require'
     )
@@ -32,7 +32,7 @@ test('positve: test specification handler based on composer', async () => {
 })
 
 test('negative: test specification with invalid name should not be valid', async () => {
-    const handler = new SpecificationHandler(new Filesystem(), '')
+    const handler = new SpecificationHandler(new Source(), '')
     expect(handler.valid()).toBeFalsy()
 })
 
@@ -43,7 +43,7 @@ test('positve: test file look up', async () => {
         return new Promise<Result[]>( resolve => { resolve([new Result('test')] ) } )
     }
     const handler = new SpecificationHandler(
-        new Filesystem(sample_dir),
+        new Source(sample_dir),
         "app/php/laminas/composer.json",
         '.require'
     )

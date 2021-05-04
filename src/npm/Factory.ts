@@ -1,4 +1,4 @@
-import {Filesystem} from '../config'
+import {Source} from '../config'
 import {Packages, Specification, Result} from '../generics'
 import {NpmLockHandler, NpmManifestHandler} from './classes'
 import {NpmPatterns} from './patterns'
@@ -7,7 +7,7 @@ import {LockSelectorsArray, LockSelectorsRecursiveArray, ManifestSelectorsArray}
 export function PackageParser(
     name = 'package',
 
-    filesystem: Filesystem,
+    filesystem: Source,
 
     manifest_name = 'package-json',
     lock_name = 'package-lock',

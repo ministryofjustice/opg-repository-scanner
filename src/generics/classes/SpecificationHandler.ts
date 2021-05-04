@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import * as glob from '@actions/glob'
-import { Filesystem } from '../../config';
+import { Source } from '../../config';
 import { ISpecificationHandler, IValidateable, IResult} from '../interfaces'
 // SpecificationHandler provide method to find files of its type and
 // uses a function (.processor) to parse the the content of the files it
@@ -11,13 +11,13 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
     protected _results:IResult[] = []
 
     type:string = ''
-    filesystem:Filesystem = new Filesystem()
+    filesystem:Source = new Source()
     filepattern: Required<string> = ''
     selector: Required<string[]> = []
     recursive?: string[]
 
     constructor(
-        filesystem?:Filesystem,
+        filesystem?:Source,
         filepattern?:string,
         selector?:string[]|string,
         recursive?: string[]
