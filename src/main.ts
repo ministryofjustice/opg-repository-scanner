@@ -15,7 +15,9 @@ async function run(): Promise<void> {
 
         //core.debug('configuration file loaded: ' + configuration_file)
 
-        // const handler = new ManifestResults(configuration)
+        const handler = new ManifestResults(configuration)
+        core.setOutput('handler_loaded', true)
+
         // await handler.process()
         // await handler.save()
     } catch (error) {
