@@ -17,7 +17,7 @@ export class ComposerManifestHandler extends ComposerSpecificationHandler
             return new Result(
                 map.get('name'),
                 map.get('version'),
-                source,
+                source.replace( process.cwd(), '.') ,
                 this.type,
                 selector
             )
