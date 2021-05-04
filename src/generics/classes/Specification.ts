@@ -1,6 +1,5 @@
-import { Filesystem } from "../../config";
+import * as core from '@actions/core'
 import { IResult, ISpecification, ISpecificationHandler } from "../interfaces";
-import * as fs from 'fs'
 
 // Specification handles parsing of a manifest / lock file
 // Uses a SpecificationHandler to get the packages out of the manifest / lock
@@ -30,15 +29,20 @@ export class Specification<T extends ISpecificationHandler, R extends IResult>
 
     // parse the specification of this manifest
     async parse(): Promise<void> {
+        core.debug(`[${this.constructor.name}](parse) >>>`)
         // go over each handler
         // find the files that match
         // process them
+        core.debug(`[${this.constructor.name}](parse) interating over handlers`)
         for (const handler of this.handlers() ) {
+            core.debug(`[${this.constructor.name}](parse) handler patter: ${handler.filepattern}`)
             await handler.process()
             const handler_results = await handler.results() as R[]
             this._results.push(...handler_results)
 
         }
+
+        core.debug(`[${this.constructor.name}](parse) <<<`)
         return new Promise< void >( (resolve) => {
             resolve()
         })

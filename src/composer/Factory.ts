@@ -1,3 +1,5 @@
+import * as core from '@actions/core'
+
 import {Filesystem} from '../config'
 import {Packages, Specification, Result} from '../generics'
 import {ComposerLockHandler, ComposerManifestHandler} from './classes'
@@ -23,6 +25,8 @@ export function ComposerParser(
     Specification<ComposerManifestHandler, Result>,
     Specification<ComposerLockHandler, Result>
 > {
+    core.debug(`[ComposerParser] name: ${name}`)
+
     //-- Create the specification handlers
     const manifestHandler = new ComposerManifestHandler(
         filesystem,

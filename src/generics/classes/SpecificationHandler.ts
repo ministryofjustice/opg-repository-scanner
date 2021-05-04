@@ -36,9 +36,14 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
 
     // return all the files that this spec matches
     async files(): Promise<string[]> {
+        core.debug(`[${this.constructor.name}](files) >>>`)
         const pattern = this.filesystem.directory + this.filepattern
         const glober = await glob.create(pattern, {followSymbolicLinks: this.filesystem.follow_symlinks})
         const files = await glober.glob()
+
+        core.debug(`[${this.constructor.name}](files) pattern: ${pattern}`)
+        core.debug(`[${this.constructor.name}](files) files: ${files}`)
+        core.debug(`[${this.constructor.name}](files) <<<`)
         return new Promise<string[]>( (resolve) => {
             resolve(files)
         })
@@ -46,11 +51,13 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
 
     // check if this is valid class
     valid(): boolean {
+        core.debug(`[${this.constructor.name}](valid) >>>`)
         let valid_filepattern = (this.filepattern.length > 0)
         let valid_selector = (this.selector.length > 0)
 
-        core.debug('valid_filepattern: ' + valid_filepattern)
-        core.debug('valid_selector: ' + valid_selector)
+        core.debug(`[${this.constructor.name}](valid) valid_filepattern: ${valid_filepattern}`)
+        core.debug(`[${this.constructor.name}](valid) valid_selector: ${valid_selector}`)
+        core.debug(`[${this.constructor.name}](valid) <<<`)
 
         return (valid_filepattern && valid_selector)
     }

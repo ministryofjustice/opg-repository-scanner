@@ -35,7 +35,6 @@ export class Config implements IValidateable{
     // validate the filesystem settings are correct
     valid_filesystem(): boolean {
         let valid_filesystem: boolean = this.filesystem.valid()
-        core.debug('valid_filesystem: ' + valid_filesystem)
         return valid_filesystem
     }
 
@@ -45,8 +44,8 @@ export class Config implements IValidateable{
         for (let m of this.manifests) {
             if (!m.valid()) valid_manifests = false
         }
-        core.debug('valid_length: ' + valid_length)
-        core.debug('valid_manifests: ' + valid_manifests)
+        core.debug(`[${this.constructor.name}](valid_manifests) valid_length: ${valid_length}`)
+        core.debug(`[${this.constructor.name}](valid_manifests) valid_length: ${valid_manifests}`)
         return (valid_length && valid_manifests)
     }
 
@@ -55,8 +54,9 @@ export class Config implements IValidateable{
         let valid_filesystem = this.valid_filesystem()
         let valid_manifests = this.valid_manifests()
 
-        core.debug('valid_filesystem : ' + valid_filesystem)
-        core.debug('valid_manifests : ' + valid_manifests)
+        core.debug(`[${this.constructor.name}](valid) valid_filesystem: ${valid_filesystem}`)
+        core.debug(`[${this.constructor.name}](valid) valid_manifests: ${valid_manifests}`)
+
         return ( valid_filesystem && valid_manifests )
     }
 

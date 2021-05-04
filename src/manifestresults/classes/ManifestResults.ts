@@ -1,6 +1,5 @@
 import * as core from '@actions/core'
 
-
 import { Config, Manifest } from "../../config";
 import { Output } from '../../config/classes';
 import { IResult, IPackages, ISpecification, ISpecificationHandler } from '../../generics';
@@ -26,6 +25,7 @@ export class ManifestResults implements IManifestResults{
         IPackages<ISpecification<ISpecificationHandler, IResult>,
         ISpecification<ISpecificationHandler, IResult>> {
         const f = AvailableManifestParsers.get(manifest.uses) as Function
+        core.debug('[ManifestResult](instance) function name : ' + f.name)
         // expand on this later to allow a .with type overwrite of this properties
         return f(
             manifest.name,
@@ -39,40 +39,55 @@ export class ManifestResults implements IManifestResults{
     // run_parser creates an instance and gets the resulting data
     //
     async run_parser(manifest:Manifest): Promise<IResult[]> {
+        core.debug(`[${this.constructor.name}](run_parser) >>>`)
+        core.debug(`[${this.constructor.name}](run_parser) manifest: ${manifest.name}`)
         let results:IResult[] = []
         // check if this is available
         const available: boolean = AvailableManifestParsers.has(manifest.uses)
         const valid : boolean = manifest.valid()
 
+        core.debug(`[${this.constructor.name}](run_parser) available: ${available}`)
+        core.debug(`[${this.constructor.name}](run_parser) valid: ${valid}`)
+
         if(valid && available){
             const instance = this.instance(manifest)
             results = await instance.get(true)
+            core.debug(`[${this.constructor.name}](run_parser) got instance results`)
         }
 
-        core.debug('manifest available: ' + available)
-        core.debug('manifest valid: ' + valid)
+        core.debug(`[${this.constructor.name}](run_parser) <<<`)
 
         return new Promise<IResult[]>( resolve => { resolve(results) } )
     }
 
     // process all the manifests from the config
     async manifests(): Promise<IResult[]> {
+        core.debug(`[${this.constructor.name}](manifests) >>>`)
+
         let results:IResult[] = []
-        // loop over each item in the config
         const manifest_parsers:Manifest[] = this.configuration?.manifests ?? []
+
+        core.debug(`[${this.constructor.name}](manifests) interate over configuration.manifests`)
         for(const parser of manifest_parsers) {
-            core.debug('manifest parser: ' + parser.name)
+            core.debug(`[${this.constructor.name}](manifests) parser name: ${parser.name}`)
+
             const found = await this.run_parser(parser)
             // if we found data, append to the overall results
             if (found && found.length) results.push(...found)
         }
+
+        core.debug(`[${this.constructor.name}](manifests) <<<`)
         return new Promise<IResult[]>( resolve => { resolve(results) } )
     }
 
 
     async process(): Promise<void> {
+        core.debug(`[${this.constructor.name}](process) >>>`)
+
         const manifest_results:IResult[] = await this.manifests()
         this.output.set('packages', manifest_results)
+
+        core.debug(`[${this.constructor.name}](process) <<<`)
 
         return new Promise<void>( resolve => { resolve() } )
 
