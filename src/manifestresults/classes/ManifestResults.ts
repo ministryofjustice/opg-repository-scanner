@@ -90,8 +90,8 @@ export class ManifestResults implements IManifestResults{
             const as_exists = AvailableOutputers.has(as_name)
             if(as_exists) {
                 const out = AvailableOutputers.get(as_name) as IOutputer
-                out.write(filename, this.output )
-                saved.push(filename)
+                const writtern_file = out.write(filename, this.output )
+                saved.push(writtern_file)
             }
         }
 
