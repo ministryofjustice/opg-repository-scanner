@@ -13,27 +13,17 @@ export class ComposerSpecificationHandler extends SpecificationHandler
     // process each selector thats been set
     per_selector(selector:string): string {
         const first = selector.charAt(0)
-        const explode = selector.split(".").filter(i => i)
+        const explode = selector.split(".")
 
         selector = explode.map(function(val, i) {
             const containsQuote = val.indexOf('"') >= 0
             const containsHyphen = val.indexOf('-') >= 0
-            const containsArray = val.indexOf('[') >= 0
 
-            if (containsHyphen && containsArray && !containsQuote) {
-                const trim = val.replace('[', '').replace(']', '')
-                val = `"${trim}"[]`
-            } else if (containsHyphen && !containsQuote) {
-                val = `"${val}"`
-            }
+            if (containsHyphen && !containsQuote) val = `"${val}"`
 
-            if (first === '[' && i === 0) return val
-            return `.${val}`
+            return `${val}`
 
-        }).join('')
-
-        // ensure its an array selector
-        if (first !== '[') selector = `[${selector}]`
+        }).join('.')
         return selector
     }
 

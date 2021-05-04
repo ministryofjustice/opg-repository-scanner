@@ -30,6 +30,7 @@ test('postive: test a composer lock handler finds all packages from file without
     // check type
     const first = results.pop()
     expect(first).toBeInstanceOf(Result)
+    expect(first?.name).toEqual('doctrine/instantiator')
     expect(first?.type).toEqual('composer-lock')
 })
 
@@ -44,5 +45,7 @@ test('postive: test a composer lock handler finds all packages from file with re
     await lock.process()
     const results = await lock.results()
     expect(results.length).toEqual(9)
+
+    console.log(results)
 
 })

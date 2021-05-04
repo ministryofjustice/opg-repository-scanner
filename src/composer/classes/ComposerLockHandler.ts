@@ -1,5 +1,6 @@
 import * as jq from 'node-jq'
 import * as fs from 'fs'
+import * as core from '@actions/core'
 
 import { IResult, ISpecificationHandler, IValidateable } from "../../generics";
 import { Result } from "../../generics";
@@ -15,15 +16,16 @@ export class ComposerLockHandler extends ComposerManifestHandler
     // - put in to a map for better re-use with the lock files
     protected iterate_results(rows:object[], source:string, selector:string): IResult[] {
         let results: IResult[] = []
+        core.debug(`[${this.constructor.name}](iterate_results) >>>`)
+
         for (const row of rows) {
-            // subtle difference from manifest here - the lock file
-            // will return an object as its item, so directly map
-            for( const [key, item] of Object.entries(row)) {
-                const map = new Map<string, any>( Object.entries(item) )
-                const res = this.result(map, source, selector)
-                if (res !== false) results.push( res as IResult )
-            }
+            const map = new Map<string, any>(Object.entries(row))
+            const res = this.result(map, source, selector)
+            if (res !== false) results.push( res as IResult )
         }
+
+        core.debug(`[${this.constructor.name}](iterate_results) results: ${results.length}`)
+        core.debug(`[${this.constructor.name}](iterate_results) <<<`)
         return results
     }
 

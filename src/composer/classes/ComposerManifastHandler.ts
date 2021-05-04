@@ -1,4 +1,5 @@
 import * as jq from 'node-jq'
+import * as JSPath from 'jspath'
 import * as fs from 'fs'
 import * as core from '@actions/core'
 
@@ -33,12 +34,11 @@ export class ComposerManifestHandler extends ComposerSpecificationHandler
         core.debug(`[${this.constructor.name}](matches_selector) selector: ${selector}`)
 
         if(content !== null && content.length > 0 && selector.length > 0) {
-            core.debug(`[${this.constructor.name}](matches_selector) jq running`)
-
-            results = await jq.run(selector, content, { output: 'json', input: 'string' }) as object[]
-
+            core.debug(`[${this.constructor.name}](matches_selector) jspath running`)
+            results = JSPath.apply(selector, JSON.parse(content))
 
         }
+        core.debug(`[${this.constructor.name}](matches_selector) jspath results length ${results.length}`)
         core.debug(`[${this.constructor.name}](matches_selector) <<<`)
         return new Promise<object[]>(resolve => { resolve(results) } )
     }
@@ -67,18 +67,22 @@ export class ComposerManifestHandler extends ComposerSpecificationHandler
         let results: IResult[] = []
         core.debug(`[${this.constructor.name}](process_file_and_selectors) iterating over selectors`)
         for(const selector of selectors) {
+            core.debug(`[${this.constructor.name}](process_file_and_selectors) ->`)
             core.debug(`[${this.constructor.name}](process_file_and_selectors) selector: ${selector}`)
-            const content = fs.readFileSync(file, {encoding: 'utf8', flag: 'r+'}) as string
+            const content:string = fs.readFileSync(file, {encoding: 'utf8', flag: 'r+'}) as string
 
-            const matched = await this.matches_selector(content, selector)
-            core.debug(`[${this.constructor.name}](process_file_and_selectors) matched: ${matched}`)
+            const matched:object[] = await this.matches_selector(content, selector)
+            core.debug(`[${this.constructor.name}](process_file_and_selectors) matched: ${matched.length}`)
 
             const filtered = matched.filter( (i) => (i !== null && i !== undefined) )
+            core.debug(`[${this.constructor.name}](process_file_and_selectors) filtered: ${filtered.length}`)
 
             if (filtered !== null && filtered.length > 0) {
                 const iterated = this.iterate_results(filtered, file, selector)
+                core.debug(`[${this.constructor.name}](process_file_and_selectors) iterated: ${iterated.length}`)
                 results.push(...iterated)
             }
+            core.debug(`[${this.constructor.name}](process_file_and_selectors) <-`)
         }
         core.debug(`[${this.constructor.name}](process_file_and_selectors) <<<`)
         return new Promise<IResult[]>( resolve => {resolve(results) } )
@@ -107,6 +111,7 @@ export class ComposerManifestHandler extends ComposerSpecificationHandler
         const files:string[] = await this.files()
         const selectors:string[] = this.selector
         const primary:IResult[] = await this.process_files(files, selectors)
+        core.debug(`[${this.constructor.name}](process) primary: ${primary.length}`)
         this._results.push(...primary)
 
         core.debug(`[${this.constructor.name}](process) <<<`)

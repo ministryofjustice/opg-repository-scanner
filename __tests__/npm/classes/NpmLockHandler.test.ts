@@ -34,6 +34,8 @@ test('postive: test a npm lock parsing on a nuxt & vue combo', async () => {
     await lock.process()
     let res = await lock.results()
 
-    expect(res.length).toBeGreaterThan(10)
+    expect(res.length).toBeGreaterThan(880)
+
+
 
 })
