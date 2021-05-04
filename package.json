@@ -22,6 +22,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@actions/artifact": "^0.5.1",
     "@actions/core": "^1.2.6",
     "@actions/glob": "^0.1.1",
     "@types/jspath": "^0.4.0",
