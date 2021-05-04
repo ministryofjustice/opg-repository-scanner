@@ -14,7 +14,7 @@ const sample_dir: string = './__samples__/'
 
 test('postive: test instance creation from configuration', async () => {
     const configObj = {
-        filesystem: {
+        source: {
             directory: sample_dir,
             follow_symlinks: true
         },
@@ -38,7 +38,7 @@ test('postive: test instance creation from configuration', async () => {
 
 test('postive: test finding a composer set of packages correctly', async () => {
     const configObj = {
-        filesystem: {
+        source: {
             directory: sample_dir + 'app/php/doctrine-instantiator',
             follow_symlinks: false
         },

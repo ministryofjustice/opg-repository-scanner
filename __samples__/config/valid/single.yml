@@ -1,4 +1,4 @@
-filesystem:
+source:
   directory: './'
   follow_symlinks: false
 

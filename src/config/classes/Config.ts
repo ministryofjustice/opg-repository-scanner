@@ -10,7 +10,7 @@ import { Output } from './Output';
 @jsonObject
 export class Config implements IValidateable{
 
-    @jsonMember(Filesystem)
+    @jsonMember(Filesystem, { name: 'source'} )
     filesystem: Filesystem = new Filesystem()
 
     @jsonArrayMember(Manifest)

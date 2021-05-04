@@ -9,7 +9,7 @@ const sample_dir: string = './__samples__/'
 test('test a working config object parsing', async () => {
     // test package config
     const configObj = {
-        filesystem: {
+        source: {
             directory: sample_dir,
             follow_symlinks: true
         },
