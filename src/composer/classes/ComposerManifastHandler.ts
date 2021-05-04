@@ -1,4 +1,3 @@
-import * as jq from 'node-jq'
 import * as JSPath from 'jspath'
 import * as fs from 'fs'
 import * as core from '@actions/core'

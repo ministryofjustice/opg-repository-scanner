@@ -1,6 +1,3 @@
-import * as jq from 'node-jq'
-import * as fs from 'fs'
-
 import { IResult, ISpecificationHandler, IValidateable } from "../../generics";
 import { ComposerLockHandler } from '../../composer';
 
