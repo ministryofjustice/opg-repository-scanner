@@ -46,6 +46,6 @@ test('postive: test a composer lock handler finds all packages from file with re
     const results = await lock.results()
     expect(results.length).toEqual(9)
 
-    console.log(results)
+
 
 })

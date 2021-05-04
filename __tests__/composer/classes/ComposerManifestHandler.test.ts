@@ -56,7 +56,7 @@ test('postive: test a composer manifest handler finds packages from file', async
     const pattern:string = 'composer.json'
     const file:string = dir + pattern
     const filesys:Filesystem = new Filesystem(dir, false)
-    const manifest = new ComposerManifestHandler(filesys, pattern, [ManifestSelectors.Main])
+    const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectors.Main)
 
     await manifest.process()
     const results = await manifest.results()
