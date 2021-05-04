@@ -11,9 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: |
+      - name: npm run all
+        run: |
           npm install
           npm run all
           ls -larth
           ls -larth ./dist
-      - uses: ./
+      - name: Run self
+        uses: ./
