@@ -80,9 +80,9 @@ export class ManifestResults implements IManifestResults{
 
 
     // use the output configuration data to save the result to a file
-    async save(): Promise<void> {
+    async save(): Promise<string[]> {
+        let saved:string[] = []
         const outputters = this.configuration?.output as Output[]
-        console.log('out---->', outputters)
         for(const output of outputters) {
             const filename = output.location ?? 'scan-result'
             const as_name = output.as ?? 'json'
@@ -91,11 +91,12 @@ export class ManifestResults implements IManifestResults{
             if(as_exists) {
                 const out = AvailableOutputers.get(as_name) as IOutputer
                 out.write(filename, this.output )
+                saved.push(filename)
             }
         }
 
 
-        return new Promise<void>( resolve => { resolve() } )
+        return new Promise<string[]>( resolve => { resolve(saved) } )
     }
 
 }

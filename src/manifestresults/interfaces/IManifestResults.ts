@@ -21,6 +21,6 @@ export interface IManifestResults{
     manifests(): Promise<IResult[]>
     // top level process that runs all tasks
     process(): Promise<void>
-    // save the reports to a file
-    save(): Promise<void>
+    // save the reports to a file - returns filenames saved to
+    save(): Promise<string[]>
 }
