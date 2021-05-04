@@ -7,16 +7,16 @@ import {ManifestResults} from './manifestresults'
 async function run(): Promise<void> {
     try {
         // -- Load configuration
-        const configuration_file: string =
-            core.getInput('configuration_file') ?? './configuration.yml'
+        const configuration_file: string = './configuration.yml'
 
-        const configuration: Config = await yaml_to_config(configuration_file)
+        core.setOutput('file_loaded', configuration_file)
+        // const configuration: Config = await yaml_to_config(configuration_file)
 
-        core.debug('configuration file loaded: ' + configuration_file)
+        //core.debug('configuration file loaded: ' + configuration_file)
 
-        const handler = new ManifestResults(configuration)
-        await handler.process()
-        await handler.save()
+        // const handler = new ManifestResults(configuration)
+        // await handler.process()
+        // await handler.save()
     } catch (error) {
         core.setFailed(error.message)
     }
