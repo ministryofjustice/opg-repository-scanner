@@ -16,7 +16,7 @@ export class Config implements IValidateable{
     @jsonArrayMember(Manifest)
     manifests: Manifest[] = []
 
-    @jsonArrayMember(Output)
+    @jsonArrayMember(Output, { name: 'reports'})
     output: Output[] = []
 
     constructor(filesystem?: Filesystem, manifests?: Manifest[], output?:Output[]){

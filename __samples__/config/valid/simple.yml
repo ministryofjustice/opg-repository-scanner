@@ -4,6 +4,6 @@ source:
 manifests:
   - name: composer
     uses: ComposerParser
-output:
+reports:
   - location: 'scan-result'
     as: 'json'

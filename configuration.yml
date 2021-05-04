@@ -9,6 +9,6 @@ manifests:
     uses: ComposerParser
   - name: package
     uses: PackageParser
-output:
+reports:
   - location: 'scan-result'
     as: 'json'
