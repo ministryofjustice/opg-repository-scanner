@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 
 import { Config, Manifest } from "../../config";
-import { Output } from '../../config/classes';
+import { Report } from '../../config/classes';
 import { IResult, IPackages, ISpecification, ISpecificationHandler } from '../../generics';
 import { AvailableOutputers, IOutputer } from '../../outputer';
 import { Outputer } from '../../outputer/classes/Outputer';
@@ -82,10 +82,10 @@ export class ManifestResults implements IManifestResults{
     // use the output configuration data to save the result to a file
     async save(): Promise<string[]> {
         let saved:string[] = []
-        const outputters = this.configuration?.output as Output[]
-        for(const output of outputters) {
-            const filename = output.location ?? 'scan-result'
-            const as_name = output.as ?? 'json'
+        const reports = this.configuration?.reports as Report[]
+        for(const report of reports) {
+            const filename = report.location ?? 'scan-result'
+            const as_name = report.as ?? 'json'
             const as_exists = AvailableOutputers.has(as_name)
 
             if(as_exists) {

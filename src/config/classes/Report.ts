@@ -4,7 +4,7 @@ import { jsonObject, jsonMember} from 'typedjson';
 import { IValidateable } from '../../generics/interfaces'
 
 @jsonObject
-export class Output implements IValidateable {
+export class Report implements IValidateable {
     @jsonMember
     location: string = 'scan-result'
 

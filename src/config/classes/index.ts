@@ -1,4 +1,4 @@
 export { Source } from './Source'
 export { Manifest } from './Manifest';
-export { Output} from './Output'
+export { Report} from './Report'
 export { Config } from './Config';
