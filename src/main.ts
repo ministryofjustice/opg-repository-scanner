@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import {Config} from './config'
 import {yaml_to_config} from './yaml'
+import {ManifestResults} from './manifestresults'
 // import * as glob from '@actions/glob'
 
 async function run(): Promise<void> {
@@ -8,19 +9,14 @@ async function run(): Promise<void> {
         // -- Load configuration
         const configuration_file: string =
             core.getInput('configuration_file') ?? './configuration.yml'
+
         const configuration: Config = await yaml_to_config(configuration_file)
 
         core.debug('configuration file loaded: ' + configuration_file)
 
-        // get all package files
-
-        console.debug(configuration)
-        // const ms: string = core.getInput('milliseconds')
-        // core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-        // core.debug(new Date().toTimeString())
-        // await wait(parseInt(ms, 10))
-        // core.debug(new Date().toTimeString())
-        // core.setOutput('time', new Date().toTimeString())
+        const handler = new ManifestResults(configuration)
+        await handler.process()
+        await handler.save()
     } catch (error) {
         core.setFailed(error.message)
     }
