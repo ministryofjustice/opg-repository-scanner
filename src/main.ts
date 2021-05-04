@@ -28,7 +28,9 @@ async function run(): Promise<void> {
 
         if (files.length > 0 && artifact_name.length > 0) {
             core.debug('Generating artefact: ' + artifact)
-            const response = await artifact_client.uploadArtifact(artifact_name, files, __dirname, {
+            // running directory is ./dist, but reports are saved to root of repo
+            const dir = __dirname + '/../'
+            const response = await artifact_client.uploadArtifact(artifact_name, files, dir, {
                 continueOnError: false
             })
         }
