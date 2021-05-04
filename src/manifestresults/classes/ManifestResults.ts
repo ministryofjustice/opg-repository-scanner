@@ -83,12 +83,11 @@ export class ManifestResults implements IManifestResults{
     async save(): Promise<string[]> {
         let saved:string[] = []
         const report = this.configuration?.artifact as Artifact
-        console.log("==> ", report, report.as)
+        const now = (new Date()).toISOString().slice(0, 19).replace(/:/g, '-')
+
         for(const as_name of report.as) {
-
-            const filename = report.name ?? 'scan-result'
+            const filename = `${report.name}-${now}`
             const as_exists = AvailableOutputers.has(as_name)
-
             if(as_exists) {
                 const out = AvailableOutputers.get(as_name) as IOutputer
                 out.write(filename, this.output )

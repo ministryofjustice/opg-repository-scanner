@@ -32,7 +32,7 @@ export class Config implements IValidateable{
 
     // validate the filesystem settings are correct
     valid_source(): boolean {
-        let valid: boolean = this.source.valid()
+        const valid: boolean = this.source.valid()
         return valid
     }
 
