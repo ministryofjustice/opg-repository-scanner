@@ -16,7 +16,6 @@ export class ComposerLockHandler extends ComposerManifestHandler
     // - put in to a map for better re-use with the lock files
     protected iterate_results(rows:object[], source:string, selector:string): IResult[] {
         let results: IResult[] = []
-        core.debug(`[${this.constructor.name}](iterate_results) >>>`)
 
         for (const row of rows) {
             const map = new Map<string, any>(Object.entries(row))
@@ -25,7 +24,6 @@ export class ComposerLockHandler extends ComposerManifestHandler
         }
 
         core.debug(`[${this.constructor.name}](iterate_results) results: ${results.length}`)
-        core.debug(`[${this.constructor.name}](iterate_results) <<<`)
         return results
     }
 

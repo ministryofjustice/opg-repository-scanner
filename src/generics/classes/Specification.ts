@@ -29,20 +29,16 @@ export class Specification<T extends ISpecificationHandler, R extends IResult>
 
     // parse the specification of this manifest
     async parse(): Promise<void> {
-        core.debug(`[${this.constructor.name}](parse) >>>`)
         // go over each handler
         // find the files that match
         // process them
-        core.debug(`[${this.constructor.name}](parse) interating over handlers`)
         for (const handler of this.handlers() ) {
-            core.debug(`[${this.constructor.name}](parse) handler patter: ${handler.filepattern}`)
             await handler.process()
             const handler_results = await handler.results() as R[]
             this._results.push(...handler_results)
 
         }
 
-        core.debug(`[${this.constructor.name}](parse) <<<`)
         return new Promise< void >( (resolve) => {
             resolve()
         })

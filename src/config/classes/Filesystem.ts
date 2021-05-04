@@ -20,11 +20,8 @@ export class Filesystem implements IValidateable {
     }
 
     valid(): boolean{
-        core.debug(`[${this.constructor.name}](valid) >>>`)
         const valid_directory = (this.directory.length > 0)
-
         core.debug(`[${this.constructor.name}](valid) valid_directory: ${valid_directory}`)
-        core.debug(`[${this.constructor.name}](valid) <<<`)
         return valid_directory
     }
 

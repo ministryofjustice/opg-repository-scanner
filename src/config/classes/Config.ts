@@ -44,8 +44,7 @@ export class Config implements IValidateable{
         for (let m of this.manifests) {
             if (!m.valid()) valid_manifests = false
         }
-        core.debug(`[${this.constructor.name}](valid_manifests) valid_length: ${valid_length}`)
-        core.debug(`[${this.constructor.name}](valid_manifests) valid_length: ${valid_manifests}`)
+
         return (valid_length && valid_manifests)
     }
 

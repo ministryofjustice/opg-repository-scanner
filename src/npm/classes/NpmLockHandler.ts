@@ -20,6 +20,7 @@ export class NpmLockHandler extends ComposerLockHandler
     protected iterate_results(rows:object[], source:string, selector:string): IResult[] {
         let results: IResult[] = []
         const popped = rows.pop() ?? {}
+
         for (const [key, item] of Object.entries(popped)) {
             let map = new Map<string, any>( Object.entries(item) )
             map.set('name', key)

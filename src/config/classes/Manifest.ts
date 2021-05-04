@@ -13,10 +13,8 @@ export class Manifest implements IValidateable {
     uses: string = ''
 
     valid(): boolean{
-        core.debug(`[${this.constructor.name}](valid) >>>`)
         const valid_name = (this.name.length > 0)
         core.debug(`[${this.constructor.name}](valid) valid_name: ${valid_name}`)
-        core.debug(`[${this.constructor.name}](valid) >>>`)
         return (valid_name)
     }
 

@@ -28,18 +28,14 @@ export class ComposerManifestHandler extends ComposerSpecificationHandler
 
     // get the objects that match the selector from the file
     protected async matches_selector(content: string, selector:string = ''): Promise<object[]> {
-        core.debug(`[${this.constructor.name}](matches_selector) >>>`)
-
-        let results:object[] = []
         core.debug(`[${this.constructor.name}](matches_selector) selector: ${selector}`)
+        let results:object[] = []
 
         if(content !== null && content.length > 0 && selector.length > 0) {
-            core.debug(`[${this.constructor.name}](matches_selector) jspath running`)
             results = JSPath.apply(selector, JSON.parse(content))
-
         }
+
         core.debug(`[${this.constructor.name}](matches_selector) jspath results length ${results.length}`)
-        core.debug(`[${this.constructor.name}](matches_selector) <<<`)
         return new Promise<object[]>(resolve => { resolve(results) } )
     }
 
@@ -63,58 +59,41 @@ export class ComposerManifestHandler extends ComposerSpecificationHandler
     // Use each selector to find matching data from the file using the pattern
     // and then pass along to process the result
     protected async process_file_and_selectors(file:string, selectors:string[]): Promise<IResult[]> {
-        core.debug(`[${this.constructor.name}](process_file_and_selectors) >>>`)
+        core.debug(`[${this.constructor.name}](process_file_and_selectors) file: ${file}`)
         let results: IResult[] = []
-        core.debug(`[${this.constructor.name}](process_file_and_selectors) iterating over selectors`)
         for(const selector of selectors) {
-            core.debug(`[${this.constructor.name}](process_file_and_selectors) ->`)
-            core.debug(`[${this.constructor.name}](process_file_and_selectors) selector: ${selector}`)
+
             const content:string = fs.readFileSync(file, {encoding: 'utf8', flag: 'r+'}) as string
-
             const matched:object[] = await this.matches_selector(content, selector)
-            core.debug(`[${this.constructor.name}](process_file_and_selectors) matched: ${matched.length}`)
-
             const filtered = matched.filter( (i) => (i !== null && i !== undefined) )
-            core.debug(`[${this.constructor.name}](process_file_and_selectors) filtered: ${filtered.length}`)
 
             if (filtered !== null && filtered.length > 0) {
                 const iterated = this.iterate_results(filtered, file, selector)
-                core.debug(`[${this.constructor.name}](process_file_and_selectors) iterated: ${iterated.length}`)
                 results.push(...iterated)
             }
-            core.debug(`[${this.constructor.name}](process_file_and_selectors) <-`)
         }
-        core.debug(`[${this.constructor.name}](process_file_and_selectors) <<<`)
         return new Promise<IResult[]>( resolve => {resolve(results) } )
     }
 
     // Loop over each file and pass down the selectors to be processed
     //
     protected async process_files(files:string[], selectors:string[]): Promise<IResult[]> {
-        core.debug(`[${this.constructor.name}](process_files) >>>`)
         let results: IResult[] = []
-
-        core.debug(`[${this.constructor.name}](process_files) iterating over files`)
         for (const file of files) {
-            core.debug(`[${this.constructor.name}](process_files) file: ${file}`)
             const found = await this.process_file_and_selectors(file, selectors)
             results.push(...found)
         }
 
-        core.debug(`[${this.constructor.name}](process_files) <<<`)
         return new Promise<IResult[]>( resolve => {resolve(results) } )
     }
 
 
     async process(): Promise<void> {
-        core.debug(`[${this.constructor.name}](process) >>>`)
         const files:string[] = await this.files()
         const selectors:string[] = this.selector
         const primary:IResult[] = await this.process_files(files, selectors)
-        core.debug(`[${this.constructor.name}](process) primary: ${primary.length}`)
         this._results.push(...primary)
 
-        core.debug(`[${this.constructor.name}](process) <<<`)
         return new Promise<void>( resolve => { resolve() } )
     }
 }
