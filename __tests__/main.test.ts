@@ -10,6 +10,6 @@ test('working configuration load', async () => {
     const configuration_file: string = sample_dir + 'config/valid/simple.yml'
     const configuration: Config = await yaml_to_config(configuration_file)
 
-    expect(configuration.filesystem.directory).toBe('./')
-    expect(configuration.filesystem.follow_symlinks).toBeTruthy()
+    expect(configuration.source.directory).toBe('./')
+    expect(configuration.source.follow_symlinks).toBeTruthy()
 })
