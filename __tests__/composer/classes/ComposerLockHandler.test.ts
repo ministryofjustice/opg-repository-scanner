@@ -31,7 +31,7 @@ test('postive: test a composer lock handler finds all packages from file without
     const first = results.pop()
     expect(first).toBeInstanceOf(Result)
     expect(first?.name).toEqual('doctrine/instantiator')
-    expect(first?.type).toEqual('composer-lock')
+    expect(first?.occurances[0].type).toEqual('composer-lock')
 })
 
 

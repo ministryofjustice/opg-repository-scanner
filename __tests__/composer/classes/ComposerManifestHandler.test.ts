@@ -64,7 +64,7 @@ test('postive: test a composer manifest handler finds packages from file', async
     // check type
     const first = results.pop()
     expect(first).toBeInstanceOf(Result)
-    expect(first?.type).toEqual('composer-json')
+    expect(first?.occurances[0].type).toEqual('composer-json')
 })
 
 test('postive: test a composer manifest handler finds packages from file with multi-selectors', async () => {

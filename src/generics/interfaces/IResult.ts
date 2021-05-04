@@ -1,9 +1,8 @@
+import { ResultMeta } from "../classes/ResultMeta";
+
 export interface IResult {
     name:Required<string>
-    version:string
-    source:string
-    type:string
-    selector:string
+    occurances:ResultMeta[]
 
     expand(extra: IResult): void
 }
