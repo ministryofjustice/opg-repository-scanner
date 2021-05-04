@@ -10,8 +10,8 @@ import { Output } from './Output';
 @jsonObject
 export class Config implements IValidateable{
 
-    @jsonMember(Source, { name: 'source'} )
-    filesystem: Source = new Source()
+    @jsonMember(Source)
+    source: Source = new Source()
 
     @jsonArrayMember(Manifest)
     manifests: Manifest[] = []
@@ -19,9 +19,9 @@ export class Config implements IValidateable{
     @jsonArrayMember(Output, { name: 'reports'})
     output: Output[] = []
 
-    constructor(filesystem?: Source, manifests?: Manifest[], output?:Output[]){
-        if (typeof filesystem !== 'undefined')
-            this.filesystem = filesystem
+    constructor(source?: Source, manifests?: Manifest[], output?:Output[]){
+        if (typeof source !== 'undefined')
+            this.source = source
         if (typeof manifests !== 'undefined')
             this.manifests = manifests
 
@@ -33,9 +33,9 @@ export class Config implements IValidateable{
     }
 
     // validate the filesystem settings are correct
-    valid_filesystem(): boolean {
-        let valid_filesystem: boolean = this.filesystem.valid()
-        return valid_filesystem
+    valid_source(): boolean {
+        let valid: boolean = this.source.valid()
+        return valid
     }
 
     valid_manifests(): boolean {
@@ -50,13 +50,13 @@ export class Config implements IValidateable{
 
     // ensure this is a valid class and contains all we want
     valid(): boolean {
-        let valid_filesystem = this.valid_filesystem()
+        let valid_source = this.valid_source()
         let valid_manifests = this.valid_manifests()
 
-        core.debug(`[${this.constructor.name}](valid) valid_filesystem: ${valid_filesystem}`)
+        core.debug(`[${this.constructor.name}](valid) valid_source: ${valid_source}`)
         core.debug(`[${this.constructor.name}](valid) valid_manifests: ${valid_manifests}`)
 
-        return ( valid_filesystem && valid_manifests )
+        return ( valid_source && valid_manifests )
     }
 
 

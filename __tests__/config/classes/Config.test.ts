@@ -21,8 +21,8 @@ test('test a working config object parsing', async () => {
 
     const config = TypedJSON.parse(configObj, Config) as Config
 
-    expect(config.filesystem.follow_symlinks).toBeTruthy()
-    expect(config.filesystem.directory).toBe(sample_dir)
-    expect(config.valid_filesystem()).toBeTruthy()
+    expect(config.source.follow_symlinks).toBeTruthy()
+    expect(config.source.directory).toBe(sample_dir)
+    expect(config.valid_source()).toBeTruthy()
     expect(config.valid()).toBeTruthy()
 })

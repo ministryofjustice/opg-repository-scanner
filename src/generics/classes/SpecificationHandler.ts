@@ -11,18 +11,18 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
     protected _results:IResult[] = []
 
     type:string = ''
-    filesystem:Source = new Source()
+    source:Source = new Source()
     filepattern: Required<string> = ''
     selector: Required<string[]> = []
     recursive?: string[]
 
     constructor(
-        filesystem?:Source,
+        source?:Source,
         filepattern?:string,
         selector?:string[]|string,
         recursive?: string[]
         ){
-        if(typeof filesystem !== 'undefined') this.filesystem = filesystem
+        if(typeof source !== 'undefined') this.source = source
         if(typeof filepattern !== 'undefined') this.filepattern = filepattern
         if(typeof recursive !== 'undefined') this.recursive = recursive
 
@@ -36,10 +36,10 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
 
     // return all the files that this spec matches
     async files(): Promise<string[]> {
-        let pattern = this.filesystem.directory + this.filepattern
-        if(this.filesystem.exclude.length > 0) pattern = pattern + '\n!' + this.filesystem.exclude.join('\n!')
+        let pattern = this.source.directory + this.filepattern
+        if(this.source.exclude.length > 0) pattern = pattern + '\n!' + this.source.exclude.join('\n!')
 
-        const glober = await glob.create(pattern, {followSymbolicLinks: this.filesystem.follow_symlinks})
+        const glober = await glob.create(pattern, {followSymbolicLinks: this.source.follow_symlinks})
         const files = await glober.glob()
 
         core.debug(`[${this.constructor.name}](files) patterns: ${pattern} length: ${files.length}`)

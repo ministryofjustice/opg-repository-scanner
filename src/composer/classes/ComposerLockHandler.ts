@@ -30,7 +30,7 @@ export class ComposerLockHandler extends ComposerManifestHandler
     // files, so call that with new selectors
     async recurse(): Promise<void> {
         const manifest = new ComposerManifestHandler(
-            this.filesystem,
+            this.source,
             this.filepattern,
             this.recursive
         )

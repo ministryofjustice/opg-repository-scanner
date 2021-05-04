@@ -29,7 +29,7 @@ export class ManifestResults implements IManifestResults{
         // expand on this later to allow a .with type overwrite of this properties
         return f(
             manifest.name,
-            this.configuration?.filesystem
+            this.configuration?.source
 
         ) as IPackages<ISpecification<ISpecificationHandler, IResult>,
                         ISpecification<ISpecificationHandler, IResult> >
