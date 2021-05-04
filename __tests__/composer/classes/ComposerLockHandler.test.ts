@@ -11,6 +11,7 @@ import {
 } from "../../../src/composer"
 import { Result } from '../../../src/generics'
 import { Source } from '../../../src/config'
+import { ManifestType } from '../../../src/generics/enums'
 
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
@@ -31,7 +32,7 @@ test('postive: test a composer lock handler finds all packages from file without
     const first = results.pop()
     expect(first).toBeInstanceOf(Result)
     expect(first?.name).toEqual('doctrine/instantiator')
-    expect(first?.occurances[0].type).toEqual('composer-lock')
+    expect(first?.occurances[0].type).toEqual(ManifestType.Lock)
 })
 
 

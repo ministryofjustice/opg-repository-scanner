@@ -4,11 +4,12 @@ import * as core from '@actions/core'
 import { IResult, ISpecificationHandler, IValidateable } from "../../generics";
 import { Result } from "../../generics";
 import { ComposerManifestHandler } from './ComposerManifastHandler'
+import { ManifestType } from '../../generics/enums';
 
 export class ComposerLockHandler extends ComposerManifestHandler
         implements ISpecificationHandler, IValidateable {
 
-    type:string = 'composer-lock'
+    type:ManifestType = ManifestType.Lock
     recursive_prefix:string = 'third-party-'
 
     // Loop over the rows (found via the matches_selector call) and find data from those
@@ -34,7 +35,7 @@ export class ComposerLockHandler extends ComposerManifestHandler
             this.filepattern,
             this.recursive
         )
-        manifest.type =  this.recursive_prefix + this.type
+        //manifest.type =  this.recursive_prefix + this.type
         await manifest.process()
         // append the manifest results into this set of results
         this._results.push( ...await manifest.results() )

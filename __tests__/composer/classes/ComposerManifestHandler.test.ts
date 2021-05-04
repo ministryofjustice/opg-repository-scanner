@@ -10,6 +10,7 @@ import {
 } from "../../../src/composer"
 import { Result } from '../../../src/generics'
 import { Source } from '../../../src/config'
+import { ManifestType } from '../../../src/generics/enums'
 
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
@@ -64,7 +65,7 @@ test('postive: test a composer manifest handler finds packages from file', async
     // check type
     const first = results.pop()
     expect(first).toBeInstanceOf(Result)
-    expect(first?.occurances[0].type).toEqual('composer-json')
+    expect(first?.occurances[0].type).toEqual(ManifestType.Manifest)
 })
 
 test('postive: test a composer manifest handler finds packages from file with multi-selectors', async () => {

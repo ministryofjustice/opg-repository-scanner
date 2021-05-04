@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import { ManifestType } from '../enums';
 import { IValidateable } from "../interfaces";
 import { IResult } from "../interfaces/IResult";
 
@@ -7,13 +8,13 @@ export class ResultMeta {
 
     version:string = ''
     source:string = ''
-    type:string = ''
+    type:ManifestType = ManifestType.Null
     selector:string = ''
 
     constructor(
         version?:string,
         source?:string,
-        type?:string,
+        type?:ManifestType,
         selector?:string
         ){
 

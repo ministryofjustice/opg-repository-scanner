@@ -5,11 +5,12 @@ import * as core from '@actions/core'
 import { IResult, ISpecificationHandler, IValidateable } from "../../generics";
 import { Result } from "../../generics";
 import { ComposerSpecificationHandler } from './ComposerSpecificationHandler'
+import { ManifestType } from '../../generics/enums';
 
 export class ComposerManifestHandler extends ComposerSpecificationHandler
         implements ISpecificationHandler, IValidateable {
 
-    type:string = 'composer-json'
+    type:ManifestType = ManifestType.Manifest
 
     // convert a map to a result
     protected result(map:Map<string, any>, source:string, selector:string) : IResult|boolean {

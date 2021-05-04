@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import * as glob from '@actions/glob'
 import { Source } from '../../config';
+import { ManifestType } from '../enums';
 import { ISpecificationHandler, IValidateable, IResult} from '../interfaces'
 // SpecificationHandler provide method to find files of its type and
 // uses a function (.processor) to parse the the content of the files it
@@ -10,7 +11,7 @@ import { ISpecificationHandler, IValidateable, IResult} from '../interfaces'
 export class SpecificationHandler implements ISpecificationHandler, IValidateable {
     protected _results:IResult[] = []
 
-    type:string = ''
+    type:ManifestType = ManifestType.Null
     source:Source = new Source()
     filepattern: Required<string> = ''
     selector: Required<string[]> = []

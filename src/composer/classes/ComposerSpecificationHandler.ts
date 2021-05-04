@@ -3,12 +3,13 @@ import {
     IValidateable,
     SpecificationHandler
 } from "../../generics";
+import { ManifestType } from "../../generics/enums";
 
 
 export class ComposerSpecificationHandler extends SpecificationHandler
         implements ISpecificationHandler, IValidateable {
 
-    type:string = 'composer'
+    type:ManifestType = ManifestType.Null
 
     // process each selector thats been set
     per_selector(selector:string): string {

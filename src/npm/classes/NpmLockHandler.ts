@@ -1,10 +1,11 @@
 import { IResult, ISpecificationHandler, IValidateable } from "../../generics";
 import { ComposerLockHandler } from '../../composer';
+import { ManifestType } from "../../generics/enums";
 
 export class NpmLockHandler extends ComposerLockHandler
         implements ISpecificationHandler, IValidateable {
 
-    type:string = 'package-lock'
+    type:ManifestType = ManifestType.Lock
 
     // Lock files dont recurse for package-lock files
     async recurse(): Promise<void> {

@@ -1,5 +1,6 @@
 import { ISpecificationHandler, IValidateable } from "../../generics";
 import { ComposerManifestHandler } from '../../composer'
+import { ManifestType } from "../../generics/enums";
 
 
 // NpmManifestHandler is identical to ComposerManifests in structure but
@@ -7,6 +8,6 @@ import { ComposerManifestHandler } from '../../composer'
 export class NpmManifestHandler extends ComposerManifestHandler
         implements ISpecificationHandler, IValidateable {
 
-    type:string = 'package-json'
+    type:ManifestType = ManifestType.Manifest
 
 }
