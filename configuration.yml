@@ -1,7 +1,9 @@
 filesystem:
   directory: './'
   follow_symlinks: false
-
+  exclude:
+    - node_modules**/*
+    - __samples__**/*
 manifests:
   - name: composer
     uses: ComposerParser

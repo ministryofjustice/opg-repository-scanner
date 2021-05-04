@@ -36,11 +36,13 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
 
     // return all the files that this spec matches
     async files(): Promise<string[]> {
-        const pattern = this.filesystem.directory + this.filepattern
+        let pattern = this.filesystem.directory + this.filepattern
+        if(this.filesystem.exclude.length > 0) pattern = pattern + '\n!' + this.filesystem.exclude.join('\n!')
+
         const glober = await glob.create(pattern, {followSymbolicLinks: this.filesystem.follow_symlinks})
         const files = await glober.glob()
 
-        core.debug(`[${this.constructor.name}](files) pattern: ${pattern} length: ${files.length}`)
+        core.debug(`[${this.constructor.name}](files) patterns: ${pattern} length: ${files.length}`)
         return new Promise<string[]>( (resolve) => {
             resolve(files)
         })
