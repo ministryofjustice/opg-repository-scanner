@@ -58,12 +58,16 @@ export class ManifestResults implements IManifestResults{
 
         let results:IResult[] = []
         const manifest_parsers:Manifest[] = this.configuration?.manifests ?? []
+        const len = manifest_parsers.length
 
-        for(const parser of manifest_parsers) {
+        core.info(`Found [${len}] manifest types to parse`)
+        for(const [x, parser] of manifest_parsers.entries() ) {
+            core.info(`Parsing ${x+1}/${len} : [${parser.name}]`)
             const found = await this.run_parser(parser)
             core.info(`Packages for (${parser.name}): [${found.length}]`)
             // if we found data, append to the overall results
             if (found && found.length) results.push(...found)
+            core.info("-------")
         }
         return new Promise<IResult[]>( resolve => { resolve(results) } )
     }

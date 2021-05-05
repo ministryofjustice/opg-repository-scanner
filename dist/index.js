@@ -1223,23 +1223,28 @@ function run() {
             let configuration;
             // map the input
             const inputs = action_yaml_1.mapped_inputs();
-            core.info('Action inputs loaded:');
+            core.info('Action inputs loaded.');
             /* eslint-disable no-console */
-            console.log(inputs);
+            if (core.isDebug())
+                console.log(inputs);
             /* eslint-enable no-console */
             const config_file = inputs.get('configuration_file');
             //-- Load configuration from a file or from inputs
             if (config_file.has('value') && config_file.get('value') !== config_file.get('default')) {
-                core.info('Configuration from file.');
+                core.info('Parse configuration from file: ' + config_file.get('value'));
                 configuration = yield yaml_1.yaml_to_config(config_file.get('value'));
             }
             else {
-                core.info('Configuration from environment.');
+                core.info('Parse configuration from environment.');
                 configuration = input_to_config_1.input_to_config(inputs);
             }
-            core.info('Parsed configuration:');
-            core.info(JSON.stringify(configuration));
+            core.info('Configuration loaded.');
+            /* eslint-disable no-console */
+            if (core.isDebug())
+                console.log(configuration);
+            /* eslint-enable no-console */
             if (configuration.valid()) {
+                core.info('Configuration validated.');
                 const handler = new manifestresults_1.ManifestResults(configuration);
                 yield handler.process();
                 const files = yield handler.save();
@@ -1247,7 +1252,7 @@ function run() {
                 const artifact_name = (_b = (_a = configuration.artifact) === null || _a === void 0 ? void 0 : _a.name) !== null && _b !== void 0 ? _b : '';
                 const artifact_client = artifact.create();
                 if (files.length > 0 && artifact_name.length > 0) {
-                    core.debug('Generating artefact: ' + artifact);
+                    core.debug('Generating artefact: ' + artifact_name);
                     // running directory is ./dist, but reports are saved to root of repo
                     const dir = __dirname + '/../';
                     const response = yield artifact_client.uploadArtifact(artifact_name, files, dir, {
@@ -1362,12 +1367,16 @@ class ManifestResults {
         return __awaiter(this, void 0, void 0, function* () {
             let results = [];
             const manifest_parsers = (_b = (_a = this.configuration) === null || _a === void 0 ? void 0 : _a.manifests) !== null && _b !== void 0 ? _b : [];
-            for (const parser of manifest_parsers) {
+            const len = manifest_parsers.length;
+            core.info(`Found [${len}] manifest types to parse`);
+            for (const [x, parser] of manifest_parsers.entries()) {
+                core.info(`Parsing ${x + 1}/${len} : [${parser.name}]`);
                 const found = yield this.run_parser(parser);
                 core.info(`Packages for (${parser.name}): [${found.length}]`);
                 // if we found data, append to the overall results
                 if (found && found.length)
                     results.push(...found);
+                core.info("-------");
             }
             return new Promise(resolve => { resolve(results); });
         });
