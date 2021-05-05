@@ -65,8 +65,8 @@ export function mapped_inputs(): Map<string, any> {
     for (const [key, item] of base) {
         const req: boolean = item.get('required') === 'true'
         const found: string = core.getInput(key, {required: req})
+
         if (found.length > 0) item.set('value', found)
-        else item.set('value', item.get('default') ?? '')
 
         base.set(key, item)
     }

@@ -1059,15 +1059,12 @@ exports.action_yaml_inputs = new Map([
     ]
 ]);
 function mapped_inputs() {
-    var _a;
     const base = exports.action_yaml_inputs;
     for (const [key, item] of base) {
         const req = item.get('required') === 'true';
         const found = core.getInput(key, { required: req });
         if (found.length > 0)
             item.set('value', found);
-        else
-            item.set('value', (_a = item.get('default')) !== null && _a !== void 0 ? _a : '');
         base.set(key, item);
     }
     return base;
@@ -1087,23 +1084,70 @@ exports.input_to_config = void 0;
 const typedjson_1 = __webpack_require__(9165);
 const config_1 = __webpack_require__(6730);
 function input_to_config(input) {
-    const excluded = JSON.parse(input.get('source_exclude').get('value'));
-    const manifest = JSON.parse(input.get('manifests').get('value'));
-    const as = JSON.parse(input.get('artifact_as').get('value'));
-    const follow = input.get('source_follow_symlinks').get('value') === 'true';
-    const obj = {
+    /* eslint-disable no-console */
+    const skel = {
         source: {
-            directory: input.get('source_directory').get('value'),
-            follow_symlinks: follow,
-            exclude: excluded
+            directory: '',
+            follow_symlinks: false,
+            exclude: []
         },
         artifact: {
-            name: input.get('artifact_name').get('value'),
-            as
+            name: '',
+            as: []
         },
-        manifests: manifest
+        manifests: []
     };
-    const config = typedjson_1.TypedJSON.parse(obj, config_1.Config);
+    console.log('source_directory');
+    // source.directory
+    if (input.has('source_directory') && input.get('source_directory').has('value')) {
+        skel.source.directory = input.get('source_directory').get('value');
+    }
+    else {
+        skel.source.directory = input.get('source_directory').get('default');
+    }
+    console.log('source_follow_symlinks');
+    // source.follow_symlinks
+    if (input.has('source_follow_symlinks') && input.get('source_follow_symlinks').has('value')) {
+        skel.source.follow_symlinks = input.get('source_follow_symlinks').get('value') === 'true';
+    }
+    else {
+        skel.source.follow_symlinks = input.get('source_follow_symlinks').get('default') === 'true';
+    }
+    console.log('source_exclude');
+    // source.exclude
+    if (input.has('source_exclude') && input.get('source_exclude').has('value')) {
+        skel.source.exclude = JSON.parse(input.get('source_exclude').get('value'));
+    }
+    else {
+        skel.source.exclude = JSON.parse(input.get('source_exclude').get('default'));
+    }
+    console.log('artifact_name');
+    // artifect.name
+    if (input.has('artifact_name') && input.get('artifact_name').has('value')) {
+        skel.artifact.name = input.get('artifact_name').get('value');
+    }
+    else {
+        skel.artifact.name = input.get('artifact_name').get('default');
+    }
+    console.log('artifact_as');
+    // artifact.as
+    if (input.has('artifact_as') && input.get('artifact_as').has('value')) {
+        skel.artifact.as = JSON.parse(input.get('artifact_as').get('value'));
+    }
+    else {
+        skel.artifact.as = JSON.parse(input.get('artifact_as').get('default'));
+    }
+    console.log('manifests');
+    // manifests
+    if (input.has('manifests') && input.get('manifests').has('value')) {
+        skel.manifests = JSON.parse(input.get('manifests').get('value'));
+    }
+    else {
+        skel.manifests = JSON.parse(input.get('manifests').get('default'));
+    }
+    console.log(skel);
+    /* eslint-enable no-console */
+    const config = typedjson_1.TypedJSON.parse(skel, config_1.Config);
     return config;
 }
 exports.input_to_config = input_to_config;
@@ -1163,7 +1207,7 @@ function run() {
             console.log(inputs);
             const config_file = inputs.get('configuration_file');
             //-- Load configuration from a file or from inputs
-            if (config_file.get('value') != config_file.get('default')) {
+            if (config_file.has('value')) {
                 core.info('Configuration from file.');
                 configuration = yield yaml_1.yaml_to_config(config_file.get('value'));
             }
