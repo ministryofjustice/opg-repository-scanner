@@ -1,5 +1,5 @@
 name: 'OPG Repository Scanner'
-description: ''
+description: 'This action scans the repository for manifest & lock files looking for software packages and generates a series of reports for visibility'
 author: ''
 inputs:
   configuration_file:
