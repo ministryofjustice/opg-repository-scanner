@@ -900,6 +900,7 @@ class SpecificationHandler {
             const glober = yield glob.create(pattern, { followSymbolicLinks: this.source.follow_symlinks });
             const files = yield glober.glob();
             core.debug(`[${this.constructor.name}](files) patterns: ${pattern} length: ${files.length}`);
+            core.info(`Files found: [${files.length}] for patterns [${pattern.replace(/\n/g, ',')}]`);
             return new Promise((resolve) => {
                 resolve(files);
             });
