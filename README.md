@@ -2,6 +2,16 @@
 
 This action is intended to load various forms of manifest & lock files and parse the listed packages the repository requires to function as part of an awareness and to aid security capabilities.
 
+## Currently Supported
+
+At the moment, this action only supports the following tooling and languages:
+
+- PHP
+    - composer.json
+    - composer.lock
+- Javascript
+    - package.json
+    - package-lock.json
 
 ## Inputs
 
