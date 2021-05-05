@@ -6,7 +6,6 @@ const manifests: object[] = [
     {name: 'package', uses: 'PackageParser'}
 ]
 const as: string[] = ['json']
-
 // This needs to be kept in sync with action.yml
 export const action_yaml_inputs = new Map<string, Map<string, string>>([
     [

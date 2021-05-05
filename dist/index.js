@@ -1159,13 +1159,16 @@ function run() {
             let configuration;
             // map the input
             const inputs = action_yaml_1.mapped_inputs();
-            core.info('Action inputs loaded.');
+            core.info('Action inputs loaded:');
+            console.log(inputs);
             const config_file = inputs.get('configuration_file');
             //-- Load configuration from a file or from inputs
             if (config_file.get('value') != config_file.get('default')) {
+                core.info('Configuration from file.');
                 configuration = yield yaml_1.yaml_to_config(config_file.get('value'));
             }
             else {
+                core.info('Configuration from environment.');
                 configuration = input_to_config_1.input_to_config(inputs);
             }
             core.info('Parsed configuration:');
