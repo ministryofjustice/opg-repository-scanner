@@ -33,7 +33,7 @@ Determines if symlinks within the repository should be followed or not.
 
 ### `source_exclude` **\***
 
-**Default: `"['__samples__**', '__tests__**', 'node_modules**', 'vendor**']"`**
+**Default: `'["__samples__**","__tests__**","node_modules**","vendor**"]'`**
 
 A `JSON.stringify()` result of an array. Contains a series of filepath patterns which will then be excluded from file pattern searches within `@actions/glob` lookups.
 
@@ -41,7 +41,7 @@ The intention here is to provide a way to remove known unhappy paths or folders.
 
 ### `manifests` **\***
 
-**Default: `"[ {name: 'composer', uses: 'ComposerParser'}, {name: 'package', uses: 'PackageParser'} ]"`**
+**Default: `'[{"name":"composer","uses":"ComposerParser"},{"name":"package","uses":"PackageParser"}]'`**
 
 The `manifests` property sets which manifest & lock scans we should use for this repository. It will be compared to whats listed in `AvailableManifestParsers` [here](https://github.com/ministryofjustice/opg-repository-scanner/blob/main/src/manifestresults/AvailableManifestsParsers.ts).
 
