@@ -34,25 +34,6 @@ exports.ComposerParser = ComposerParser;
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -64,7 +45,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ComposerLockHandler = void 0;
-const core = __importStar(__webpack_require__(2186));
 const ComposerManifastHandler_1 = __webpack_require__(2386);
 class ComposerLockHandler extends ComposerManifastHandler_1.ComposerManifestHandler {
     constructor() {
@@ -82,7 +62,6 @@ class ComposerLockHandler extends ComposerManifastHandler_1.ComposerManifestHand
             if (res !== false)
                 results.push(res);
         }
-        core.debug(`[${this.constructor.name}](iterate_results) results: ${results.length}`);
         return results;
     }
     // Lock files recursive element matches the format for the manifest
@@ -166,14 +145,14 @@ class ComposerManifestHandler extends ComposerSpecificationHandler_1.ComposerSpe
         return false;
     }
     // get the objects that match the selector from the file
-    matches_selector(content, selector = '') {
+    matches_selector(file, content, selector = '') {
         return __awaiter(this, void 0, void 0, function* () {
-            core.debug(`[${this.constructor.name}](matches_selector) selector: ${selector}`);
+            core.debug(`[${this.constructor.name}](matches_selector) selector: ${selector} file: ${file}`);
+            core.info(`Searching for packages - selector: [${selector}] file: [${file}]`);
             let results = [];
             if (content !== null && content.length > 0 && selector.length > 0) {
                 results = JSPath.apply(selector, JSON.parse(content));
             }
-            core.debug(`[${this.constructor.name}](matches_selector) jspath results length ${results.length}`);
             return new Promise(resolve => { resolve(results); });
         });
     }
@@ -197,11 +176,10 @@ class ComposerManifestHandler extends ComposerSpecificationHandler_1.ComposerSpe
     // and then pass along to process the result
     process_file_and_selectors(file, selectors) {
         return __awaiter(this, void 0, void 0, function* () {
-            core.debug(`[${this.constructor.name}](process_file_and_selectors) file: ${file}`);
             let results = [];
             for (const selector of selectors) {
-                const content = fs.readFileSync(file, { encoding: 'utf8', flag: 'r+' });
-                const matched = yield this.matches_selector(content, selector);
+                const content = fs.readFileSync(file, { encoding: 'utf8', flag: 'r' });
+                const matched = yield this.matches_selector(file, content, selector);
                 const filtered = matched.filter((i) => (i !== null && i !== undefined));
                 if (filtered !== null && filtered.length > 0) {
                     const iterated = this.iterate_results(filtered, file, selector);
@@ -356,8 +334,10 @@ let Artifact = class Artifact {
         this.as = ['json'];
         if (typeof name !== 'undefined')
             this.name = name;
-        if (typeof as !== 'undefined')
+        if (typeof as !== 'undefined' && typeof as == 'string')
             this.as = [as];
+        else if (typeof as !== 'undefined')
+            this.as = as;
     }
     valid() {
         const valid = (this.name.length > 0) && (this.as.length > 0);
@@ -374,7 +354,7 @@ __decorate([
 ], Artifact.prototype, "as", void 0);
 Artifact = __decorate([
     typedjson_1.jsonObject,
-    __metadata("design:paramtypes", [String, String])
+    __metadata("design:paramtypes", [String, Object])
 ], Artifact);
 exports.Artifact = Artifact;
 
@@ -656,29 +636,10 @@ Object.defineProperty(exports, "Config", ({ enumerable: true, get: function () {
 /***/ }),
 
 /***/ 953:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -690,7 +651,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Packages = void 0;
-const core = __importStar(__webpack_require__(2186));
 //--
 // new Package<Manifest, Lock>
 class Packages {
@@ -708,7 +668,6 @@ class Packages {
     get(combine = true) {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            core.debug(`[${this.constructor.name}](get) >>>`);
             let manifest = [];
             let lock = [];
             let combined = [];
@@ -722,7 +681,6 @@ class Packages {
                 this.all = this.combine(manifest, lock);
             else
                 this.all.push(...manifest, ...lock);
-            core.debug(`[${this.constructor.name}](get) <<<`);
             return new Promise(resolve => {
                 resolve(this.all);
             });
@@ -730,7 +688,6 @@ class Packages {
     }
     // takes the manifest and lock, merges them together
     combine(manifest, lock) {
-        core.debug(`[${this.constructor.name}](combine) >>>`);
         let combined = [];
         // remove from lock files things that exist in manifest
         // and then expand the data in the manifest entry
@@ -743,7 +700,6 @@ class Packages {
             }
             return true;
         });
-        core.debug(`[${this.constructor.name}](combine) <<<`);
         combined.push(...manifest, ...lock);
         return combined;
     }
@@ -1017,6 +973,144 @@ Object.defineProperty(exports, "SpecificationHandler", ({ enumerable: true, get:
 
 /***/ }),
 
+/***/ 2595:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.mapped_inputs = exports.action_yaml_inputs = void 0;
+const core = __importStar(__webpack_require__(2186));
+const source_exclude = ['__samples__**', '__tests__**', 'node_modules**', 'vendor**'];
+const manifests = [
+    { name: 'composer', uses: 'ComposerParser' },
+    { name: 'package', uses: 'PackageParser' }
+];
+const as = ['json'];
+// This needs to be kept in sync with action.yml
+exports.action_yaml_inputs = new Map([
+    [
+        'configuration_file',
+        new Map([
+            ['required', 'false'],
+            ['default', '-']
+        ])
+    ],
+    [
+        'source_directory',
+        new Map([
+            ['required', 'false'],
+            ['default', './']
+        ])
+    ],
+    [
+        'source_follow_symlinks',
+        new Map([
+            ['required', 'false'],
+            ['default', 'false']
+        ])
+    ],
+    [
+        'source_exclude',
+        new Map([
+            ['required', 'false'],
+            ['default', JSON.stringify(source_exclude)]
+        ])
+    ],
+    [
+        'manifests',
+        new Map([
+            ['required', 'false'],
+            ['default', JSON.stringify(manifests)]
+        ])
+    ],
+    [
+        'artifact_name',
+        new Map([
+            ['required', 'false'],
+            ['default', 'repository-scan-result']
+        ])
+    ],
+    [
+        'artifact_as',
+        new Map([
+            ['required', 'false'],
+            ['default', JSON.stringify(as)]
+        ])
+    ]
+]);
+function mapped_inputs() {
+    var _a;
+    const base = exports.action_yaml_inputs;
+    for (const [key, item] of base) {
+        const req = item.get('required') === 'true';
+        const found = core.getInput(key, { required: req });
+        if (found.length > 0)
+            item.set('value', found);
+        else
+            item.set('value', (_a = item.get('default')) !== null && _a !== void 0 ? _a : '');
+        base.set(key, item);
+    }
+    return base;
+}
+exports.mapped_inputs = mapped_inputs;
+
+
+/***/ }),
+
+/***/ 1322:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.input_to_config = void 0;
+const typedjson_1 = __webpack_require__(9165);
+const config_1 = __webpack_require__(6730);
+function input_to_config(input) {
+    const excluded = JSON.parse(input.get('source_exclude').get('value'));
+    const manifest = JSON.parse(input.get('manifests').get('value'));
+    const as = JSON.parse(input.get('artifact_as').get('value'));
+    const follow = input.get('source_follow_symlinks').get('value') === 'true';
+    const obj = {
+        source: {
+            directory: input.get('source_directory').get('value'),
+            follow_symlinks: follow,
+            exclude: excluded
+        },
+        artifact: {
+            name: input.get('artifact_name').get('value'),
+            as
+        },
+        manifests: manifest
+    };
+    const config = typedjson_1.TypedJSON.parse(obj, config_1.Config);
+    return config;
+}
+exports.input_to_config = input_to_config;
+
+
+/***/ }),
+
 /***/ 3109:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
@@ -1055,32 +1149,50 @@ const core = __importStar(__webpack_require__(2186));
 const artifact = __importStar(__webpack_require__(2605));
 const yaml_1 = __webpack_require__(4544);
 const manifestresults_1 = __webpack_require__(7653);
+const action_yaml_1 = __webpack_require__(2595);
+const input_to_config_1 = __webpack_require__(1322);
 function run() {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            // -- Load configuration
-            const configuration_file = './configuration.yml';
-            core.debug('configuration_file_used: ' + configuration_file);
-            const configuration = yield yaml_1.yaml_to_config(configuration_file);
-            core.debug('configuration file loaded');
-            const handler = new manifestresults_1.ManifestResults(configuration);
-            core.debug('handler generated with configuration');
-            core.debug('handler .process() starting');
-            yield handler.process();
-            const files = yield handler.save();
-            core.debug(JSON.stringify(files));
-            // generate artefact
-            const artifact_name = (_b = (_a = configuration.artifact) === null || _a === void 0 ? void 0 : _a.name) !== null && _b !== void 0 ? _b : '';
-            const artifact_client = artifact.create();
-            if (files.length > 0 && artifact_name.length > 0) {
-                core.debug('Generating artefact: ' + artifact);
-                const response = yield artifact_client.uploadArtifact(artifact_name, files, __dirname, {
-                    continueOnError: false
-                });
+            // config object
+            let configuration;
+            // map the input
+            const inputs = action_yaml_1.mapped_inputs();
+            core.info('Action inputs loaded.');
+            const config_file = inputs.get('configuration_file');
+            //-- Load configuration from a file or from inputs
+            if (config_file.get('value') != config_file.get('default')) {
+                configuration = yield yaml_1.yaml_to_config(config_file.get('value'));
+            }
+            else {
+                configuration = input_to_config_1.input_to_config(inputs);
+            }
+            core.info('Parsed configuration:');
+            core.info(JSON.stringify(configuration));
+            if (configuration.valid()) {
+                const handler = new manifestresults_1.ManifestResults(configuration);
+                yield handler.process();
+                const files = yield handler.save();
+                // generate artefact
+                const artifact_name = (_b = (_a = configuration.artifact) === null || _a === void 0 ? void 0 : _a.name) !== null && _b !== void 0 ? _b : '';
+                const artifact_client = artifact.create();
+                if (files.length > 0 && artifact_name.length > 0) {
+                    core.debug('Generating artefact: ' + artifact);
+                    // running directory is ./dist, but reports are saved to root of repo
+                    const dir = __dirname + '/../';
+                    const response = yield artifact_client.uploadArtifact(artifact_name, files, dir, {
+                        continueOnError: false
+                    });
+                }
+            }
+            else {
+                core.error('ERROR: Invalid configuration');
+                core.setFailed('Invalid configuration');
             }
         }
         catch (error) {
+            core.error(error.message);
             core.setFailed(error.message);
         }
     });
@@ -1172,7 +1284,6 @@ class ManifestResults {
                 const instance = this.instance(manifest);
                 results = yield instance.get(true);
             }
-            core.debug(`[${this.constructor.name}](run_parser) results: ${results.length}`);
             return new Promise(resolve => { resolve(results); });
         });
     }
@@ -1184,6 +1295,7 @@ class ManifestResults {
             const manifest_parsers = (_b = (_a = this.configuration) === null || _a === void 0 ? void 0 : _a.manifests) !== null && _b !== void 0 ? _b : [];
             for (const parser of manifest_parsers) {
                 const found = yield this.run_parser(parser);
+                core.info(`Packages for (${parser.name}): [${found.length}]`);
                 // if we found data, append to the overall results
                 if (found && found.length)
                     results.push(...found);
@@ -1194,6 +1306,7 @@ class ManifestResults {
     process() {
         return __awaiter(this, void 0, void 0, function* () {
             const manifest_results = yield this.manifests();
+            core.info(`Total packages found: [${manifest_results.length}]`);
             this.output.set('packages', manifest_results);
             return new Promise(resolve => { resolve(); });
         });
@@ -1206,12 +1319,12 @@ class ManifestResults {
             const report = (_a = this.configuration) === null || _a === void 0 ? void 0 : _a.artifact;
             const now = (new Date()).toISOString().slice(0, 19).replace(/:/g, '-');
             for (const as_name of report.as) {
-                const filename = `${report.name}-${now}`;
+                const filename = `${report.name}`;
                 const as_exists = outputer_1.AvailableOutputers.has(as_name);
                 if (as_exists) {
                     const out = outputer_1.AvailableOutputers.get(as_name);
-                    out.write(filename, this.output);
-                    saved.push(filename);
+                    const writtern_file = out.write(filename, this.output);
+                    saved.push(writtern_file);
                 }
             }
             return new Promise(resolve => { resolve(saved); });
@@ -1430,7 +1543,9 @@ class AsJson extends Outputer_1.Outputer {
     write(filename, data) {
         const obj = this.to_object(data);
         const json_string = JSON.stringify(obj);
-        fs.writeFileSync(filename + '.json', json_string);
+        const filepath = filename + '.json';
+        fs.writeFileSync(filepath, json_string);
+        return filepath;
     }
     to_object(data) {
         let obj = {};
@@ -1451,7 +1566,7 @@ exports.AsJson = AsJson;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Outputer = void 0;
 class Outputer {
-    write(filename, data) { }
+    write(filename, data) { return ''; }
 }
 exports.Outputer = Outputer;
 
