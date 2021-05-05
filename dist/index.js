@@ -1075,16 +1075,36 @@ exports.mapped_inputs = mapped_inputs;
 /***/ }),
 
 /***/ 1322:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.input_to_config = void 0;
+const core = __importStar(__webpack_require__(2186));
 const typedjson_1 = __webpack_require__(9165);
 const config_1 = __webpack_require__(6730);
+// an ugly looking function to parse the parts of the Map
 function input_to_config(input) {
-    /* eslint-disable no-console */
     const skel = {
         source: {
             directory: '',
@@ -1097,56 +1117,55 @@ function input_to_config(input) {
         },
         manifests: []
     };
-    console.log('source_directory');
     // source.directory
+    core.debug('Parsing input: source_directory');
     if (input.has('source_directory') && input.get('source_directory').has('value')) {
         skel.source.directory = input.get('source_directory').get('value');
     }
     else {
         skel.source.directory = input.get('source_directory').get('default');
     }
-    console.log('source_follow_symlinks');
     // source.follow_symlinks
+    core.debug('Parsing input: source_follow_symlinks');
     if (input.has('source_follow_symlinks') && input.get('source_follow_symlinks').has('value')) {
         skel.source.follow_symlinks = input.get('source_follow_symlinks').get('value') === 'true';
     }
     else {
         skel.source.follow_symlinks = input.get('source_follow_symlinks').get('default') === 'true';
     }
-    console.log('source_exclude');
     // source.exclude
+    core.debug('Parsing input: source_exclude');
     if (input.has('source_exclude') && input.get('source_exclude').has('value')) {
         skel.source.exclude = JSON.parse(input.get('source_exclude').get('value'));
     }
     else {
         skel.source.exclude = JSON.parse(input.get('source_exclude').get('default'));
     }
-    console.log('artifact_name');
     // artifect.name
+    core.debug('Parsing input: artifact_name');
     if (input.has('artifact_name') && input.get('artifact_name').has('value')) {
         skel.artifact.name = input.get('artifact_name').get('value');
     }
     else {
         skel.artifact.name = input.get('artifact_name').get('default');
     }
-    console.log('artifact_as');
     // artifact.as
+    core.debug('Parsing input: artifact_as');
     if (input.has('artifact_as') && input.get('artifact_as').has('value')) {
         skel.artifact.as = JSON.parse(input.get('artifact_as').get('value'));
     }
     else {
         skel.artifact.as = JSON.parse(input.get('artifact_as').get('default'));
     }
-    console.log('manifests');
     // manifests
+    core.debug('Parsing input: manifests');
     if (input.has('manifests') && input.get('manifests').has('value')) {
         skel.manifests = JSON.parse(input.get('manifests').get('value'));
     }
     else {
         skel.manifests = JSON.parse(input.get('manifests').get('default'));
     }
-    console.log(skel);
-    /* eslint-enable no-console */
+    core.debug('Converting to Config class');
     const config = typedjson_1.TypedJSON.parse(skel, config_1.Config);
     return config;
 }
@@ -1204,7 +1223,9 @@ function run() {
             // map the input
             const inputs = action_yaml_1.mapped_inputs();
             core.info('Action inputs loaded:');
+            /* eslint-disable no-console */
             console.log(inputs);
+            /* eslint-enable no-console */
             const config_file = inputs.get('configuration_file');
             //-- Load configuration from a file or from inputs
             if (config_file.has('value')) {

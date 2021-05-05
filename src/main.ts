@@ -15,11 +15,13 @@ async function run(): Promise<void> {
         const inputs = mapped_inputs()
 
         core.info('Action inputs loaded:')
+        /* eslint-disable no-console */
         console.log(inputs)
+        /* eslint-enable no-console */
 
         const config_file = inputs.get('configuration_file')
         //-- Load configuration from a file or from inputs
-        if (config_file.get('value') != config_file.get('default')) {
+        if (config_file.has('value')) {
             core.info('Configuration from file.')
             configuration = await yaml_to_config(config_file.get('value'))
         } else {
