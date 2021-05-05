@@ -4,7 +4,35 @@ author: ''
 inputs:
   configuration_file:
     required: false
-    description: 'Provide an alternative configuration file from the included version'
+    description: 'A configuration file to load all config data. When this is set, all other input options will be ignored'
+    default: '-'
+  source_directory:
+    required: false
+    description: 'Directory to use as the base for scanning.'
+    default: './'
+  source_follow_symlinks:
+    required: false
+    description: 'Instruction to filesystem handling to follow symlinks or not.'
+    default: false
+  source_exclude:
+    required: false
+    description: 'List of folders / filepaths to exclude from all filesystem operations. This is parsed using JSON.parse to convert from a string.'
+    default: "['__samples__**', '__tests__**', 'node_modules**', 'vendor**']"
+
+  manifests:
+    required: false
+    description: 'All the types of manifests to scan and parse for. Formatted as an array of objects with name & uses property.'
+    default: "[ {name: 'composer', uses: 'ComposerParser'}, {name: 'package', uses: 'PackageParser'} ]"
+
+  artifact_name:
+    required: false
+    description: 'The finished set of artifacts will be uploaded to this workflow under this name'
+    default: 'repository-scan-result'
+  artifact_as:
+    required: false
+    description: 'Determine which output reports will be generated from the raw data. Parsed via JSON.parse'
+    detault: "['json']"
+
 runs:
   using: 'node12'
   main: 'dist/index.js'

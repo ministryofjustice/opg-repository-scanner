@@ -1,9 +1,10 @@
 source:
-  directory: './'
+  directory: '/Users/charlesmarshall/Projects/opg-digideps/'
   follow_symlinks: false
   exclude:
     - node_modules**/*
     - __samples__**/*
+    - vendor**
 manifests:
   - name: composer
     uses: ComposerParser
