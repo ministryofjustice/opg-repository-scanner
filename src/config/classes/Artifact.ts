@@ -12,9 +12,12 @@ export class Artifact implements IValidateable {
     as: string[] = ['json']
 
 
-    constructor(name?: string, as?: string){
+    constructor(name?: string, as?: string|string[]){
         if (typeof name !== 'undefined') this.name = name
-        if (typeof as !== 'undefined') this.as = [as]
+
+        if (typeof as !== 'undefined' && typeof as == 'string' ) this.as = [as]
+        else if (typeof as !== 'undefined') this.as = as
+
     }
 
     valid(): boolean{
