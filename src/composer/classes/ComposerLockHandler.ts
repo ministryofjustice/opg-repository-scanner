@@ -22,8 +22,6 @@ export class ComposerLockHandler extends ComposerManifestHandler
             const res = this.result(map, source, selector)
             if (res !== false) results.push( res as IResult )
         }
-
-        core.debug(`[${this.constructor.name}](iterate_results) results: ${results.length}`)
         return results
     }
 

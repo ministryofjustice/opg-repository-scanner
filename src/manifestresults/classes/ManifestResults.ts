@@ -50,7 +50,6 @@ export class ManifestResults implements IManifestResults{
             results = await instance.get(true)
         }
 
-        core.debug(`[${this.constructor.name}](run_parser) results: ${results.length}`)
         return new Promise<IResult[]>( resolve => { resolve(results) } )
     }
 
@@ -62,6 +61,7 @@ export class ManifestResults implements IManifestResults{
 
         for(const parser of manifest_parsers) {
             const found = await this.run_parser(parser)
+            core.info(`Packages for (${parser.name}): [${found.length}]`)
             // if we found data, append to the overall results
             if (found && found.length) results.push(...found)
         }
@@ -70,12 +70,10 @@ export class ManifestResults implements IManifestResults{
 
 
     async process(): Promise<void> {
-
         const manifest_results:IResult[] = await this.manifests()
+        core.info(`Total packages found: [${manifest_results.length}]`)
         this.output.set('packages', manifest_results)
-
         return new Promise<void>( resolve => { resolve() } )
-
     }
 
 
@@ -86,7 +84,7 @@ export class ManifestResults implements IManifestResults{
         const now = (new Date()).toISOString().slice(0, 19).replace(/:/g, '-')
 
         for(const as_name of report.as) {
-            const filename = `${report.name}-${now}`
+            const filename = `${report.name}`
             const as_exists = AvailableOutputers.has(as_name)
             if(as_exists) {
                 const out = AvailableOutputers.get(as_name) as IOutputer
@@ -94,7 +92,6 @@ export class ManifestResults implements IManifestResults{
                 saved.push(writtern_file)
             }
         }
-
 
         return new Promise<string[]>( resolve => { resolve(saved) } )
     }

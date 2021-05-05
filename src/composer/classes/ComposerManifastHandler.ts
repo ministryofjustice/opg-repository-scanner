@@ -27,15 +27,15 @@ export class ComposerManifestHandler extends ComposerSpecificationHandler
     }
 
     // get the objects that match the selector from the file
-    protected async matches_selector(content: string, selector:string = ''): Promise<object[]> {
-        core.debug(`[${this.constructor.name}](matches_selector) selector: ${selector}`)
+    protected async matches_selector(file:string, content: string, selector:string = ''): Promise<object[]> {
+        core.debug(`[${this.constructor.name}](matches_selector) selector: ${selector} file: ${file}`)
+        core.info(`Searching for packages - selector: [${selector}] file: [${file}]`)
         let results:object[] = []
 
         if(content !== null && content.length > 0 && selector.length > 0) {
             results = JSPath.apply(selector, JSON.parse(content))
         }
 
-        core.debug(`[${this.constructor.name}](matches_selector) jspath results length ${results.length}`)
         return new Promise<object[]>(resolve => { resolve(results) } )
     }
 
@@ -59,12 +59,11 @@ export class ComposerManifestHandler extends ComposerSpecificationHandler
     // Use each selector to find matching data from the file using the pattern
     // and then pass along to process the result
     protected async process_file_and_selectors(file:string, selectors:string[]): Promise<IResult[]> {
-        core.debug(`[${this.constructor.name}](process_file_and_selectors) file: ${file}`)
         let results: IResult[] = []
         for(const selector of selectors) {
 
-            const content:string = fs.readFileSync(file, {encoding: 'utf8', flag: 'r+'}) as string
-            const matched:object[] = await this.matches_selector(content, selector)
+            const content:string = fs.readFileSync(file, {encoding: 'utf8', flag: 'r'}) as string
+            const matched:object[] = await this.matches_selector(file, content, selector)
             const filtered = matched.filter( (i) => (i !== null && i !== undefined) )
 
             if (filtered !== null && filtered.length > 0) {

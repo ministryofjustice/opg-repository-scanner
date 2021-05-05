@@ -28,7 +28,6 @@ export class Packages <M extends ISpecification<ISpecificationHandler, IResult>,
     // merge into one result set
     // - does not do any processing
     async get(combine: boolean = true): Promise<IResult[]> {
-        core.debug(`[${this.constructor.name}](get) >>>`)
         let manifest:IResult[] = []
         let lock:IResult[] = []
         let combined:IResult[] = []
@@ -43,7 +42,6 @@ export class Packages <M extends ISpecification<ISpecificationHandler, IResult>,
         if(combine && lock.length > 0 ) this.all = this.combine(manifest, lock)
         else this.all.push(...manifest, ...lock)
 
-        core.debug(`[${this.constructor.name}](get) <<<`)
         return new Promise<IResult[]>(resolve => {
             resolve(this.all)
         })
@@ -52,7 +50,6 @@ export class Packages <M extends ISpecification<ISpecificationHandler, IResult>,
 
     // takes the manifest and lock, merges them together
     combine(manifest:IResult[], lock:IResult[]): IResult[] {
-        core.debug(`[${this.constructor.name}](combine) >>>`)
         let combined: IResult[] = []
         // remove from lock files things that exist in manifest
         // and then expand the data in the manifest entry
@@ -65,7 +62,6 @@ export class Packages <M extends ISpecification<ISpecificationHandler, IResult>,
             }
             return true
         })
-        core.debug(`[${this.constructor.name}](combine) <<<`)
         combined.push(...manifest, ...lock)
         return combined
 
