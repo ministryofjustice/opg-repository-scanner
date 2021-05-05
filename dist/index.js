@@ -1228,7 +1228,7 @@ function run() {
             /* eslint-enable no-console */
             const config_file = inputs.get('configuration_file');
             //-- Load configuration from a file or from inputs
-            if (config_file.has('value')) {
+            if (config_file.has('value') && config_file.get('value') !== config_file.get('default')) {
                 core.info('Configuration from file.');
                 configuration = yield yaml_1.yaml_to_config(config_file.get('value'));
             }
