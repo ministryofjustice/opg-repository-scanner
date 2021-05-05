@@ -22,7 +22,7 @@ inputs:
   manifests:
     required: false
     description: 'All the types of manifests to scan and parse for. Formatted as an array of objects with name & uses property.'
-    default: "[ {name: 'composer', uses: 'ComposerParser'}, {name: 'package', uses: 'PackageParser'} ]"
+    default: '[{"name":"composer","uses":"ComposerParser"},{"name":"package","uses":"PackageParser"}]'
 
   artifact_name:
     required: false
