@@ -20,7 +20,7 @@ export const action_yaml_inputs = new Map<string, Map<string, string>>([
         'source_directory',
         new Map<string, string>([
             ['required', 'false'],
-            ['default', './test-repo']
+            ['default', './']
         ])
     ],
     [
