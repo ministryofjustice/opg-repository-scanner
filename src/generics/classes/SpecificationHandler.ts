@@ -49,7 +49,7 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
         const glober = await glob.create(pattern, {followSymbolicLinks: this.source.follow_symlinks})
         const files = await glober.glob()
 
-        core.debug(`[${this.constructor.name}](files) patterns: ${pattern} length: ${files.length}`)
+        core.debug(`[${this.constructor.name}](files) patterns: (${this.source.directory}) [${pattern}] length: ${files.length}`)
         core.info(`Found [${files.length}] files for patterns [${pattern.replace(/\n/g, ',')}]`)
 
         return new Promise<string[]>( (resolve) => {
