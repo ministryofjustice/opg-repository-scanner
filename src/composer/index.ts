@@ -9,4 +9,4 @@ export {
     LockSelectorsRecursiveArray
 } from './selectors'
 
-export {ComposerParser} from './Factory'
+export {ComposerParser} from './ComposerParser'
