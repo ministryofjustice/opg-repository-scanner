@@ -6,7 +6,7 @@ const manifests: object[] = [
     {name: 'package', uses: 'PackageParser'},
     {name: 'pip', uses: 'PipParser'}
 ]
-const as: string[] = ['json']
+const as: string[] = ['package-listing']
 // This needs to be kept in sync with action.yml
 export const action_yaml_inputs = new Map<string, Map<string, string>>([
     [
@@ -27,7 +27,7 @@ export const action_yaml_inputs = new Map<string, Map<string, string>>([
         'source_follow_symlinks',
         new Map<string, string>([
             ['required', 'false'],
-            ['default', 'false']
+            ['default', 'true']
         ])
     ],
     [

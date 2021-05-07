@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import { IOutputer } from "../interfaces/IOutputer";
 import { Outputer } from './Outputer';
 
-export class AsJson extends Outputer implements IOutputer{
+export class PackageListing extends Outputer implements IOutputer{
 
     private filename = 'list.raw.json'
 
