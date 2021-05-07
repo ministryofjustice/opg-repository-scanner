@@ -23,11 +23,13 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
         source?:Source,
         filepattern?:string,
         selector?:string[]|string,
-        recursive?: string[]
+        recursive?: string[],
+        tags?: string[]
         ){
         if(typeof source !== 'undefined') this.source = source
         if(typeof filepattern !== 'undefined') this.filepattern = filepattern
         if(typeof recursive !== 'undefined') this.recursive = recursive
+        if(typeof tags !== 'undefined' && tags.length > 0) this.tags = tags
 
         if(typeof selector !== 'undefined') {
             if(typeof selector == 'string') this.selector = [selector] ?? []

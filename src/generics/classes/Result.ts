@@ -34,5 +34,6 @@ export class Result implements IResult, IValidateable{
     // join the fields from extra into this one
     expand(extra: IResult): void {
         this.occurances.push(...extra.occurances)
+        this.tags = [...new Set([...this.tags, ...extra.tags])]
     }
 }

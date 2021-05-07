@@ -31,8 +31,10 @@ export class ComposerLockHandler extends ComposerManifestHandler
         const manifest = new ComposerManifestHandler(
             this.source,
             this.filepattern,
-            this.recursive
+            this.recursive,
+            this.tags
         )
+        manifest.tags = this.tags
         //manifest.type =  this.recursive_prefix + this.type
         await manifest.process()
         // append the manifest results into this set of results
