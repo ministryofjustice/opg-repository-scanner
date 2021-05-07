@@ -9,5 +9,5 @@ export class NpmManifestHandler extends ComposerManifestHandler
         implements ISpecificationHandler, IValidateable {
 
     type:ManifestType = ManifestType.Manifest
-
+    tags: string[] = ['language:javascript', 'type:npm', 'is:manifest']
 }

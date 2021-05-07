@@ -9,7 +9,7 @@ export interface ISpecificationHandler{
     selector: Required<string[]>
     type: Required<ManifestType>
     recursive?: string[]
-
+    tags: string[]
 
     sanitise(): void
     files(): Promise<string[]>

@@ -16,6 +16,8 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
     filepattern: Required<string> = ''
     selector: Required<string[]> = []
     recursive?: string[]
+    // tagging on the handlers to pass on the results
+    tags: string[] = []
 
     constructor(
         source?:Source,

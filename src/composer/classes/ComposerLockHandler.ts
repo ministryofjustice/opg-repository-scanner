@@ -11,7 +11,7 @@ export class ComposerLockHandler extends ComposerManifestHandler
 
     type:ManifestType = ManifestType.Lock
     recursive_prefix:string = 'third-party-'
-
+    tags: string[] = ['language:php', 'type:composer', 'is:lock']
     // Loop over the rows (found via the matches_selector call) and find data from those
     // - put in to a map for better re-use with the lock files
     protected iterate_results(rows:object[], source:string, selector:string): IResult[] {

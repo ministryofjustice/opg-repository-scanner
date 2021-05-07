@@ -8,17 +8,19 @@ import { ResultMeta } from './ResultMeta';
 export class Result implements IResult, IValidateable{
     name:Required<string> = ''
     occurances:ResultMeta[] = []
-
+    tags:string[] = []
     constructor(
         name?: string,
         version?:string,
         source?:string,
         type?:ManifestType,
-        selector?:string
+        selector?:string,
+        tags?:string[]
         ){
 
         if(typeof name !== 'undefined') this.name = name
         if(typeof version !== 'undefined') this.occurances.push( new ResultMeta(version, source, type, selector) )
+        if(typeof tags !== 'undefined') this.tags = tags
 
     }
 

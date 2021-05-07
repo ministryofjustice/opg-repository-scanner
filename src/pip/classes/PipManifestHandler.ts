@@ -11,6 +11,7 @@ export class PipManifestHandler extends SpecificationHandler
         implements ISpecificationHandler, IValidateable {
 
     type:ManifestType = ManifestType.Manifest
+    tags: string[] = ['language:python', 'type:pip', 'is:manifest']
 
     // overwrite the valid check, as we dont care about selectors
     valid(): boolean {
@@ -23,9 +24,11 @@ export class PipManifestHandler extends SpecificationHandler
     protected result(line:string, source:string): IResult{
         return new Result(
             line,
-            '', // no version data in pip
-            source.replace( process.cwd(), '.') ,
-            this.type
+            '',
+            source.replace( process.cwd(), '.'),
+            this.type,
+            '',
+            this.tags
         )
     }
 
