@@ -39,15 +39,31 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
         this.sanitise()
     }
 
+    // filter the files based on the exclusion regex passed in
+    filter(files:string[], exclude:string[]): string[] {
+        return files.filter(i => {
+            let matched = false
+            for(const p of exclude) {
+                const r = new RegExp(p, 'i')
+                const found = r.test(i)
+                if (found) matched = true
+            }
+            return !matched
+        })
+    }
+
     // return all the files that this spec matches
     async files(): Promise<string[]> {
-
         this.source.directory = this.source.directory.replace(/\/$/, "") + '/'
+        let files:string[] = []
         let pattern = this.source.directory + this.filepattern
-        if(this.source.exclude.length > 0) pattern = pattern + '\n!' + this.source.exclude.join('\n!')
-
         const glober = await glob.create(pattern, {followSymbolicLinks: this.source.follow_symlinks})
-        const files = await glober.glob()
+        files = await glober.glob()
+
+        core.debug(`[${this.constructor.name}](files) before filter files length: ${files.length}`)
+
+        // remove files based on exclusion regex
+        if(this.source.exclude.length > 0) files = this.filter(files, this.source.exclude)
 
         core.debug(`[${this.constructor.name}](files) patterns: (${this.source.directory}) [${pattern}] length: ${files.length}`)
         core.info(`Found [${files.length}] files for patterns [${pattern.replace(/\n/g, ',')}] using directory (${this.source.directory})`)

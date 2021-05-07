@@ -930,15 +930,31 @@ class SpecificationHandler {
         }
         this.sanitise();
     }
+    // filter the files based on the exclusion regex passed in
+    filter(files, exclude) {
+        return files.filter(i => {
+            let matched = false;
+            for (const p of exclude) {
+                const r = new RegExp(p, 'i');
+                const found = r.test(i);
+                if (found)
+                    matched = true;
+            }
+            return !matched;
+        });
+    }
     // return all the files that this spec matches
     files() {
         return __awaiter(this, void 0, void 0, function* () {
             this.source.directory = this.source.directory.replace(/\/$/, "") + '/';
+            let files = [];
             let pattern = this.source.directory + this.filepattern;
-            if (this.source.exclude.length > 0)
-                pattern = pattern + '\n!' + this.source.exclude.join('\n!');
             const glober = yield glob.create(pattern, { followSymbolicLinks: this.source.follow_symlinks });
-            const files = yield glober.glob();
+            files = yield glober.glob();
+            core.debug(`[${this.constructor.name}](files) before filter files length: ${files.length}`);
+            // remove files based on exclusion regex
+            if (this.source.exclude.length > 0)
+                files = this.filter(files, this.source.exclude);
             core.debug(`[${this.constructor.name}](files) patterns: (${this.source.directory}) [${pattern}] length: ${files.length}`);
             core.info(`Found [${files.length}] files for patterns [${pattern.replace(/\n/g, ',')}] using directory (${this.source.directory})`);
             return new Promise((resolve) => {
@@ -1128,15 +1144,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.mapped_inputs = exports.action_yaml_inputs = void 0;
+exports.mapped_inputs = exports.action_yaml_inputs = exports._action_as = exports._action_manifests = exports._action_source_exclude = void 0;
 const core = __importStar(__webpack_require__(2186));
-const source_exclude = ['__samples__**', '__tests__**', 'node_modules**', 'vendor**'];
-const manifests = [
+exports._action_source_exclude = [
+    '(__samples__/*)',
+    '(__tests__/*)',
+    '(node_modules/*)',
+    '(vendor/*)'
+];
+exports._action_manifests = [
     { name: 'composer', uses: 'ComposerParser' },
     { name: 'package', uses: 'PackageParser' },
     { name: 'pip', uses: 'PipParser' }
 ];
-const as = ['list', 'summarized-list'];
+exports._action_as = ['list', 'summarized-list'];
 // This needs to be kept in sync with action.yml
 exports.action_yaml_inputs = new Map([
     [
@@ -1164,14 +1185,14 @@ exports.action_yaml_inputs = new Map([
         'source_exclude',
         new Map([
             ['required', 'false'],
-            ['default', JSON.stringify(source_exclude)]
+            ['default', JSON.stringify(exports._action_source_exclude)]
         ])
     ],
     [
         'manifests',
         new Map([
             ['required', 'false'],
-            ['default', JSON.stringify(manifests)]
+            ['default', JSON.stringify(exports._action_manifests)]
         ])
     ],
     [
@@ -1185,7 +1206,7 @@ exports.action_yaml_inputs = new Map([
         'artifact_as',
         new Map([
             ['required', 'false'],
-            ['default', JSON.stringify(as)]
+            ['default', JSON.stringify(exports._action_as)]
         ])
     ]
 ]);

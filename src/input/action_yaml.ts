@@ -1,12 +1,17 @@
 import * as core from '@actions/core'
 
-const source_exclude: string[] = ['__samples__**', '__tests__**', 'node_modules**', 'vendor**']
-const manifests: object[] = [
+export const _action_source_exclude: string[] = [
+    '(__samples__/*)',
+    '(__tests__/*)',
+    '(node_modules/*)',
+    '(vendor/*)'
+]
+export const _action_manifests: object[] = [
     {name: 'composer', uses: 'ComposerParser'},
     {name: 'package', uses: 'PackageParser'},
     {name: 'pip', uses: 'PipParser'}
 ]
-const as: string[] = ['list', 'summarized-list']
+export const _action_as: string[] = ['list', 'summarized-list']
 // This needs to be kept in sync with action.yml
 export const action_yaml_inputs = new Map<string, Map<string, string>>([
     [
@@ -34,14 +39,14 @@ export const action_yaml_inputs = new Map<string, Map<string, string>>([
         'source_exclude',
         new Map<string, string>([
             ['required', 'false'],
-            ['default', JSON.stringify(source_exclude)]
+            ['default', JSON.stringify(_action_source_exclude)]
         ])
     ],
     [
         'manifests',
         new Map<string, string>([
             ['required', 'false'],
-            ['default', JSON.stringify(manifests)]
+            ['default', JSON.stringify(_action_manifests)]
         ])
     ],
     [
@@ -55,7 +60,7 @@ export const action_yaml_inputs = new Map<string, Map<string, string>>([
         'artifact_as',
         new Map<string, string>([
             ['required', 'false'],
-            ['default', JSON.stringify(as)]
+            ['default', JSON.stringify(_action_as)]
         ])
     ]
 ])

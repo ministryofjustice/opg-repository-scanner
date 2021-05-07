@@ -11,6 +11,7 @@ import {
 import { Result } from '../../../src/generics'
 import { Source } from '../../../src/config'
 import { ManifestType } from '../../../src/generics/enums'
+import { _action_source_exclude } from '../../../src/input/action_yaml'
 
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
@@ -34,9 +35,10 @@ test('negative: test a composer manifest fails', async () => {
 })
 
 test('postive: test a composer manifest handler finds correct files from known dir', async () => {
+    let exclude = _action_source_exclude.filter(i => ( i.indexOf('__samples') < 0 ))
     const dir:string = sample_dir + 'app/php/laminas/'
     const pattern:string = '**/composer.json'
-    const filesys:Source = new Source(dir, false)
+    const filesys:Source = new Source(dir, false, exclude)
     const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectorsArray)
     const files = await manifest.files()
     expect(files.length).toEqual(1)

@@ -6,7 +6,7 @@ import * as path from 'path'
 import { SpecificationHandler } from "../../../src/generics/classes/SpecificationHandler"
 import { Result } from "../../../src/generics/classes/Result"
 import { Source } from '../../../src/config'
-
+import {_action_source_exclude} from '../../../src/input/action_yaml'
 // base all file scanning on this diretory
 const sample_dir: string = './__samples__/'
 
@@ -38,13 +38,17 @@ test('negative: test specification with invalid name should not be valid', async
 
 
 test('positve: test file look up', async () => {
+    // remove the samples regex
+    let exclude = _action_source_exclude.filter(i => ( i.indexOf('__samples') < 0 ))
     // super simple function that returns a basic result
-    const test = async function(): Promise<Result[]>{
-        return new Promise<Result[]>( resolve => { resolve([new Result('test')] ) } )
-    }
+
     const handler = new SpecificationHandler(
-        new Source(sample_dir),
-        "app/php/laminas/composer.json",
+        new Source(
+            sample_dir + 'app/php/laminas/',
+            false,
+            exclude
+            ),
+        "**/composer.json",
         '.require'
     )
 
