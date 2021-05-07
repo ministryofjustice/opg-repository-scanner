@@ -12,7 +12,7 @@ exports.ComposerParser = void 0;
 const generics_1 = __webpack_require__(9999);
 const classes_1 = __webpack_require__(7609);
 const selectors_1 = __webpack_require__(8118);
-function ComposerParser(name = 'composer', filesystem, manifest_name = 'composer-json', lock_name = 'composer-lock', manifest_file_pattern = "**/composer.json" /* Manifest */, lock_file_pattern = "**/composer.lock" /* Lock */, manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
+function ComposerParser(name = 'composer', filesystem, manifest_name = 'composer-json', lock_name = 'composer-lock', manifest_file_pattern = "**/*/composer.json" /* Manifest */, lock_file_pattern = "**/*/composer.lock" /* Lock */, manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
     //-- Create the specification handlers
     const manifestHandler = new classes_1.ComposerManifestHandler(filesystem, manifest_file_pattern, manifest_selectors);
     const lockHandler = new classes_1.ComposerLockHandler(filesystem, lock_file_pattern, lock_selectors, recursive_lock_selectors);
@@ -51,6 +51,7 @@ class ComposerLockHandler extends ComposerManifastHandler_1.ComposerManifestHand
         super(...arguments);
         this.type = "Lock" /* Lock */;
         this.recursive_prefix = 'third-party-';
+        this.tags = ['php', 'composer', "Lock" /* Lock */];
     }
     // Loop over the rows (found via the matches_selector call) and find data from those
     // - put in to a map for better re-use with the lock files
@@ -68,7 +69,8 @@ class ComposerLockHandler extends ComposerManifastHandler_1.ComposerManifestHand
     // files, so call that with new selectors
     recurse() {
         return __awaiter(this, void 0, void 0, function* () {
-            const manifest = new ComposerManifastHandler_1.ComposerManifestHandler(this.source, this.filepattern, this.recursive);
+            const manifest = new ComposerManifastHandler_1.ComposerManifestHandler(this.source, this.filepattern, this.recursive, this.tags);
+            manifest.tags = this.tags;
             //manifest.type =  this.recursive_prefix + this.type
             yield manifest.process();
             // append the manifest results into this set of results
@@ -136,11 +138,12 @@ class ComposerManifestHandler extends ComposerSpecificationHandler_1.ComposerSpe
     constructor() {
         super(...arguments);
         this.type = "Manifest" /* Manifest */;
+        this.tags = ['php', 'composer', "Manifest" /* Manifest */];
     }
     // convert a map to a result
     result(map, source, selector) {
         if (map.has('name') && map.has('version')) {
-            return new generics_1.Result(map.get('name'), map.get('version'), source.replace(process.cwd(), '.'), this.type, selector);
+            return new generics_1.Result(map.get('name'), map.get('version'), source.replace(process.cwd(), '.'), this.type, selector, this.tags);
         }
         return false;
     }
@@ -228,6 +231,7 @@ class ComposerSpecificationHandler extends generics_1.SpecificationHandler {
     constructor() {
         super(...arguments);
         this.type = "" /* Null */;
+        this.tags = ['php', 'composer', "Manifest" /* Manifest */];
     }
     // process each selector thats been set
     per_selector(selector) {
@@ -635,6 +639,23 @@ Object.defineProperty(exports, "Config", ({ enumerable: true, get: function () {
 
 /***/ }),
 
+/***/ 3276:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.map_to_object = void 0;
+function map_to_object(data) {
+    const obj = {};
+    Object.assign(obj, ...[...data.entries()].map(([k, v]) => ({ [k]: v })));
+    return obj;
+}
+exports.map_to_object = map_to_object;
+
+
+/***/ }),
+
 /***/ 953:
 /***/ (function(__unused_webpack_module, exports) {
 
@@ -719,13 +740,16 @@ exports.Result = void 0;
 const ResultMeta_1 = __webpack_require__(5503);
 // Results is used to capture details about every package found
 class Result {
-    constructor(name, version, source, type, selector) {
+    constructor(name, version, source, type, selector, tags) {
         this.name = '';
+        this.tags = [];
         this.occurances = [];
         if (typeof name !== 'undefined')
             this.name = name;
         if (typeof version !== 'undefined')
             this.occurances.push(new ResultMeta_1.ResultMeta(version, source, type, selector));
+        if (typeof tags !== 'undefined')
+            this.tags = tags;
     }
     // valididation check
     // -- only needs the name to be true
@@ -736,6 +760,7 @@ class Result {
     // join the fields from extra into this one
     expand(extra) {
         this.occurances.push(...extra.occurances);
+        this.tags = [...new Set([...this.tags, ...extra.tags])];
     }
 }
 exports.Result = Result;
@@ -870,19 +895,23 @@ const config_1 = __webpack_require__(6730);
 // The .processor would be different for every type of manifest / file
 // Generally only extended to change the sanitise method
 class SpecificationHandler {
-    constructor(source, filepattern, selector, recursive) {
+    constructor(source, filepattern, selector, recursive, tags) {
         var _a;
         this._results = [];
         this.type = "" /* Null */;
         this.source = new config_1.Source();
         this.filepattern = '';
         this.selector = [];
+        // tagging on the handlers to pass on the results
+        this.tags = [];
         if (typeof source !== 'undefined')
             this.source = source;
         if (typeof filepattern !== 'undefined')
             this.filepattern = filepattern;
         if (typeof recursive !== 'undefined')
             this.recursive = recursive;
+        if (typeof tags !== 'undefined' && tags.length > 0)
+            this.tags = tags;
         if (typeof selector !== 'undefined') {
             if (typeof selector == 'string')
                 this.selector = (_a = [selector]) !== null && _a !== void 0 ? _a : [];
@@ -939,13 +968,99 @@ exports.SpecificationHandler = SpecificationHandler;
 
 /***/ }),
 
+/***/ 3834:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SummaryResult = void 0;
+// Results is used to capture details about every package found
+class SummaryResult {
+    constructor() {
+        this.name = '';
+        this.version = '';
+        this.tags = [];
+        this.occurances = [];
+        this._source_data = new Map();
+    }
+    // set this.version based on summarised data from result.occurances
+    // - get unique version strings, show the first and then count for
+    //   how many extra versions were found
+    version_from_result(result) {
+        var _a;
+        this.version = '';
+        // find all the versions from the occurances data
+        let versions = result.occurances.map(i => i.version);
+        // remove duplicates
+        versions = [...new Set(versions)];
+        // set this version
+        if (versions.length > 1)
+            this.version = `${versions.shift()} (+ ${versions.length} others)`;
+        else if (versions.length > 0)
+            this.version = (_a = versions.shift()) !== null && _a !== void 0 ? _a : '';
+    }
+    // sources returns a Map of unique sources with a counter
+    sources(result) {
+        if (typeof result !== 'undefined') {
+            this._source_data = result.occurances.reduce((map, e) => map.set(e.source, (map.get(e.source) || 0) + 1), new Map());
+        }
+        return this._source_data;
+    }
+    // convert sources to an array of flat strings
+    occurances_to_string_array(sources) {
+        return Array.from(sources, ([name, count]) => (`${name} (count: ${count})`));
+    }
+    // convert sources to an array of objects with name & count
+    occurances_to_object_array(sources) {
+        return Array.from(sources, ([name, count]) => ({ name, count }));
+    }
+    // convert occurances to an object for json output
+    occurances_from_result(sources) {
+        // get just the sources and convert to an object for reporting
+        this.occurances = this.occurances_to_object_array(sources);
+    }
+    // helper functions to check if this result was directly installed by
+    // the dev within the manifest
+    is_first_party(result) {
+        return result.tags.includes("Manifest" /* Manifest */);
+    }
+    // helper functions to check if this result was installed as a dependancy
+    is_third_party(result) {
+        return result.tags.includes("Lock" /* Lock */);
+    }
+    // Update result tags to include first/third party tag
+    tag_updates(result) {
+        let tags = result.tags;
+        if (this.is_first_party(result))
+            tags.push("first-party");
+        else if (this.is_third_party(result))
+            tags.push("third-party");
+        // remove duplicates
+        this.tags = [...new Set([...tags])];
+    }
+    // create data on this class based on a standard Result
+    from_result(result) {
+        this.name = result.name;
+        this.sources(result);
+        this.version_from_result(result);
+        this.occurances_from_result(this._source_data);
+        this.tag_updates(result);
+        return this;
+    }
+}
+exports.SummaryResult = SummaryResult;
+
+
+/***/ }),
+
 /***/ 3427:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.SpecificationHandler = exports.Specification = exports.Result = exports.Packages = void 0;
+exports.SummaryResult = exports.SpecificationHandler = exports.Specification = exports.Result = exports.Packages = void 0;
 var Packages_1 = __webpack_require__(953);
 Object.defineProperty(exports, "Packages", ({ enumerable: true, get: function () { return Packages_1.Packages; } }));
 var Result_1 = __webpack_require__(8292);
@@ -954,6 +1069,8 @@ var Specification_1 = __webpack_require__(6892);
 Object.defineProperty(exports, "Specification", ({ enumerable: true, get: function () { return Specification_1.Specification; } }));
 var SpecificationHandler_1 = __webpack_require__(4459);
 Object.defineProperty(exports, "SpecificationHandler", ({ enumerable: true, get: function () { return SpecificationHandler_1.SpecificationHandler; } }));
+var SummaryResult_1 = __webpack_require__(3834);
+Object.defineProperty(exports, "SummaryResult", ({ enumerable: true, get: function () { return SummaryResult_1.SummaryResult; } }));
 
 
 /***/ }),
@@ -964,12 +1081,13 @@ Object.defineProperty(exports, "SpecificationHandler", ({ enumerable: true, get:
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.SpecificationHandler = exports.Specification = exports.Result = exports.Packages = void 0;
+exports.SummaryResult = exports.SpecificationHandler = exports.Specification = exports.Result = exports.Packages = void 0;
 var classes_1 = __webpack_require__(3427);
 Object.defineProperty(exports, "Packages", ({ enumerable: true, get: function () { return classes_1.Packages; } }));
 Object.defineProperty(exports, "Result", ({ enumerable: true, get: function () { return classes_1.Result; } }));
 Object.defineProperty(exports, "Specification", ({ enumerable: true, get: function () { return classes_1.Specification; } }));
 Object.defineProperty(exports, "SpecificationHandler", ({ enumerable: true, get: function () { return classes_1.SpecificationHandler; } }));
+Object.defineProperty(exports, "SummaryResult", ({ enumerable: true, get: function () { return classes_1.SummaryResult; } }));
 
 
 /***/ }),
@@ -1007,7 +1125,7 @@ const manifests = [
     { name: 'package', uses: 'PackageParser' },
     { name: 'pip', uses: 'PipParser' }
 ];
-const as = ['json'];
+const as = ['list', 'summarized-list'];
 // This needs to be kept in sync with action.yml
 exports.action_yaml_inputs = new Map([
     [
@@ -1021,7 +1139,7 @@ exports.action_yaml_inputs = new Map([
         'source_directory',
         new Map([
             ['required', 'false'],
-            ['default', './opg-repository-reporting/']
+            ['default', './test-repo']
         ])
     ],
     [
@@ -1401,12 +1519,11 @@ class ManifestResults {
             const report = (_a = this.configuration) === null || _a === void 0 ? void 0 : _a.artifact;
             const now = (new Date()).toISOString().slice(0, 19).replace(/:/g, '-');
             for (const as_name of report.as) {
-                const filename = `${report.name}`;
                 const as_exists = outputer_1.AvailableOutputers.has(as_name);
                 if (as_exists) {
                     const out = outputer_1.AvailableOutputers.get(as_name);
-                    const writtern_file = out.write(filename, this.output);
-                    saved.push(writtern_file);
+                    const writtern_files = out.write(this.output);
+                    saved.push(...writtern_files);
                 }
             }
             return new Promise(resolve => { resolve(saved); });
@@ -1456,7 +1573,7 @@ exports.PackageParser = void 0;
 const generics_1 = __webpack_require__(9999);
 const classes_1 = __webpack_require__(2299);
 const selectors_1 = __webpack_require__(9249);
-function PackageParser(name = 'package', filesystem, manifest_name = 'package-json', lock_name = 'package-lock', manifest_file_pattern = "**/package.json" /* Manifest */, lock_file_pattern = "**/package-lock.json" /* Lock */, manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
+function PackageParser(name = 'package', filesystem, manifest_name = 'package-json', lock_name = 'package-lock', manifest_file_pattern = "**/*/package.json" /* Manifest */, lock_file_pattern = "**/*/package-lock.json" /* Lock */, manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
     //-- Create the specification handlers
     const manifestHandler = new classes_1.NpmManifestHandler(filesystem, manifest_file_pattern, manifest_selectors);
     const lockHandler = new classes_1.NpmLockHandler(filesystem, lock_file_pattern, lock_selectors, recursive_lock_selectors);
@@ -1494,6 +1611,7 @@ class NpmLockHandler extends composer_1.ComposerLockHandler {
     constructor() {
         super(...arguments);
         this.type = "Lock" /* Lock */;
+        this.tags = ['javascript', 'npm', "Lock" /* Lock */];
     }
     // Lock files dont recurse for package-lock files
     recurse() {
@@ -1537,6 +1655,7 @@ class NpmManifestHandler extends composer_1.ComposerManifestHandler {
     constructor() {
         super(...arguments);
         this.type = "Manifest" /* Manifest */;
+        this.tags = ['javascript', 'npm', "Manifest" /* Manifest */];
     }
 }
 exports.NpmManifestHandler = NpmManifestHandler;
@@ -1593,7 +1712,7 @@ exports.LockSelectorsRecursiveArray = [];
 
 /***/ }),
 
-/***/ 9806:
+/***/ 4653:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1618,24 +1737,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AsJson = void 0;
+exports.List = void 0;
 const fs = __importStar(__webpack_require__(5747));
+const map_to_object_1 = __webpack_require__(3276);
 const Outputer_1 = __webpack_require__(6661);
-class AsJson extends Outputer_1.Outputer {
-    write(filename, data) {
-        const obj = this.to_object(data);
-        const json_string = JSON.stringify(obj);
-        const filepath = filename + '.json';
-        fs.writeFileSync(filepath, json_string);
-        return filepath;
+class List extends Outputer_1.Outputer {
+    constructor() {
+        super(...arguments);
+        this.filename = 'list.raw.json';
     }
-    to_object(data) {
-        let obj = {};
-        Object.assign(obj, ...[...data.entries()].map(([k, v]) => ({ [k]: v })));
-        return obj;
+    write(data) {
+        const obj = map_to_object_1.map_to_object(data);
+        const json_string = JSON.stringify(obj);
+        fs.writeFileSync(this.filename, json_string);
+        return [this.filename];
     }
 }
-exports.AsJson = AsJson;
+exports.List = List;
 
 
 /***/ }),
@@ -1648,9 +1766,81 @@ exports.AsJson = AsJson;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Outputer = void 0;
 class Outputer {
-    write(filename, data) { return ''; }
+    write(data) { return ['']; }
 }
 exports.Outputer = Outputer;
+
+
+/***/ }),
+
+/***/ 9635:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SummarizedList = void 0;
+const fs = __importStar(__webpack_require__(5747));
+const map_to_object_1 = __webpack_require__(3276);
+const generics_1 = __webpack_require__(9999);
+const List_1 = __webpack_require__(4653);
+class SummarizedList extends List_1.List {
+    constructor() {
+        super(...arguments);
+        this.filename = 'list.summary';
+    }
+    write(data) {
+        /* eslint-disable no-console */
+        let packages = data.get('packages');
+        let summarised = [];
+        // we do some post processing on the package data by
+        // converting it to a summary result which reduces
+        // data
+        for (const pkg of packages) {
+            let summary = new generics_1.SummaryResult();
+            summarised.push(summary.from_result(pkg));
+        }
+        data.set('packages', summarised);
+        // write this out as json
+        const obj = map_to_object_1.map_to_object(data);
+        const json_string = JSON.stringify(obj);
+        fs.writeFileSync(this.filename + ".json", json_string);
+        // write to markdown, no headers so its easer to merge multiple files
+        let markdown = '';
+        // now loop over data and add to rows
+        for (const row of summarised) {
+            const occ = row.occurances_to_string_array(row.sources()).join('<br>');
+            const tags = row.tags.join(', ');
+            markdown += `| ${row.name} | ${row.version} | ${occ} | ${tags} |\n`;
+        }
+        fs.writeFileSync(this.filename + ".md", markdown);
+        /* eslint-enable no-console */
+        return [
+            this.filename + '.md',
+            this.filename + ".json"
+        ];
+    }
+}
+exports.SummarizedList = SummarizedList;
 
 
 /***/ }),
@@ -1661,9 +1851,11 @@ exports.Outputer = Outputer;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AsJson = void 0;
-var AsJson_1 = __webpack_require__(9806);
-Object.defineProperty(exports, "AsJson", ({ enumerable: true, get: function () { return AsJson_1.AsJson; } }));
+exports.SummarizedList = exports.List = void 0;
+var List_1 = __webpack_require__(4653);
+Object.defineProperty(exports, "List", ({ enumerable: true, get: function () { return List_1.List; } }));
+var SummarizedList_1 = __webpack_require__(9635);
+Object.defineProperty(exports, "SummarizedList", ({ enumerable: true, get: function () { return SummarizedList_1.SummarizedList; } }));
 
 
 /***/ }),
@@ -1674,11 +1866,12 @@ Object.defineProperty(exports, "AsJson", ({ enumerable: true, get: function () {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AvailableOutputers = exports.AsJson = void 0;
+exports.AvailableOutputers = void 0;
 const classes_1 = __webpack_require__(7582);
-var classes_2 = __webpack_require__(7582);
-Object.defineProperty(exports, "AsJson", ({ enumerable: true, get: function () { return classes_2.AsJson; } }));
-exports.AvailableOutputers = new Map([['json', new classes_1.AsJson()]]);
+exports.AvailableOutputers = new Map([
+    ['list', new classes_1.List()],
+    ['summarized-list', new classes_1.SummarizedList()]
+]);
 
 
 /***/ }),
@@ -1713,7 +1906,7 @@ const core = __importStar(__webpack_require__(2186));
 const generics_1 = __webpack_require__(9999);
 const classes_1 = __webpack_require__(65);
 const selectors_1 = __webpack_require__(7556);
-function PipParser(name = 'pip', filesystem, manifest_name = 'pip', lock_name = 'pip-lock', manifest_file_pattern = "**/requirements.txt" /* Manifest */, lock_file_pattern = "!**" /* Lock */, 
+function PipParser(name = 'pip', filesystem, manifest_name = 'pip', lock_name = 'pip-lock', manifest_file_pattern = "**/*/requirements.txt" /* Manifest */, lock_file_pattern = "!**" /* Lock */, 
 // these are ignored, but kept for consistnecy
 manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
     //-- Create the specification handlers
@@ -1756,6 +1949,7 @@ class PipLockHandler extends PipManifestHandler_1.PipManifestHandler {
     constructor() {
         super(...arguments);
         this.type = "Lock" /* Lock */;
+        this.tags = ['python', 'pip', "Lock" /* Lock */];
     }
     // do nothing, there is no lock file for pip
     process() {
@@ -1812,6 +2006,7 @@ class PipManifestHandler extends generics_1.SpecificationHandler {
     constructor() {
         super(...arguments);
         this.type = "Manifest" /* Manifest */;
+        this.tags = ['python', 'pip', "Manifest" /* Manifest */];
     }
     // overwrite the valid check, as we dont care about selectors
     valid() {
@@ -1821,8 +2016,7 @@ class PipManifestHandler extends generics_1.SpecificationHandler {
     }
     // return a result from a line in the source file
     result(line, source) {
-        return new generics_2.Result(line, '', // no version data in pip
-        source.replace(process.cwd(), '.'), this.type);
+        return new generics_2.Result(line, '', source.replace(process.cwd(), '.'), this.type, '', this.tags);
     }
     // convert the file content to multiple lines
     by_line(content, source) {
