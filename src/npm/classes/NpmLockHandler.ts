@@ -6,7 +6,7 @@ export class NpmLockHandler extends ComposerLockHandler
         implements ISpecificationHandler, IValidateable {
 
     type:ManifestType = ManifestType.Lock
-    tags: string[] = ['language:javascript', 'type:npm', 'is:' + ManifestType.Lock]
+    tags: string[] = ['javascript', 'npm', ManifestType.Lock]
     // Lock files dont recurse for package-lock files
     async recurse(): Promise<void> {
         return new Promise<void>( resolve => { resolve() } )

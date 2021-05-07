@@ -10,7 +10,7 @@ export class ComposerSpecificationHandler extends SpecificationHandler
         implements ISpecificationHandler, IValidateable {
 
     type:ManifestType = ManifestType.Null
-    tags: string[] = ['language:php', 'type:composer', 'is:' + ManifestType.Manifest]
+    tags: string[] = ['php', 'composer', ManifestType.Manifest]
     // process each selector thats been set
     per_selector(selector:string): string {
         const first = selector.charAt(0)
