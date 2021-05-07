@@ -69,3 +69,18 @@ If used, this should point to a `yaml` file that contains all the configuration 
 ## Output
 
 This action generates an artifact of all reports and uploads it to the completed workflow.
+
+
+
+## Process flow
+
+- **Main.ts** reads and creates the configuration data
+- **Main.ts** creates an instance of `ManifestResults` passing in the configuration and calls `.process()`
+- **ManifestResults** `.process()` calls `.manifests()` to loop over each `configuration.manifests` entry and calls `.run_parser(parser)`
+- **ManifestResults** `.run_parser(parser)` looks for `parser.uses` within `AvailableManifestParsers` and if found, checks its valid. `AvailableManifestParsers` is map of name & function, the function is a factory creation method.
+- **ManifestResults** `.run_parser(parser)` then calls `.instance(manifest)` to create a new IPackages compatible class using the function from `AvailableManifestParsers`. It then calls `.get(true)` on the newly created class.
+- **Packages** has `manifest` & `lock` properties configured from the factory creation function
+- **Packages** `.get(true)` calls `.parse()` on both the manifest and the lock. This is handled in a generic class - `Specification`
+- **Specification** is also setup in the factory creation function and attached to `Packages` with handlers being passed in
+- **Specification** `.parse()` iterates over its `.handlers` array and calls `.process()` on each. A handler is aimed at processing the specifics of an exact manifest / lock file, so these are targeted to languages.
+- **ISpecificationHandler** classes contain a filepath pattern to find files, and create a `.results` array while processing files. How it processes those files is determined by the specific class within the overwridden `.process()` method. It is generally aimed at processing json like files using jspath selectors, but this is not true of all
