@@ -7,8 +7,10 @@ import { ResultMeta } from './ResultMeta';
 // Results is used to capture details about every package found
 export class Result implements IResult, IValidateable{
     name:Required<string> = ''
-    occurances:ResultMeta[] = []
     tags:string[] = []
+
+    occurances:ResultMeta[] = []
+
     constructor(
         name?: string,
         version?:string,
@@ -32,7 +34,7 @@ export class Result implements IResult, IValidateable{
     }
 
     // join the fields from extra into this one
-    expand(extra: IResult): void {
+    expand(extra: Result): void {
         this.occurances.push(...extra.occurances)
         this.tags = [...new Set([...this.tags, ...extra.tags])]
 

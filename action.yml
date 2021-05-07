@@ -31,7 +31,7 @@ inputs:
   artifact_as:
     required: false
     description: 'Determine which output reports will be generated from the raw data. Parsed via JSON.parse'
-    detault: "['package-listing']"
+    detault: "['list','summarized-list']"
 
 runs:
   using: 'node12'

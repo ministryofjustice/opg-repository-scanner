@@ -6,7 +6,7 @@ const manifests: object[] = [
     {name: 'package', uses: 'PackageParser'},
     {name: 'pip', uses: 'PipParser'}
 ]
-const as: string[] = ['package-listing']
+const as: string[] = ['list', 'summarized-list']
 // This needs to be kept in sync with action.yml
 export const action_yaml_inputs = new Map<string, Map<string, string>>([
     [

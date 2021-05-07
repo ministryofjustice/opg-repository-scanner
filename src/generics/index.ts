@@ -1,4 +1,4 @@
-export {Packages, Result, Specification, SpecificationHandler} from './classes'
+export {Packages, Result, Specification, SpecificationHandler, SummaryResult} from './classes'
 
 export {
     IPackages,
