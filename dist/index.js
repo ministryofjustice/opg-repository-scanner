@@ -1584,7 +1584,17 @@ exports.PackageParser = void 0;
 const generics_1 = __webpack_require__(9999);
 const classes_1 = __webpack_require__(2299);
 const selectors_1 = __webpack_require__(9249);
-function PackageParser(name = 'package', filesystem, manifest_name = 'package-json', lock_name = 'package-lock', manifest_file_pattern = "**/package.json" /* Manifest */, lock_file_pattern = "**/package-lock.json" /* Lock */, manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
+function PackageParser(name = 'package', filesystem, manifest_name = 'package-json', lock_name = 'package-lock', manifest_file_pattern, lock_file_pattern, manifest_selectors, lock_selectors, recursive_lock_selectors) {
+    if (typeof manifest_file_pattern === 'undefined')
+        manifest_file_pattern = "**/package.json" /* Manifest */;
+    if (typeof lock_file_pattern === 'undefined')
+        lock_file_pattern = "**/package-lock.json" /* Lock */;
+    if (typeof manifest_selectors === 'undefined')
+        manifest_selectors = selectors_1.ManifestSelectorsArray;
+    if (typeof lock_selectors === 'undefined')
+        lock_selectors = selectors_1.LockSelectorsArray;
+    if (typeof recursive_lock_selectors === 'undefined')
+        recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray;
     //-- Create the specification handlers
     const manifestHandler = new classes_1.NpmManifestHandler(filesystem, manifest_file_pattern, manifest_selectors);
     const lockHandler = new classes_1.NpmLockHandler(filesystem, lock_file_pattern, lock_selectors, recursive_lock_selectors);
@@ -1915,9 +1925,19 @@ const core = __importStar(__webpack_require__(2186));
 const generics_1 = __webpack_require__(9999);
 const classes_1 = __webpack_require__(65);
 const selectors_1 = __webpack_require__(7556);
-function PipParser(name = 'pip', filesystem, manifest_name = 'pip', lock_name = 'pip-lock', manifest_file_pattern = "**/requirements.txt" /* Manifest */, lock_file_pattern = "!**" /* Lock */, 
+function PipParser(name = 'pip', filesystem, manifest_name = 'pip', lock_name = 'pip-lock', manifest_file_pattern, lock_file_pattern, 
 // these are ignored, but kept for consistnecy
-manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
+manifest_selectors, lock_selectors, recursive_lock_selectors) {
+    if (typeof manifest_file_pattern === 'undefined')
+        manifest_file_pattern = "**/requirements.txt" /* Manifest */;
+    if (typeof lock_file_pattern === 'undefined')
+        lock_file_pattern = "!**" /* Lock */;
+    if (typeof manifest_selectors === 'undefined')
+        manifest_selectors = selectors_1.ManifestSelectorsArray;
+    if (typeof lock_selectors === 'undefined')
+        lock_selectors = selectors_1.LockSelectorsArray;
+    if (typeof recursive_lock_selectors === 'undefined')
+        recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray;
     //-- Create the specification handlers
     const manifestHandler = new classes_1.PipManifestHandler(filesystem, manifest_file_pattern);
     const lockHandler = new classes_1.PipLockHandler(filesystem, lock_file_pattern);
