@@ -3,7 +3,8 @@ import * as core from '@actions/core'
 const source_exclude: string[] = ['__samples__**', '__tests__**', 'node_modules**', 'vendor**']
 const manifests: object[] = [
     {name: 'composer', uses: 'ComposerParser'},
-    {name: 'package', uses: 'PackageParser'}
+    {name: 'package', uses: 'PackageParser'},
+    {name: 'pip', uses: 'PipParser'}
 ]
 const as: string[] = ['json']
 // This needs to be kept in sync with action.yml
