@@ -20,7 +20,7 @@ const sample_dir: string = './__samples__/'
 
 test('postive: test a composer lock handler finds all packages from file without recursion', async () => {
     const dir:string = sample_dir + 'app/php/doctrine-instantiator/'
-    const pattern:string = 'composer.lock'
+    const pattern:string = '**/composer.lock'
     const file:string = dir + pattern
     const filesys:Source = new Source(dir, false)
     const lock = new ComposerLockHandler(filesys, pattern, LockSelectorsArray)
@@ -38,7 +38,7 @@ test('postive: test a composer lock handler finds all packages from file without
 
 test('postive: test a composer lock handler finds all packages from file with recursion', async () => {
     const dir:string = sample_dir + 'app/php/doctrine-instantiator/'
-    const pattern:string = 'composer.lock'
+    const pattern:string = 'sub-folder/composer.lock'
     const file:string = dir + pattern
     const filesys:Source = new Source(dir, false)
     const lock = new ComposerLockHandler(filesys, pattern, LockSelectorsArray, LockSelectorsRecursiveArray)

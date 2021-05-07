@@ -23,7 +23,6 @@ export function ComposerParser(
     Specification<ComposerManifestHandler, Result>,
     Specification<ComposerLockHandler, Result>
 > {
-
     if (typeof manifest_file_pattern === 'undefined')
         manifest_file_pattern = ComposerPatterns.Manifest
     if (typeof lock_file_pattern === 'undefined') lock_file_pattern = ComposerPatterns.Lock
