@@ -24,7 +24,7 @@ export class SummarizedList extends List implements IOutputer{
         const json_string:string = JSON.stringify(obj)
         fs.writeFileSync(this.filename + ".json", json_string)
         // write to markdown as well, no headers so its easer to merge multiple files
-        let markdown = ''
+        let markdown = '| Package | Version | Occurances | Tags |\n| -- | -- | -- | -- |\n'
         // now loop over data and add to rows
         for (const row of summarised) {
             const occ = row.occurances_to_string_array( row.sources() ).join('<br>')
