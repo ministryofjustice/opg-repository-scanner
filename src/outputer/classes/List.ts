@@ -7,11 +7,11 @@ export class List extends Outputer implements IOutputer{
 
     protected filename = 'list.raw.json'
 
-    write(data:Map<string,any>): string {
+    write(data:Map<string,any>): string[] {
         const obj = map_to_object(data)
         const json_string:string = JSON.stringify(obj)
         fs.writeFileSync(this.filename, json_string)
-        return this.filename
+        return [this.filename]
     }
 
 
