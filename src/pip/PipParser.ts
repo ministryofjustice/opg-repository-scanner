@@ -13,13 +13,19 @@ export function PipParser(
     manifest_name = 'pip',
     lock_name = 'pip-lock',
 
-    manifest_file_pattern: string = PipPatterns.Manifest,
-    lock_file_pattern: string = PipPatterns.Lock,
+    manifest_file_pattern?: string,
+    lock_file_pattern?: string,
     // these are ignored, but kept for consistnecy
-    manifest_selectors: string[] = ManifestSelectorsArray,
-    lock_selectors: string[] = LockSelectorsArray,
-    recursive_lock_selectors: string[] = LockSelectorsRecursiveArray
+    manifest_selectors?: string[],
+    lock_selectors?: string[],
+    recursive_lock_selectors?: string[]
 ): Packages<Specification<PipManifestHandler, Result>, Specification<PipLockHandler, Result>> {
+    if (typeof manifest_file_pattern === 'undefined') manifest_file_pattern = PipPatterns.Manifest
+    if (typeof lock_file_pattern === 'undefined') lock_file_pattern = PipPatterns.Lock
+    if (typeof manifest_selectors === 'undefined') manifest_selectors = ManifestSelectorsArray
+    if (typeof lock_selectors === 'undefined') lock_selectors = LockSelectorsArray
+    if (typeof recursive_lock_selectors === 'undefined')
+        recursive_lock_selectors = LockSelectorsRecursiveArray
     //-- Create the specification handlers
     const manifestHandler = new PipManifestHandler(filesystem, manifest_file_pattern)
     const lockHandler = new PipLockHandler(filesystem, lock_file_pattern)

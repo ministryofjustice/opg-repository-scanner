@@ -12,14 +12,20 @@ export function PackageParser(
     manifest_name = 'package-json',
     lock_name = 'package-lock',
 
-    manifest_file_pattern: string = NpmPatterns.Manifest,
-    lock_file_pattern: string = NpmPatterns.Lock,
+    manifest_file_pattern?: string,
+    lock_file_pattern?: string,
 
-    manifest_selectors: string[] = ManifestSelectorsArray,
-    lock_selectors: string[] = LockSelectorsArray,
-
-    recursive_lock_selectors: string[] = LockSelectorsRecursiveArray
+    manifest_selectors?: string[],
+    lock_selectors?: string[],
+    recursive_lock_selectors?: string[]
 ): Packages<Specification<NpmManifestHandler, Result>, Specification<NpmLockHandler, Result>> {
+    if (typeof manifest_file_pattern === 'undefined') manifest_file_pattern = NpmPatterns.Manifest
+    if (typeof lock_file_pattern === 'undefined') lock_file_pattern = NpmPatterns.Lock
+    if (typeof manifest_selectors === 'undefined') manifest_selectors = ManifestSelectorsArray
+    if (typeof lock_selectors === 'undefined') lock_selectors = LockSelectorsArray
+    if (typeof recursive_lock_selectors === 'undefined')
+        recursive_lock_selectors = LockSelectorsRecursiveArray
+
     //-- Create the specification handlers
     const manifestHandler = new NpmManifestHandler(
         filesystem,
