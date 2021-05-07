@@ -11,7 +11,7 @@ export class ComposerManifestHandler extends ComposerSpecificationHandler
         implements ISpecificationHandler, IValidateable {
 
     type:ManifestType = ManifestType.Manifest
-    tags: string[] = ['language:php', 'type:composer', 'is:manifest']
+    tags: string[] = ['language:php', 'type:composer', 'is:' + ManifestType.Manifest]
     // convert a map to a result
     protected result(map:Map<string, any>, source:string, selector:string) : IResult|boolean {
         if(map.has('name') && map.has('version')) {

@@ -11,7 +11,7 @@ export class PipManifestHandler extends SpecificationHandler
         implements ISpecificationHandler, IValidateable {
 
     type:ManifestType = ManifestType.Manifest
-    tags: string[] = ['language:python', 'type:pip', 'is:manifest']
+    tags: string[] = ['language:python', 'type:pip', 'is:' + ManifestType.Manifest]
 
     // overwrite the valid check, as we dont care about selectors
     valid(): boolean {
