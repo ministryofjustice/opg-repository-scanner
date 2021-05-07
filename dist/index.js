@@ -2,7 +2,7 @@ require('./sourcemap-register.js');module.exports =
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 1194:
+/***/ 4091:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -12,7 +12,7 @@ exports.ComposerParser = void 0;
 const generics_1 = __webpack_require__(9999);
 const classes_1 = __webpack_require__(7609);
 const selectors_1 = __webpack_require__(8118);
-function ComposerParser(name = 'composer', filesystem, manifest_name = 'composer-json', lock_name = 'composer-lock', manifest_file_pattern = "**/*/composer.json" /* Manifest */, lock_file_pattern = "**/*/composer.lock" /* Lock */, manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
+function ComposerParser(name = 'composer', filesystem, manifest_name = 'composer-json', lock_name = 'composer-lock', manifest_file_pattern = "**/composer.json" /* Manifest */, lock_file_pattern = "**/composer.lock" /* Lock */, manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
     //-- Create the specification handlers
     const manifestHandler = new classes_1.ComposerManifestHandler(filesystem, manifest_file_pattern, manifest_selectors);
     const lockHandler = new classes_1.ComposerLockHandler(filesystem, lock_file_pattern, lock_selectors, recursive_lock_selectors);
@@ -289,8 +289,8 @@ var selectors_1 = __webpack_require__(8118);
 Object.defineProperty(exports, "ManifestSelectorsArray", ({ enumerable: true, get: function () { return selectors_1.ManifestSelectorsArray; } }));
 Object.defineProperty(exports, "LockSelectorsArray", ({ enumerable: true, get: function () { return selectors_1.LockSelectorsArray; } }));
 Object.defineProperty(exports, "LockSelectorsRecursiveArray", ({ enumerable: true, get: function () { return selectors_1.LockSelectorsRecursiveArray; } }));
-var Factory_1 = __webpack_require__(1194);
-Object.defineProperty(exports, "ComposerParser", ({ enumerable: true, get: function () { return Factory_1.ComposerParser; } }));
+var ComposerParser_1 = __webpack_require__(4091);
+Object.defineProperty(exports, "ComposerParser", ({ enumerable: true, get: function () { return ComposerParser_1.ComposerParser; } }));
 
 
 /***/ }),
@@ -1564,7 +1564,7 @@ Object.defineProperty(exports, "AvailableManifestParsers", ({ enumerable: true, 
 
 /***/ }),
 
-/***/ 9481:
+/***/ 4817:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -1574,7 +1574,7 @@ exports.PackageParser = void 0;
 const generics_1 = __webpack_require__(9999);
 const classes_1 = __webpack_require__(2299);
 const selectors_1 = __webpack_require__(9249);
-function PackageParser(name = 'package', filesystem, manifest_name = 'package-json', lock_name = 'package-lock', manifest_file_pattern = "**/*/package.json" /* Manifest */, lock_file_pattern = "**/*/package-lock.json" /* Lock */, manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
+function PackageParser(name = 'package', filesystem, manifest_name = 'package-json', lock_name = 'package-lock', manifest_file_pattern = "**/package.json" /* Manifest */, lock_file_pattern = "**/package-lock.json" /* Lock */, manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
     //-- Create the specification handlers
     const manifestHandler = new classes_1.NpmManifestHandler(filesystem, manifest_file_pattern, manifest_selectors);
     const lockHandler = new classes_1.NpmLockHandler(filesystem, lock_file_pattern, lock_selectors, recursive_lock_selectors);
@@ -1693,8 +1693,8 @@ Object.defineProperty(exports, "LockSelectorsRecursiveArray", ({ enumerable: tru
 var classes_1 = __webpack_require__(2299);
 Object.defineProperty(exports, "NpmManifestHandler", ({ enumerable: true, get: function () { return classes_1.NpmManifestHandler; } }));
 Object.defineProperty(exports, "NpmLockHandler", ({ enumerable: true, get: function () { return classes_1.NpmLockHandler; } }));
-var Factory_1 = __webpack_require__(9481);
-Object.defineProperty(exports, "PackageParser", ({ enumerable: true, get: function () { return Factory_1.PackageParser; } }));
+var PackageParser_1 = __webpack_require__(4817);
+Object.defineProperty(exports, "PackageParser", ({ enumerable: true, get: function () { return PackageParser_1.PackageParser; } }));
 
 
 /***/ }),
@@ -1875,7 +1875,7 @@ exports.AvailableOutputers = new Map([
 
 /***/ }),
 
-/***/ 6189:
+/***/ 6367:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1905,7 +1905,7 @@ const core = __importStar(__webpack_require__(2186));
 const generics_1 = __webpack_require__(9999);
 const classes_1 = __webpack_require__(65);
 const selectors_1 = __webpack_require__(7556);
-function PipParser(name = 'pip', filesystem, manifest_name = 'pip', lock_name = 'pip-lock', manifest_file_pattern = "**/*/requirements.txt" /* Manifest */, lock_file_pattern = "!**" /* Lock */, 
+function PipParser(name = 'pip', filesystem, manifest_name = 'pip', lock_name = 'pip-lock', manifest_file_pattern = "**/requirements.txt" /* Manifest */, lock_file_pattern = "!**" /* Lock */, 
 // these are ignored, but kept for consistnecy
 manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
     //-- Create the specification handlers
@@ -2085,8 +2085,8 @@ Object.defineProperty(exports, "PipLockHandler", ({ enumerable: true, get: funct
 Object.defineProperty(exports, "PipManifestHandler", ({ enumerable: true, get: function () { return classes_1.PipManifestHandler; } }));
 var selectors_1 = __webpack_require__(7556);
 Object.defineProperty(exports, "ManifestSelectorsArray", ({ enumerable: true, get: function () { return selectors_1.ManifestSelectorsArray; } }));
-var Factory_1 = __webpack_require__(6189);
-Object.defineProperty(exports, "PipParser", ({ enumerable: true, get: function () { return Factory_1.PipParser; } }));
+var PipParser_1 = __webpack_require__(6367);
+Object.defineProperty(exports, "PipParser", ({ enumerable: true, get: function () { return PipParser_1.PipParser; } }));
 
 
 /***/ }),
