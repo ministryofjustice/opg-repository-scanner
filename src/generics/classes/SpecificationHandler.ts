@@ -50,7 +50,7 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
         const files = await glober.glob()
 
         core.debug(`[${this.constructor.name}](files) patterns: (${this.source.directory}) [${pattern}] length: ${files.length}`)
-        core.info(`Found [${files.length}] files for patterns [${pattern.replace(/\n/g, ',')}]`)
+        core.info(`Found [${files.length}] files for patterns [${pattern.replace(/\n/g, ',')}] using directory (${this.source.directory})`)
 
         return new Promise<string[]>( (resolve) => {
             resolve(files)
