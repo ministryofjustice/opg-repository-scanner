@@ -28,49 +28,49 @@ const sample_dir: string = './__samples__/'
 
 // test('test', async () => {})
 
-// test('postive: test construction raw and reporting with a known & small file', async () => {
-//     const filesys = new Source(sample_dir)
-//     // custom locations for the test using known packages (and small numbers)
-//     const mFile:string = "app/php/doctrine-instantiator/sub-folder/composer.json"
-//     const mName:string = 'composer-manifest-spec'
-//     const lFile:string = "app/php/doctrine-instantiator/sub-folder/composer.lock"
-//     const lName:string = 'composer-lock-spec'
+test('postive: test construction raw and reporting with a known & small file', async () => {
+    const filesys = new Source(sample_dir)
+    // custom locations for the test using known packages (and small numbers)
+    const mFile:string = "app/php/doctrine-instantiator/sub-folder/composer.json"
+    const mName:string = 'composer-manifest-spec'
+    const lFile:string = "app/php/doctrine-instantiator/sub-folder/composer.lock"
+    const lName:string = 'composer-lock-spec'
 
-//     // handlers to load a file
-//     const manifestHandler = new ComposerManifestHandler(
-//         filesys,
-//         mFile,
-//         ManifestSelectorsArray
-//     )
+    // handlers to load a file
+    const manifestHandler = new ComposerManifestHandler(
+        filesys,
+        mFile,
+        ManifestSelectorsArray
+    )
 
-//     const lockHandler = new ComposerLockHandler(
-//         filesys,
-//         lFile,
-//         LockSelectorsArray,
-//         LockSelectorsRecursiveArray
-//     )
+    const lockHandler = new ComposerLockHandler(
+        filesys,
+        lFile,
+        LockSelectorsArray,
+        LockSelectorsRecursiveArray
+    )
 
-//     const manifestSpec = new Specification<ComposerManifestHandler, Result>(
-//                         mName,
-//                         [manifestHandler]
-//     )
+    const manifestSpec = new Specification<ComposerManifestHandler, Result>(
+                        mName,
+                        [manifestHandler]
+    )
 
-//     const lockSpec = new Specification<ComposerLockHandler, Result>(
-//                         lName,
-//                         [lockHandler]
-//     )
+    const lockSpec = new Specification<ComposerLockHandler, Result>(
+                        lName,
+                        [lockHandler]
+    )
 
-//     const packages = new Packages<Specification<ComposerManifestHandler, Result>,
-//                                   Specification<ComposerLockHandler, Result> >(
-//         'test-composer-package',
-//         manifestSpec,
-//         lockSpec
-//     )
+    const packages = new Packages<Specification<ComposerManifestHandler, Result>,
+                                  Specification<ComposerLockHandler, Result> >(
+        'test-composer-package',
+        manifestSpec,
+        lockSpec
+    )
 
-//     const res = await packages.get(false)
-//     expect(res.length).toEqual(10)
+    const res = await packages.get(false)
+    expect(res.length).toEqual(10)
 
-// })
+})
 
 
 test('postive: test construction via factory with a known file without cleanup', async () => {
@@ -85,12 +85,12 @@ test('postive: test construction via factory with a known file without cleanup',
 })
 
 
-// test('postive: test construction via factory with a known file with cleanup', async () => {
-//     const dir = sample_dir + "app/php/doctrine-instantiator/"
-//     const filesys = new Source(dir)
-//     let packages = ComposerParser('test', filesys)
+test('postive: test construction via factory with a known file with cleanup', async () => {
+    const dir = sample_dir + "app/php/doctrine-instantiator/"
+    const filesys = new Source(dir)
+    let packages = ComposerParser('test', filesys)
 
-//     expect(packages).toBeInstanceOf(Packages)
-//     const res = await packages.get()
-//     expect(res.length).toEqual(9)
-// })
+    expect(packages).toBeInstanceOf(Packages)
+    const res = await packages.get()
+    expect(res.length).toEqual(9)
+})
