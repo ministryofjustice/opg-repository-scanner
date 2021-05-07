@@ -27,7 +27,7 @@ export const action_yaml_inputs = new Map<string, Map<string, string>>([
         'source_follow_symlinks',
         new Map<string, string>([
             ['required', 'false'],
-            ['default', 'true']
+            ['default', 'false']
         ])
     ],
     [
