@@ -35,6 +35,7 @@ async function run(): Promise<void> {
 
         if (configuration.valid()) {
             core.info('Configuration validated.')
+            core.info('Configuration source directory: ' + configuration.source.directory)
 
             const handler: ManifestResults = new ManifestResults(configuration)
             await handler.process()
