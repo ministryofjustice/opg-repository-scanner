@@ -1004,7 +1004,8 @@ const core = __importStar(__webpack_require__(2186));
 const source_exclude = ['__samples__**', '__tests__**', 'node_modules**', 'vendor**'];
 const manifests = [
     { name: 'composer', uses: 'ComposerParser' },
-    { name: 'package', uses: 'PackageParser' }
+    { name: 'package', uses: 'PackageParser' },
+    { name: 'pip', uses: 'PipParser' }
 ];
 const as = ['json'];
 // This needs to be kept in sync with action.yml
@@ -1020,14 +1021,14 @@ exports.action_yaml_inputs = new Map([
         'source_directory',
         new Map([
             ['required', 'false'],
-            ['default', './']
+            ['default', './opg-repository-reporting/']
         ])
     ],
     [
         'source_follow_symlinks',
         new Map([
             ['required', 'false'],
-            ['default', 'false']
+            ['default', 'true']
         ])
     ],
     [
@@ -1245,6 +1246,7 @@ function run() {
             /* eslint-enable no-console */
             if (configuration.valid()) {
                 core.info('Configuration validated.');
+                core.info('Configuration source directory: ' + configuration.source.directory);
                 const handler = new manifestresults_1.ManifestResults(configuration);
                 yield handler.process();
                 const files = yield handler.save();
@@ -1285,10 +1287,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AvailableManifestParsers = void 0;
 const composer_1 = __webpack_require__(6666);
 const npm_1 = __webpack_require__(8146);
-exports.AvailableManifestParsers = new Map([
-    ['ComposerParser', composer_1.ComposerParser],
-    ['PackageParser', npm_1.PackageParser]
-]);
+const pip_1 = __webpack_require__(5761);
+const availableManifestParsers = new Map();
+availableManifestParsers.set('ComposerParser', composer_1.ComposerParser);
+availableManifestParsers.set('PackageParser', npm_1.PackageParser);
+availableManifestParsers.set('PipParser', pip_1.PipParser);
+exports.AvailableManifestParsers = availableManifestParsers;
 
 
 /***/ }),
@@ -1675,6 +1679,236 @@ const classes_1 = __webpack_require__(7582);
 var classes_2 = __webpack_require__(7582);
 Object.defineProperty(exports, "AsJson", ({ enumerable: true, get: function () { return classes_2.AsJson; } }));
 exports.AvailableOutputers = new Map([['json', new classes_1.AsJson()]]);
+
+
+/***/ }),
+
+/***/ 6189:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PipParser = void 0;
+const core = __importStar(__webpack_require__(2186));
+const generics_1 = __webpack_require__(9999);
+const classes_1 = __webpack_require__(65);
+const selectors_1 = __webpack_require__(7556);
+function PipParser(name = 'pip', filesystem, manifest_name = 'pip', lock_name = 'pip-lock', manifest_file_pattern = "**/requirements.txt" /* Manifest */, lock_file_pattern = "!**" /* Lock */, 
+// these are ignored, but kept for consistnecy
+manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
+    //-- Create the specification handlers
+    const manifestHandler = new classes_1.PipManifestHandler(filesystem, manifest_file_pattern);
+    const lockHandler = new classes_1.PipLockHandler(filesystem, lock_file_pattern);
+    //-- Create the specs
+    const manifestSpec = new generics_1.Specification(manifest_name, [
+        manifestHandler
+    ]);
+    const lockSpec = new generics_1.Specification(lock_name, [lockHandler]);
+    core.debug(`[PipParser] manifest_selectors length should be 0 - ${manifest_selectors.length}`);
+    core.debug(`[PipParser] lock_selectors length should be 0 - ${lock_selectors.length}`);
+    core.debug(`[PipParser] recursive_lock_selectors length should be 0 - ${recursive_lock_selectors.length}`);
+    //-- The main package
+    return new generics_1.Packages(name, manifestSpec, lockSpec);
+}
+exports.PipParser = PipParser;
+
+
+/***/ }),
+
+/***/ 1406:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PipLockHandler = void 0;
+const PipManifestHandler_1 = __webpack_require__(8132);
+class PipLockHandler extends PipManifestHandler_1.PipManifestHandler {
+    constructor() {
+        super(...arguments);
+        this.type = "Lock" /* Lock */;
+    }
+    // do nothing, there is no lock file for pip
+    process() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise(resolve => { resolve(); });
+        });
+    }
+}
+exports.PipLockHandler = PipLockHandler;
+
+
+/***/ }),
+
+/***/ 8132:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PipManifestHandler = void 0;
+const fs = __importStar(__webpack_require__(5747));
+const core = __importStar(__webpack_require__(2186));
+const generics_1 = __webpack_require__(9999);
+const generics_2 = __webpack_require__(9999);
+class PipManifestHandler extends generics_1.SpecificationHandler {
+    constructor() {
+        super(...arguments);
+        this.type = "Manifest" /* Manifest */;
+    }
+    // overwrite the valid check, as we dont care about selectors
+    valid() {
+        let valid_filepattern = (this.filepattern.length > 0);
+        core.debug(`[${this.constructor.name}](valid) valid_filepattern: ${valid_filepattern}`);
+        return (valid_filepattern);
+    }
+    // return a result from a line in the source file
+    result(line, source) {
+        return new generics_2.Result(line, '', // no version data in pip
+        source.replace(process.cwd(), '.'), this.type);
+    }
+    // convert the file content to multiple lines
+    by_line(content, source) {
+        let results = [];
+        const lines = content.split('\n');
+        for (const line of lines) {
+            if (line.length > 0) {
+                let res = this.result(line, source);
+                results.push(res);
+            }
+        }
+        return results;
+    }
+    // process all the files and generate result data
+    process_files(files) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let results = [];
+            for (const file of files) {
+                core.debug(`[${this.constructor.name}](process_files) processing file: ${file}`);
+                core.info(`Processing packages in file: [${file}]`);
+                const content = fs.readFileSync(file, { encoding: 'utf8', flag: 'r' });
+                // pip is new line based, so
+                results.push(...this.by_line(content, file));
+            }
+            return new Promise(resolve => { resolve(results); });
+        });
+    }
+    process() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const files = yield this.files();
+            const selectors = this.selector;
+            const primary = yield this.process_files(files);
+            this._results.push(...primary);
+            return new Promise(resolve => { resolve(); });
+        });
+    }
+}
+exports.PipManifestHandler = PipManifestHandler;
+
+
+/***/ }),
+
+/***/ 65:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PipManifestHandler = exports.PipLockHandler = void 0;
+var PipLockHandler_1 = __webpack_require__(1406);
+Object.defineProperty(exports, "PipLockHandler", ({ enumerable: true, get: function () { return PipLockHandler_1.PipLockHandler; } }));
+var PipManifestHandler_1 = __webpack_require__(8132);
+Object.defineProperty(exports, "PipManifestHandler", ({ enumerable: true, get: function () { return PipManifestHandler_1.PipManifestHandler; } }));
+
+
+/***/ }),
+
+/***/ 5761:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PipParser = exports.ManifestSelectorsArray = exports.PipManifestHandler = exports.PipLockHandler = void 0;
+var classes_1 = __webpack_require__(65);
+Object.defineProperty(exports, "PipLockHandler", ({ enumerable: true, get: function () { return classes_1.PipLockHandler; } }));
+Object.defineProperty(exports, "PipManifestHandler", ({ enumerable: true, get: function () { return classes_1.PipManifestHandler; } }));
+var selectors_1 = __webpack_require__(7556);
+Object.defineProperty(exports, "ManifestSelectorsArray", ({ enumerable: true, get: function () { return selectors_1.ManifestSelectorsArray; } }));
+var Factory_1 = __webpack_require__(6189);
+Object.defineProperty(exports, "PipParser", ({ enumerable: true, get: function () { return Factory_1.PipParser; } }));
+
+
+/***/ }),
+
+/***/ 7556:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LockSelectorsRecursiveArray = exports.LockSelectorsArray = exports.ManifestSelectorsArray = void 0;
+// there are no selectors for pip, its new line based
+exports.ManifestSelectorsArray = [];
+exports.LockSelectorsArray = [];
+exports.LockSelectorsRecursiveArray = [];
 
 
 /***/ }),
