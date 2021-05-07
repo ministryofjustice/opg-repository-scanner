@@ -14,7 +14,7 @@ jobs:
       - name: npm run all
         run: |
           npm install
-          npm run all -- "ComposerFactory"
+          npm run all
           ls -larth
           ls -larth ./dist
       - name: Run self
