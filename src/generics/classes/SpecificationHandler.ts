@@ -41,6 +41,7 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
 
     // return all the files that this spec matches
     async files(): Promise<string[]> {
+        this.source.directory = this.source.directory.replace(/\/$/, "") + '/'
         let pattern = this.source.directory + this.filepattern
         if(this.source.exclude.length > 0) pattern = pattern + '\n!' + this.source.exclude.join('\n!')
 

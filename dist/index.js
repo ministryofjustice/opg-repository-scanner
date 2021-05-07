@@ -923,6 +923,7 @@ class SpecificationHandler {
     // return all the files that this spec matches
     files() {
         return __awaiter(this, void 0, void 0, function* () {
+            this.source.directory = this.source.directory.replace(/\/$/, "") + '/';
             let pattern = this.source.directory + this.filepattern;
             if (this.source.exclude.length > 0)
                 pattern = pattern + '\n!' + this.source.exclude.join('\n!');
@@ -1139,14 +1140,14 @@ exports.action_yaml_inputs = new Map([
         'source_directory',
         new Map([
             ['required', 'false'],
-            ['default', './test-repo']
+            ['default', './']
         ])
     ],
     [
         'source_follow_symlinks',
         new Map([
             ['required', 'false'],
-            ['default', 'true']
+            ['default', 'false']
         ])
     ],
     [
@@ -1809,7 +1810,6 @@ class SummarizedList extends List_1.List {
         this.filename = 'list.summary';
     }
     write(data) {
-        /* eslint-disable no-console */
         let packages = data.get('packages');
         let summarised = [];
         // we do some post processing on the package data by
@@ -1824,7 +1824,7 @@ class SummarizedList extends List_1.List {
         const obj = map_to_object_1.map_to_object(data);
         const json_string = JSON.stringify(obj);
         fs.writeFileSync(this.filename + ".json", json_string);
-        // write to markdown, no headers so its easer to merge multiple files
+        // write to markdown as well, no headers so its easer to merge multiple files
         let markdown = '';
         // now loop over data and add to rows
         for (const row of summarised) {
@@ -1833,7 +1833,6 @@ class SummarizedList extends List_1.List {
             markdown += `| ${row.name} | ${row.version} | ${occ} | ${tags} |\n`;
         }
         fs.writeFileSync(this.filename + ".md", markdown);
-        /* eslint-enable no-console */
         return [
             this.filename + '.md',
             this.filename + ".json"
