@@ -3,6 +3,7 @@ import {Source} from '../config'
 import {Packages, Specification, Result} from '../generics'
 import {PipLockHandler, PipManifestHandler} from './classes'
 import {PipPatterns} from './patterns'
+import {LockSelectorsArray, LockSelectorsRecursiveArray, ManifestSelectorsArray} from './selectors'
 
 export function PipParser(
     name = 'pip',
@@ -15,9 +16,9 @@ export function PipParser(
     manifest_file_pattern: string = PipPatterns.Manifest,
     lock_file_pattern: string = PipPatterns.Lock,
     // these are ignored, but kept for consistnecy
-    manifest_selectors: string[] = [],
-    lock_selectors: string[] = [],
-    recursive_lock_selectors: string[] = []
+    manifest_selectors: string[] = ManifestSelectorsArray,
+    lock_selectors: string[] = LockSelectorsArray,
+    recursive_lock_selectors: string[] = LockSelectorsRecursiveArray
 ): Packages<Specification<PipManifestHandler, Result>, Specification<PipLockHandler, Result>> {
     //-- Create the specification handlers
     const manifestHandler = new PipManifestHandler(filesystem, manifest_file_pattern)
