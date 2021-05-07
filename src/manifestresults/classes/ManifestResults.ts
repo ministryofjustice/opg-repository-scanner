@@ -88,11 +88,10 @@ export class ManifestResults implements IManifestResults{
         const now = (new Date()).toISOString().slice(0, 19).replace(/:/g, '-')
 
         for(const as_name of report.as) {
-            const filename = `${report.name}`
             const as_exists = AvailableOutputers.has(as_name)
             if(as_exists) {
                 const out = AvailableOutputers.get(as_name) as IOutputer
-                const writtern_file = out.write(filename, this.output )
+                const writtern_file = out.write(this.output)
                 saved.push(writtern_file)
             }
         }

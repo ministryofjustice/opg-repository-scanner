@@ -1,6 +1,7 @@
 
 
 export interface IOutputer{
-    write(filename:string, data:Map<string,any>): string
+    // writes the data to a file, returns the file name
+    write(data:Map<string,any>): string
 
 }

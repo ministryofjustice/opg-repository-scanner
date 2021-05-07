@@ -35,5 +35,6 @@ export class Result implements IResult, IValidateable{
     expand(extra: IResult): void {
         this.occurances.push(...extra.occurances)
         this.tags = [...new Set([...this.tags, ...extra.tags])]
+
     }
 }
