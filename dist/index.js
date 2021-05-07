@@ -12,7 +12,17 @@ exports.ComposerParser = void 0;
 const generics_1 = __webpack_require__(9999);
 const classes_1 = __webpack_require__(7609);
 const selectors_1 = __webpack_require__(8118);
-function ComposerParser(name = 'composer', filesystem, manifest_name = 'composer-json', lock_name = 'composer-lock', manifest_file_pattern = "**/composer.json" /* Manifest */, lock_file_pattern = "**/composer.lock" /* Lock */, manifest_selectors = selectors_1.ManifestSelectorsArray, lock_selectors = selectors_1.LockSelectorsArray, recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray) {
+function ComposerParser(name = 'composer', filesystem, manifest_name = 'composer-json', lock_name = 'composer-lock', manifest_file_pattern, lock_file_pattern, manifest_selectors, lock_selectors, recursive_lock_selectors) {
+    if (typeof manifest_file_pattern === 'undefined')
+        manifest_file_pattern = "**/composer.json" /* Manifest */;
+    if (typeof lock_file_pattern === 'undefined')
+        lock_file_pattern = "**/composer.lock" /* Lock */;
+    if (typeof manifest_selectors === 'undefined')
+        manifest_selectors = selectors_1.ManifestSelectorsArray;
+    if (typeof lock_selectors === 'undefined')
+        lock_selectors = selectors_1.LockSelectorsArray;
+    if (typeof recursive_lock_selectors === 'undefined')
+        recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray;
     //-- Create the specification handlers
     const manifestHandler = new classes_1.ComposerManifestHandler(filesystem, manifest_file_pattern, manifest_selectors);
     const lockHandler = new classes_1.ComposerLockHandler(filesystem, lock_file_pattern, lock_selectors, recursive_lock_selectors);
@@ -929,7 +939,7 @@ class SpecificationHandler {
                 pattern = pattern + '\n!' + this.source.exclude.join('\n!');
             const glober = yield glob.create(pattern, { followSymbolicLinks: this.source.follow_symlinks });
             const files = yield glober.glob();
-            core.debug(`[${this.constructor.name}](files) patterns: ${pattern} length: ${files.length}`);
+            core.debug(`[${this.constructor.name}](files) patterns: (${this.source.directory}) [${pattern}] length: ${files.length}`);
             core.info(`Found [${files.length}] files for patterns [${pattern.replace(/\n/g, ',')}]`);
             return new Promise((resolve) => {
                 resolve(files);

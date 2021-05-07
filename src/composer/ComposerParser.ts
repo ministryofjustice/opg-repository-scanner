@@ -12,17 +12,26 @@ export function ComposerParser(
     manifest_name = 'composer-json',
     lock_name = 'composer-lock',
 
-    manifest_file_pattern: string = ComposerPatterns.Manifest,
-    lock_file_pattern: string = ComposerPatterns.Lock,
+    manifest_file_pattern?: string,
+    lock_file_pattern?: string,
 
-    manifest_selectors: string[] = ManifestSelectorsArray,
-    lock_selectors: string[] = LockSelectorsArray,
+    manifest_selectors?: string[],
+    lock_selectors?: string[],
 
-    recursive_lock_selectors: string[] = LockSelectorsRecursiveArray
+    recursive_lock_selectors?: string[]
 ): Packages<
     Specification<ComposerManifestHandler, Result>,
     Specification<ComposerLockHandler, Result>
 > {
+
+    if (typeof manifest_file_pattern === 'undefined')
+        manifest_file_pattern = ComposerPatterns.Manifest
+    if (typeof lock_file_pattern === 'undefined') lock_file_pattern = ComposerPatterns.Lock
+    if (typeof manifest_selectors === 'undefined') manifest_selectors = ManifestSelectorsArray
+    if (typeof lock_selectors === 'undefined') lock_selectors = LockSelectorsArray
+    if (typeof recursive_lock_selectors === 'undefined')
+        recursive_lock_selectors = LockSelectorsRecursiveArray
+
     //-- Create the specification handlers
     const manifestHandler = new ComposerManifestHandler(
         filesystem,
