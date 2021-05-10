@@ -29,11 +29,13 @@ test('postive: test construction forms a valid package when creating directly', 
     }
     // handlers to load a file
     const manifestHandler = new SpecificationHandler(
+        'testr',
         filesys,
         mFile,
         ManifestSelectors.Main
     )
     const lockHandler = new SpecificationHandler(
+        'testr',
         filesys,
         lFile,
         LockSelectors.Main
