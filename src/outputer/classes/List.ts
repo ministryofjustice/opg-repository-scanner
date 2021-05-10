@@ -5,13 +5,13 @@ import { Outputer } from './Outputer';
 
 export class List extends Outputer implements IOutputer{
 
-    protected filename = 'list.raw.json'
+    protected filename = 'list'
 
     write(data:Map<string,any>): string[] {
-        const obj = map_to_object(data)
-        const json_string:string = JSON.stringify(obj)
-        fs.writeFileSync(this.filename, json_string)
-        return [this.filename]
+        let files:string[] = []
+        const json_file = this.save_as_json(data, this.filename + '.json', this.dir)
+        if(json_file !== false) files.push(json_file as string)
+        return files
     }
 
 
