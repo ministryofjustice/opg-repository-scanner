@@ -28,6 +28,7 @@ async function run(): Promise<void> {
             configuration = input_to_config(inputs)
         }
         core.info('Configuration loaded.')
+        core.info('Repository name: ' + configuration.repository)
 
         /* eslint-disable no-console */
         if (core.isDebug()) console.log(configuration)

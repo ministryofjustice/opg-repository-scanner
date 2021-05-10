@@ -26,12 +26,12 @@ export class SummarizedList extends List implements IOutputer{
     protected save_as_markdown(data:Map<string,any>, file:string, dir?:string) : string|boolean {
         const packages:SummaryResult[] = data.get('packages')
         // headers of the markdown content
-        let markdown = '| Package | Version | Occurances | Tags |\n| -- | -- | -- | -- |\n'
+        let markdown = '| Repository | Package | Version | Occurances | Tags |\n| -- | -- | -- | -- | -- |\n'
         // now loop over data and add to rows
         for (const row of packages) {
             const occ = row.occurances_to_string_array( row.sources() ).join('<br>')
             const tags = row.tags.join(', ')
-            markdown += `| ${row.name} | ${row.version} | ${occ} | ${tags} |\n`
+            markdown += `| ${row.repository} | ${row.name} | ${row.version} | ${occ} | ${tags} |\n`
         }
         // save content to the file
         const saved = this.save_file(markdown, file, dir)

@@ -1,12 +1,9 @@
-import * as core from '@actions/core'
-import { map_to_object } from '../../conversion/map_to_object';
 import { ManifestType } from '../enums';
 import { Result } from './Result';
-import { ResultMeta } from './ResultMeta';
 
 // Results is used to capture details about every package found
 export class SummaryResult {
-
+    repository:Required<string> = ''
     name:Required<string> = ''
     version:string = ''
     tags:string[] = []
@@ -73,6 +70,7 @@ export class SummaryResult {
 
     // create data on this class based on a standard Result
     from_result(result:Result): SummaryResult{
+        this.repository = result.repository
         this.name = result.name
         this.sources(result)
 

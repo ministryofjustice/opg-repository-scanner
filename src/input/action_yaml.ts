@@ -18,7 +18,7 @@ export const action_yaml_inputs = new Map<string, Map<string, string>>([
         'repository_name',
         new Map<string, string>([
             ['required', 'false'],
-            ['default', '-']
+            ['default', 'unknown']
         ])
     ],
     [

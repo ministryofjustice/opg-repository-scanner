@@ -23,7 +23,7 @@ export class PipManifestHandler extends SpecificationHandler
     // return a result from a line in the source file
     protected result(line:string, source:string): IResult{
         return new Result(
-            'REPONAME',
+            this.repository,
             line,
             '',
             source.replace( process.cwd(), '.'),
