@@ -53,11 +53,11 @@ test('postive: test finding a composer set of packages correctly', async () => {
     const results = new ManifestResults(config)
     await results.process()
 
-    //results.save()
 
-    //expect(results.output.hasOwnProperty('package') ).toBeTruthy()
-    //const packages = results.output['packages'] as []
-    //expect(packages.length).toEqual(9)
+
+    expect(results.output.has('packages') ).toBeTruthy()
+    const packages = results.output.get('packages') as []
+    expect(packages.length).toEqual(9)
 
 
 })

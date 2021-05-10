@@ -6,6 +6,8 @@ import {PipPatterns} from './patterns'
 import {LockSelectorsArray, LockSelectorsRecursiveArray, ManifestSelectorsArray} from './selectors'
 
 export function PipParser(
+    repository = '',
+
     name = 'pip',
 
     filesystem: Source,
@@ -27,8 +29,8 @@ export function PipParser(
     if (typeof recursive_lock_selectors === 'undefined')
         recursive_lock_selectors = LockSelectorsRecursiveArray
     //-- Create the specification handlers
-    const manifestHandler = new PipManifestHandler(filesystem, manifest_file_pattern)
-    const lockHandler = new PipLockHandler(filesystem, lock_file_pattern)
+    const manifestHandler = new PipManifestHandler(repository, filesystem, manifest_file_pattern)
+    const lockHandler = new PipLockHandler(repository, filesystem, lock_file_pattern)
     //-- Create the specs
     const manifestSpec = new Specification<PipManifestHandler, Result>(manifest_name, [
         manifestHandler

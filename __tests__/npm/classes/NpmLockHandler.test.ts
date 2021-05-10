@@ -18,7 +18,7 @@ test('postive: test a npm lock validates', async () => {
     const dir:string = sample_dir + 'app/npm/simple/'
     const pattern:string = '**/package-lock.json'
     const filesys:Source = new Source(dir, false)
-    const lock = new NpmLockHandler(filesys, pattern, LockSelectorsArray)
+    const lock = new NpmLockHandler('testr',filesys, pattern, LockSelectorsArray)
 
     expect(lock.valid()).toBeTruthy()
 })
@@ -28,7 +28,7 @@ test('postive: test a npm lock parsing on a nuxt & vue combo', async () => {
     const dir:string = sample_dir + 'app/npm/nuxt/'
     const pattern:string = '**/package-lock.json'
     const filesys:Source = new Source(dir, false)
-    const lock = new NpmLockHandler(filesys, pattern, LockSelectorsArray)
+    const lock = new NpmLockHandler('testr',filesys, pattern, LockSelectorsArray)
 
     await lock.process()
     let res = await lock.results()

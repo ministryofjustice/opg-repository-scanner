@@ -5,6 +5,8 @@ import {NpmPatterns} from './patterns'
 import {LockSelectorsArray, LockSelectorsRecursiveArray, ManifestSelectorsArray} from './selectors'
 
 export function PackageParser(
+    repository = '',
+
     name = 'package',
 
     filesystem: Source,
@@ -28,11 +30,13 @@ export function PackageParser(
 
     //-- Create the specification handlers
     const manifestHandler = new NpmManifestHandler(
+        repository,
         filesystem,
         manifest_file_pattern,
         manifest_selectors
     )
     const lockHandler = new NpmLockHandler(
+        repository,
         filesystem,
         lock_file_pattern,
         lock_selectors,

@@ -19,7 +19,7 @@ test('postive: test a npm manifest validates', async () => {
     const dir:string = sample_dir + 'app/npm/simple/'
     const pattern:string = '**/package.json'
     const filesys:Source = new Source(dir, false)
-    const manifest = new NpmManifestHandler(filesys, pattern, ManifestSelectorsArray)
+    const manifest = new NpmManifestHandler('testr',filesys, pattern, ManifestSelectorsArray)
 
     const files = await manifest.files()
     expect(files.length).toEqual(1)
@@ -31,7 +31,7 @@ test('postive: test a npm manifest finds all packages', async () => {
     const dir:string = sample_dir + 'app/npm/simple/'
     const pattern:string = '**/package.json'
     const filesys:Source = new Source(dir, false)
-    const manifest = new NpmManifestHandler(filesys, pattern, ManifestSelectorsArray)
+    const manifest = new NpmManifestHandler('testr',filesys, pattern, ManifestSelectorsArray)
 
     expect(manifest.valid()).toBeTruthy()
     await manifest.process()

@@ -23,7 +23,7 @@ test('postive: test a composer lock handler finds all packages from file without
     const pattern:string = '**/composer.lock'
     const file:string = dir + pattern
     const filesys:Source = new Source(dir, false)
-    const lock = new ComposerLockHandler(filesys, pattern, LockSelectorsArray)
+    const lock = new ComposerLockHandler('testr', filesys, pattern, LockSelectorsArray)
 
     await lock.process()
     const results = await lock.results()
@@ -41,7 +41,7 @@ test('postive: test a composer lock handler finds all packages from file with re
     const pattern:string = 'sub-folder/composer.lock'
     const file:string = dir + pattern
     const filesys:Source = new Source(dir, false)
-    const lock = new ComposerLockHandler(filesys, pattern, LockSelectorsArray, LockSelectorsRecursiveArray)
+    const lock = new ComposerLockHandler('testr', filesys, pattern, LockSelectorsArray, LockSelectorsRecursiveArray)
 
     await lock.process()
     const results = await lock.results()

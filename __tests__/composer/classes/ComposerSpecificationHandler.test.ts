@@ -14,6 +14,7 @@ const sample_dir: string = './__samples__/'
 
 test('postive: the composer selector is sanitised correctly with simple layout', async () => {
     const handler = new ComposerSpecificationHandler(
+        'testr',
         new Source(),
         "**/composer.json",
         ".require-dev"
@@ -26,6 +27,7 @@ test('postive: the composer selector is sanitised correctly with simple layout',
 
 test('postive: the composer selector is sanitised correctly with more complex form', async () => {
     const handler = new ComposerSpecificationHandler(
+        'testr',
         new Source(),
         "**/composer.json",
         ".require-dev.test.level-1"
@@ -38,6 +40,7 @@ test('postive: the composer selector is sanitised correctly with more complex fo
 
 test('postive: the composer selector is sanitised correctly with array notation for lock', async () => {
     const handler = new ComposerSpecificationHandler(
+        'testr',
         new Source(),
         "**/composer.json",
         LockSelectorsRecursive.PackageDevRequireDev

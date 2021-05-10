@@ -5,6 +5,8 @@ import {ComposerPatterns} from './patterns'
 import {LockSelectorsArray, LockSelectorsRecursiveArray, ManifestSelectorsArray} from './selectors'
 
 export function ComposerParser(
+    repository = '',
+
     name = 'composer',
 
     filesystem: Source,
@@ -33,11 +35,13 @@ export function ComposerParser(
 
     //-- Create the specification handlers
     const manifestHandler = new ComposerManifestHandler(
+        repository,
         filesystem,
         manifest_file_pattern,
         manifest_selectors
     )
     const lockHandler = new ComposerLockHandler(
+        repository,
         filesystem,
         lock_file_pattern,
         lock_selectors,

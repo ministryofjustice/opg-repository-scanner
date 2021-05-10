@@ -4,6 +4,7 @@ import { IResult } from "./IResult";
 
 // Interface to detail what a SpecificationHandler should look like
 export interface ISpecificationHandler{
+    repository:string
     source:Source
     filepattern: Required<string>
     selector: Required<string[]>

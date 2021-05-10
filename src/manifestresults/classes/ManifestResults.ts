@@ -28,6 +28,7 @@ export class ManifestResults implements IManifestResults{
         core.debug(`[${this.constructor.name}](instance) f: ${f.name}`)
         // expand on this later to allow a .with type overwrite of this properties
         return f(
+            this.configuration?.repository ?? '',
             manifest.name,
             this.configuration?.source
 

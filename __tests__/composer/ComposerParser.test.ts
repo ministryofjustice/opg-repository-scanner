@@ -38,12 +38,14 @@ test('postive: test construction raw and reporting with a known & small file', a
 
     // handlers to load a file
     const manifestHandler = new ComposerManifestHandler(
+        'testr',
         filesys,
         mFile,
         ManifestSelectorsArray
     )
 
     const lockHandler = new ComposerLockHandler(
+        'testr',
         filesys,
         lFile,
         LockSelectorsArray,
@@ -76,7 +78,7 @@ test('postive: test construction raw and reporting with a known & small file', a
 test('postive: test construction via factory with a known file without cleanup', async () => {
     const dir = sample_dir + "app/php/doctrine-instantiator/"
     const filesys = new Source(dir)
-    let packages = ComposerParser('test', filesys)
+    let packages = ComposerParser('testr', 'test', filesys)
 
     expect(packages).toBeInstanceOf(Packages)
     // dont de-deup
@@ -88,7 +90,7 @@ test('postive: test construction via factory with a known file without cleanup',
 test('postive: test construction via factory with a known file with cleanup', async () => {
     const dir = sample_dir + "app/php/doctrine-instantiator/"
     const filesys = new Source(dir)
-    let packages = ComposerParser('test', filesys)
+    let packages = ComposerParser('testr', 'test', filesys)
 
     expect(packages).toBeInstanceOf(Packages)
     const res = await packages.get()

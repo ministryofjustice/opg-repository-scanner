@@ -19,7 +19,7 @@ test('postive: test generic creation of specifiction with empty handlers', async
 
 test('postive: test instanceof handlers', async () => {
     const name = 'test-spec'
-    const handler = new SpecificationHandler(new Source(), '**', '.require')
+    const handler = new SpecificationHandler('testr', new Source(), '**', '.require')
     const spec = new Specification<SpecificationHandler, Result>(
                         name,
                         [handler]

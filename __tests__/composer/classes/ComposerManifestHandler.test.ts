@@ -22,7 +22,7 @@ test('postive: test a composer manifest validates', async () => {
     const dir:string = sample_dir + 'app/php/laminas/'
     const pattern:string = '**/composer.json'
     const filesys:Source = new Source(dir, false)
-    const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectorsArray)
+    const manifest = new ComposerManifestHandler('testr',filesys, pattern, ManifestSelectorsArray)
     expect(manifest.valid()).toBeTruthy()
 })
 
@@ -30,7 +30,7 @@ test('negative: test a composer manifest fails', async () => {
     const dir:string = sample_dir + 'app/php/laminas/'
     const pattern:string = ''
     const filesys:Source = new Source(dir, false)
-    const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectorsArray)
+    const manifest = new ComposerManifestHandler('testr',filesys, pattern, ManifestSelectorsArray)
     expect(manifest.valid()).toBeFalsy()
 })
 
@@ -39,7 +39,7 @@ test('postive: test a composer manifest handler finds correct files from known d
     const dir:string = sample_dir + 'app/php/laminas/'
     const pattern:string = '**/composer.json'
     const filesys:Source = new Source(dir, false, exclude)
-    const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectorsArray)
+    const manifest = new ComposerManifestHandler('testr',filesys, pattern, ManifestSelectorsArray)
     const files = await manifest.files()
     expect(files.length).toEqual(1)
 })
@@ -48,7 +48,7 @@ test('negative: test a composer manifest handler finds no files in missing dir',
     const dir:string = sample_dir + 'app/php/laminas-not-there/'
     const pattern:string = 'composer.json'
     const filesys:Source = new Source(dir, false)
-    const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectorsArray)
+    const manifest = new ComposerManifestHandler('testr',filesys, pattern, ManifestSelectorsArray)
     const files = await manifest.files()
     expect(files.length).toEqual(0)
 })
@@ -58,7 +58,7 @@ test('postive: test a composer manifest handler finds packages from file', async
     const pattern:string = 'composer.json'
     const file:string = dir + pattern
     const filesys:Source = new Source(dir, false)
-    const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectors.Main)
+    const manifest = new ComposerManifestHandler('testr',filesys, pattern, ManifestSelectors.Main)
 
     await manifest.process()
     const results = await manifest.results()
@@ -75,7 +75,7 @@ test('postive: test a composer manifest handler finds packages from file with mu
     const pattern:string = 'composer.json'
     const file:string = dir + pattern
     const filesys:Source = new Source(dir, false)
-    const manifest = new ComposerManifestHandler(filesys, pattern, ManifestSelectorsArray)
+    const manifest = new ComposerManifestHandler('testr',filesys, pattern, ManifestSelectorsArray)
 
     await manifest.process()
     const results = await manifest.results()

@@ -11,6 +11,7 @@ import { ISpecificationHandler, IValidateable, IResult} from '../interfaces'
 export class SpecificationHandler implements ISpecificationHandler, IValidateable {
     protected _results:IResult[] = []
 
+    repository:string = ''
     type:ManifestType = ManifestType.Null
     source:Source = new Source()
     filepattern: Required<string> = ''
@@ -20,12 +21,14 @@ export class SpecificationHandler implements ISpecificationHandler, IValidateabl
     tags: string[] = []
 
     constructor(
+        repository?:string,
         source?:Source,
         filepattern?:string,
         selector?:string[]|string,
         recursive?: string[],
         tags?: string[]
         ){
+        if(typeof repository !== 'undefined') this.repository = repository
         if(typeof source !== 'undefined') this.source = source
         if(typeof filepattern !== 'undefined') this.filepattern = filepattern
         if(typeof recursive !== 'undefined') this.recursive = recursive

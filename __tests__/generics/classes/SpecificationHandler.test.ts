@@ -23,6 +23,7 @@ test('positve: test specification handler based on composer', async () => {
         return new Promise<Result[]>( resolve => { resolve([new Result('testr', 'test')] ) } )
     }
     const handler = new SpecificationHandler(
+        'testr',
         new Source(),
         "**/composer.json",
         '.require'
@@ -32,7 +33,7 @@ test('positve: test specification handler based on composer', async () => {
 })
 
 test('negative: test specification with invalid name should not be valid', async () => {
-    const handler = new SpecificationHandler(new Source(), '')
+    const handler = new SpecificationHandler('testr', new Source(), '')
     expect(handler.valid()).toBeFalsy()
 })
 
@@ -43,6 +44,7 @@ test('positve: test file look up', async () => {
     // super simple function that returns a basic result
 
     const handler = new SpecificationHandler(
+        'testr',
         new Source(
             sample_dir + 'app/php/laminas/',
             false,

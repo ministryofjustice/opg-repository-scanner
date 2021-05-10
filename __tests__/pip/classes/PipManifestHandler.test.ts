@@ -20,7 +20,7 @@ test('postive: test a pip manifest validates', async () => {
     const dir:string = sample_dir + 'app/python/pip/'
     const pattern:string = PipPatterns.Manifest
     const filesys:Source = new Source(dir, false)
-    const manifest = new PipManifestHandler(filesys, pattern)
+    const manifest = new PipManifestHandler('testr',filesys, pattern)
     expect(manifest.valid()).toBeTruthy()
 })
 
@@ -30,7 +30,7 @@ test('postive: test a pip manifest handler finds correct files from known dir', 
     const dir:string = sample_dir + 'app/python/pip/'
     const pattern:string = PipPatterns.Manifest
     const filesys:Source = new Source(dir, false)
-    const manifest = new PipManifestHandler(filesys, pattern)
+    const manifest = new PipManifestHandler('testr',filesys, pattern)
     const files = await manifest.files()
     expect(files.length).toEqual(1)
 })
@@ -42,7 +42,7 @@ test('postive: test a pip manifest handler finds packages from file', async () =
     const pattern:string = PipPatterns.Manifest
     const file:string = dir + pattern
     const filesys:Source = new Source(dir, false)
-    const manifest = new PipManifestHandler(filesys, pattern)
+    const manifest = new PipManifestHandler('testr',filesys, pattern)
 
     await manifest.process()
     const results = await manifest.results()
