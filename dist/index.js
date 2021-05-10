@@ -1755,44 +1755,24 @@ exports.LockSelectorsRecursiveArray = [];
 /***/ }),
 
 /***/ 4653:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.List = void 0;
-const fs = __importStar(__webpack_require__(5747));
-const map_to_object_1 = __webpack_require__(3276);
 const Outputer_1 = __webpack_require__(6661);
 class List extends Outputer_1.Outputer {
     constructor() {
         super(...arguments);
-        this.filename = 'list.raw.json';
+        this.filename = 'list';
     }
     write(data) {
-        const obj = map_to_object_1.map_to_object(data);
-        const json_string = JSON.stringify(obj);
-        fs.writeFileSync(this.filename, json_string);
-        return [this.filename];
+        let files = [];
+        const json_file = this.save_as_json(data, this.filename + '.json', this.dir);
+        if (json_file !== false)
+            files.push(json_file);
+        return files;
     }
 }
 exports.List = List;
@@ -1801,21 +1781,6 @@ exports.List = List;
 /***/ }),
 
 /***/ 6661:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Outputer = void 0;
-class Outputer {
-    write(data) { return ['']; }
-}
-exports.Outputer = Outputer;
-
-
-/***/ }),
-
-/***/ 9635:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1840,44 +1805,114 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.SummarizedList = void 0;
+exports.Outputer = void 0;
 const fs = __importStar(__webpack_require__(5747));
 const map_to_object_1 = __webpack_require__(3276);
+class Outputer {
+    constructor() {
+        this.dir = './__artifacts__/';
+    }
+    // sanitisse directory name and create the directory if it doesnt exist
+    // returning the updated dir value
+    create_directory(dir) {
+        // trim and add trialing slash
+        dir = dir.replace(/\/$/, "") + '/';
+        // make the directory
+        if (!fs.existsSync(dir))
+            fs.mkdirSync(dir);
+        // return the dir string
+        return dir;
+    }
+    // save content to file (& dir) and return if the file exists
+    save_file(content, file, dir) {
+        if (typeof dir !== 'undefined')
+            dir = this.create_directory(dir);
+        const filename = dir + file;
+        fs.writeFileSync(filename, content);
+        return fs.existsSync(filename);
+    }
+    // save data as a json based file, return the file path or false if fails
+    save_as_json(data, file, dir) {
+        const obj = map_to_object_1.map_to_object(data);
+        const json_string = JSON.stringify(obj);
+        const saved = this.save_file(json_string, file, dir);
+        if (saved && typeof dir !== 'undefined')
+            return dir + file;
+        else if (saved)
+            return file;
+        return false;
+    }
+    // write does nothing in this case
+    write(data) { return ['']; }
+}
+exports.Outputer = Outputer;
+
+
+/***/ }),
+
+/***/ 9635:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SummarizedList = void 0;
 const generics_1 = __webpack_require__(9999);
 const List_1 = __webpack_require__(4653);
 class SummarizedList extends List_1.List {
     constructor() {
         super(...arguments);
-        this.filename = 'list.summary';
+        this.filename = 'summarized-list';
     }
-    write(data) {
-        let packages = data.get('packages');
+    // we do some post processing on the package data by
+    // converting it to a summary result which reduces
+    // data
+    summarised_packages(packages) {
         let summarised = [];
-        // we do some post processing on the package data by
-        // converting it to a summary result which reduces
-        // data
         for (const pkg of packages) {
             let summary = new generics_1.SummaryResult();
             summarised.push(summary.from_result(pkg));
         }
-        data.set('packages', summarised);
-        // write this out as json
-        const obj = map_to_object_1.map_to_object(data);
-        const json_string = JSON.stringify(obj);
-        fs.writeFileSync(this.filename + ".json", json_string);
-        // write to markdown as well, no headers so its easer to merge multiple files
+        return summarised;
+    }
+    // convert the packages data to markdown
+    save_as_markdown(data, file, dir) {
+        const packages = data.get('packages');
+        // headers of the markdown content
         let markdown = '| Package | Version | Occurances | Tags |\n| -- | -- | -- | -- |\n';
         // now loop over data and add to rows
-        for (const row of summarised) {
+        for (const row of packages) {
             const occ = row.occurances_to_string_array(row.sources()).join('<br>');
             const tags = row.tags.join(', ');
             markdown += `| ${row.name} | ${row.version} | ${occ} | ${tags} |\n`;
         }
-        fs.writeFileSync(this.filename + ".md", markdown);
-        return [
-            this.filename + '.md',
-            this.filename + ".json"
-        ];
+        // save content to the file
+        const saved = this.save_file(markdown, file, dir);
+        if (saved && typeof dir !== 'undefined')
+            return dir + file;
+        else if (saved)
+            return file;
+        return false;
+    }
+    update_data(data) {
+        const packages = data.get('packages');
+        const summarised = this.summarised_packages(packages);
+        data.set('packages', summarised);
+        return data;
+    }
+    write(data) {
+        let files = [];
+        // update data
+        data = this.update_data(data);
+        // save data to json & track file
+        const json_saved = this.save_as_json(data, this.filename + '.json', this.dir);
+        if (json_saved !== false)
+            files.push(json_saved);
+        // save markdown
+        const markdown_saved = this.save_as_markdown(data, this.filename + '.md', this.dir);
+        if (markdown_saved !== false)
+            files.push(markdown_saved);
+        return files;
     }
 }
 exports.SummarizedList = SummarizedList;
