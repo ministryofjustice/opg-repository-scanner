@@ -15,6 +15,13 @@ export const _action_as: string[] = ['list', 'summarized-list']
 // This needs to be kept in sync with action.yml
 export const action_yaml_inputs = new Map<string, Map<string, string>>([
     [
+        'repository_name',
+        new Map<string, string>([
+            ['required', 'false'],
+            ['default', '-']
+        ])
+    ],
+    [
         'configuration_file',
         new Map<string, string>([
             ['required', 'false'],

@@ -10,6 +10,9 @@ import { Artifact } from './Artifact';
 @jsonObject
 export class Config implements IValidateable{
 
+    @jsonMember(String)
+    repository: string = ''
+
     @jsonMember(Source)
     source: Source = new Source()
 
@@ -19,7 +22,7 @@ export class Config implements IValidateable{
     @jsonMember(Artifact)
     artifact: Artifact = new Artifact
 
-    constructor(source?: Source, manifests?: Manifest[], artifact?:Artifact){
+    constructor(source?: Source, manifests?: Manifest[], artifact?:Artifact, repository?:string){
         if (typeof source !== 'undefined')
             this.source = source
         if (typeof manifests !== 'undefined')
@@ -27,7 +30,8 @@ export class Config implements IValidateable{
 
         // give output a default entry
         if (typeof artifact !== 'undefined') this.artifact = artifact
-
+        // add the repo name
+        if (typeof repository !== 'undefined') this.repository = repository
     }
 
     // validate the filesystem settings are correct

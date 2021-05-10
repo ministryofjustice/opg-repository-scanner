@@ -5,6 +5,7 @@ import {Config} from '../config'
 // an ugly looking function to parse the parts of the Map
 export function input_to_config(input: Map<string, any>): Config {
     const skel = {
+        repository: '',
         source: {
             directory: '',
             follow_symlinks: false,
@@ -15,6 +16,13 @@ export function input_to_config(input: Map<string, any>): Config {
             as: []
         },
         manifests: []
+    }
+
+    core.debug('Parsing input: repository_name')
+    if (input.has('repository_name') && input.get('repository_name').has('value')) {
+        skel.repository = input.get('repository_name').get('value')
+    } else {
+        skel.repository = input.get('repository_name').get('default')
     }
 
     // source.directory

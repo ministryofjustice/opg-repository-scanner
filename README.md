@@ -84,3 +84,13 @@ This action generates an artifact of all reports and uploads it to the completed
 - **Specification** is also setup in the factory creation function and attached to `Packages` with handlers being passed in
 - **Specification** `.parse()` iterates over its `.handlers` array and calls `.process()` on each. A handler is aimed at processing the specifics of an exact manifest / lock file, so these are targeted to languages.
 - **ISpecificationHandler** classes contain a filepath pattern to find files, and create a `.results` array while processing files. How it processes those files is determined by the specific class within the overwridden `.process()` method. It is generally aimed at processing json like files using jspath selectors, but this is not true of all
+
+
+## Adding new inputs
+
+Tried to reduce the amount of work required to add a new input param to the action, but its a bit messier than ideal. There are **4** areas that require changes:
+
+- `./action.yml` - the actual action configuration file
+- `./src/input/action_yaml.ts` - a map structure and function to then iterate over and fetch details from `core.getInput`
+- `./src/input/input_to_config.ts` - function that creates a skel object to map from the inputs in `action_yaml.ts` and converts to a `Config` class
+- `./src/config/classes/Config.ts` - will need to add the property to this class so its parsed neatly

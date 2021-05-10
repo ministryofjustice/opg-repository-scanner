@@ -2,6 +2,9 @@ name: 'OPG Repository Scanner'
 description: 'This action scans the repository for manifest & lock files looking for software packages and generates a series of reports for visibility'
 author: ''
 inputs:
+  repository_name:
+    description: 'Repository name with owner, used for reporting only. For example, ministryofjustice/opg-repository-scanner'
+    default: ${{ github.repository }}
   configuration_file:
     required: false
     description: 'A configuration file to load all config data. When this is set, all other input options will be ignored'
