@@ -12,7 +12,7 @@ exports.ComposerParser = void 0;
 const generics_1 = __webpack_require__(9999);
 const classes_1 = __webpack_require__(7609);
 const selectors_1 = __webpack_require__(8118);
-function ComposerParser(name = 'composer', filesystem, manifest_name = 'composer-json', lock_name = 'composer-lock', manifest_file_pattern, lock_file_pattern, manifest_selectors, lock_selectors, recursive_lock_selectors) {
+function ComposerParser(repository = '', name = 'composer', filesystem, manifest_name = 'composer-json', lock_name = 'composer-lock', manifest_file_pattern, lock_file_pattern, manifest_selectors, lock_selectors, recursive_lock_selectors) {
     if (typeof manifest_file_pattern === 'undefined')
         manifest_file_pattern = "**/composer.json" /* Manifest */;
     if (typeof lock_file_pattern === 'undefined')
@@ -24,8 +24,8 @@ function ComposerParser(name = 'composer', filesystem, manifest_name = 'composer
     if (typeof recursive_lock_selectors === 'undefined')
         recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray;
     //-- Create the specification handlers
-    const manifestHandler = new classes_1.ComposerManifestHandler(filesystem, manifest_file_pattern, manifest_selectors);
-    const lockHandler = new classes_1.ComposerLockHandler(filesystem, lock_file_pattern, lock_selectors, recursive_lock_selectors);
+    const manifestHandler = new classes_1.ComposerManifestHandler(repository, filesystem, manifest_file_pattern, manifest_selectors);
+    const lockHandler = new classes_1.ComposerLockHandler(repository, filesystem, lock_file_pattern, lock_selectors, recursive_lock_selectors);
     //-- Create the specs
     const manifestSpec = new generics_1.Specification(manifest_name, [
         manifestHandler
@@ -79,7 +79,7 @@ class ComposerLockHandler extends ComposerManifastHandler_1.ComposerManifestHand
     // files, so call that with new selectors
     recurse() {
         return __awaiter(this, void 0, void 0, function* () {
-            const manifest = new ComposerManifastHandler_1.ComposerManifestHandler(this.source, this.filepattern, this.recursive, this.tags);
+            const manifest = new ComposerManifastHandler_1.ComposerManifestHandler(this.repository, this.source, this.filepattern, this.recursive, this.tags);
             manifest.tags = this.tags;
             //manifest.type =  this.recursive_prefix + this.type
             yield manifest.process();
@@ -153,7 +153,7 @@ class ComposerManifestHandler extends ComposerSpecificationHandler_1.ComposerSpe
     // convert a map to a result
     result(map, source, selector) {
         if (map.has('name') && map.has('version')) {
-            return new generics_1.Result(map.get('name'), map.get('version'), source.replace(process.cwd(), '.'), this.type, selector, this.tags);
+            return new generics_1.Result(this.repository, map.get('name'), map.get('version'), source.replace(process.cwd(), '.'), this.type, selector, this.tags);
         }
         return false;
     }
@@ -417,7 +417,8 @@ const Source_1 = __webpack_require__(7941);
 const Manifest_1 = __webpack_require__(4816);
 const Artifact_1 = __webpack_require__(5699);
 let Config = class Config {
-    constructor(source, manifests, artifact) {
+    constructor(source, manifests, artifact, repository) {
+        this.repository = '';
         this.source = new Source_1.Source();
         this.manifests = [];
         this.artifact = new Artifact_1.Artifact;
@@ -428,6 +429,9 @@ let Config = class Config {
         // give output a default entry
         if (typeof artifact !== 'undefined')
             this.artifact = artifact;
+        // add the repo name
+        if (typeof repository !== 'undefined')
+            this.repository = repository;
     }
     // validate the filesystem settings are correct
     valid_source() {
@@ -453,6 +457,10 @@ let Config = class Config {
     }
 };
 __decorate([
+    typedjson_1.jsonMember(String),
+    __metadata("design:type", String)
+], Config.prototype, "repository", void 0);
+__decorate([
     typedjson_1.jsonMember(Source_1.Source),
     __metadata("design:type", Source_1.Source)
 ], Config.prototype, "source", void 0);
@@ -466,7 +474,7 @@ __decorate([
 ], Config.prototype, "artifact", void 0);
 Config = __decorate([
     typedjson_1.jsonObject,
-    __metadata("design:paramtypes", [Source_1.Source, Array, Artifact_1.Artifact])
+    __metadata("design:paramtypes", [Source_1.Source, Array, Artifact_1.Artifact, String])
 ], Config);
 exports.Config = Config;
 
@@ -750,10 +758,13 @@ exports.Result = void 0;
 const ResultMeta_1 = __webpack_require__(5503);
 // Results is used to capture details about every package found
 class Result {
-    constructor(name, version, source, type, selector, tags) {
+    constructor(repository, name, version, source, type, selector, tags) {
+        this.repository = '';
         this.name = '';
         this.tags = [];
         this.occurances = [];
+        if (typeof repository !== 'undefined')
+            this.repository = repository;
         if (typeof name !== 'undefined')
             this.name = name;
         if (typeof version !== 'undefined')
@@ -905,15 +916,18 @@ const config_1 = __webpack_require__(6730);
 // The .processor would be different for every type of manifest / file
 // Generally only extended to change the sanitise method
 class SpecificationHandler {
-    constructor(source, filepattern, selector, recursive, tags) {
+    constructor(repository, source, filepattern, selector, recursive, tags) {
         var _a;
         this._results = [];
+        this.repository = '';
         this.type = "" /* Null */;
         this.source = new config_1.Source();
         this.filepattern = '';
         this.selector = [];
         // tagging on the handlers to pass on the results
         this.tags = [];
+        if (typeof repository !== 'undefined')
+            this.repository = repository;
         if (typeof source !== 'undefined')
             this.source = source;
         if (typeof filepattern !== 'undefined')
@@ -1005,6 +1019,7 @@ exports.SummaryResult = void 0;
 // Results is used to capture details about every package found
 class SummaryResult {
     constructor() {
+        this.repository = '';
         this.name = '';
         this.version = '';
         this.tags = [];
@@ -1068,6 +1083,7 @@ class SummaryResult {
     }
     // create data on this class based on a standard Result
     from_result(result) {
+        this.repository = result.repository;
         this.name = result.name;
         this.sources(result);
         this.version_from_result(result);
@@ -1160,6 +1176,13 @@ exports._action_manifests = [
 exports._action_as = ['list', 'summarized-list'];
 // This needs to be kept in sync with action.yml
 exports.action_yaml_inputs = new Map([
+    [
+        'repository_name',
+        new Map([
+            ['required', 'false'],
+            ['default', 'unknown']
+        ])
+    ],
     [
         'configuration_file',
         new Map([
@@ -1258,6 +1281,7 @@ const config_1 = __webpack_require__(6730);
 // an ugly looking function to parse the parts of the Map
 function input_to_config(input) {
     const skel = {
+        repository: '',
         source: {
             directory: '',
             follow_symlinks: false,
@@ -1269,6 +1293,13 @@ function input_to_config(input) {
         },
         manifests: []
     };
+    core.debug('Parsing input: repository_name');
+    if (input.has('repository_name') && input.get('repository_name').has('value')) {
+        skel.repository = input.get('repository_name').get('value');
+    }
+    else {
+        skel.repository = input.get('repository_name').get('default');
+    }
     // source.directory
     core.debug('Parsing input: source_directory');
     if (input.has('source_directory') && input.get('source_directory').has('value')) {
@@ -1390,6 +1421,7 @@ function run() {
                 configuration = input_to_config_1.input_to_config(inputs);
             }
             core.info('Configuration loaded.');
+            core.info('Repository name: ' + configuration.repository);
             /* eslint-disable no-console */
             if (core.isDebug())
                 console.log(configuration);
@@ -1494,11 +1526,11 @@ class ManifestResults {
     // return an instance created vai the factory method call (f)
     // - the return type is a monster
     instance(manifest) {
-        var _a;
+        var _a, _b, _c;
         const f = AvailableManifestsParsers_1.AvailableManifestParsers.get(manifest.uses);
         core.debug(`[${this.constructor.name}](instance) f: ${f.name}`);
         // expand on this later to allow a .with type overwrite of this properties
-        return f(manifest.name, (_a = this.configuration) === null || _a === void 0 ? void 0 : _a.source);
+        return f((_b = (_a = this.configuration) === null || _a === void 0 ? void 0 : _a.repository) !== null && _b !== void 0 ? _b : '', manifest.name, (_c = this.configuration) === null || _c === void 0 ? void 0 : _c.source);
     }
     // run_parser creates an instance and gets the resulting data
     //
@@ -1605,7 +1637,7 @@ exports.PackageParser = void 0;
 const generics_1 = __webpack_require__(9999);
 const classes_1 = __webpack_require__(2299);
 const selectors_1 = __webpack_require__(9249);
-function PackageParser(name = 'package', filesystem, manifest_name = 'package-json', lock_name = 'package-lock', manifest_file_pattern, lock_file_pattern, manifest_selectors, lock_selectors, recursive_lock_selectors) {
+function PackageParser(repository = '', name = 'package', filesystem, manifest_name = 'package-json', lock_name = 'package-lock', manifest_file_pattern, lock_file_pattern, manifest_selectors, lock_selectors, recursive_lock_selectors) {
     if (typeof manifest_file_pattern === 'undefined')
         manifest_file_pattern = "**/package.json" /* Manifest */;
     if (typeof lock_file_pattern === 'undefined')
@@ -1617,8 +1649,8 @@ function PackageParser(name = 'package', filesystem, manifest_name = 'package-js
     if (typeof recursive_lock_selectors === 'undefined')
         recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray;
     //-- Create the specification handlers
-    const manifestHandler = new classes_1.NpmManifestHandler(filesystem, manifest_file_pattern, manifest_selectors);
-    const lockHandler = new classes_1.NpmLockHandler(filesystem, lock_file_pattern, lock_selectors, recursive_lock_selectors);
+    const manifestHandler = new classes_1.NpmManifestHandler(repository, filesystem, manifest_file_pattern, manifest_selectors);
+    const lockHandler = new classes_1.NpmLockHandler(repository, filesystem, lock_file_pattern, lock_selectors, recursive_lock_selectors);
     //-- Create the specs
     const manifestSpec = new generics_1.Specification(manifest_name, [
         manifestHandler
@@ -1879,12 +1911,12 @@ class SummarizedList extends List_1.List {
     save_as_markdown(data, file, dir) {
         const packages = data.get('packages');
         // headers of the markdown content
-        let markdown = '| Package | Version | Occurances | Tags |\n| -- | -- | -- | -- |\n';
+        let markdown = '| Repository | Package | Version | Occurances | Tags |\n| -- | -- | -- | -- | -- |\n';
         // now loop over data and add to rows
         for (const row of packages) {
             const occ = row.occurances_to_string_array(row.sources()).join('<br>');
             const tags = row.tags.join(', ');
-            markdown += `| ${row.name} | ${row.version} | ${occ} | ${tags} |\n`;
+            markdown += `| ${row.repository} | ${row.name} | ${row.version} | ${occ} | ${tags} |\n`;
         }
         // save content to the file
         const saved = this.save_file(markdown, file, dir);
@@ -1981,7 +2013,7 @@ const core = __importStar(__webpack_require__(2186));
 const generics_1 = __webpack_require__(9999);
 const classes_1 = __webpack_require__(65);
 const selectors_1 = __webpack_require__(7556);
-function PipParser(name = 'pip', filesystem, manifest_name = 'pip', lock_name = 'pip-lock', manifest_file_pattern, lock_file_pattern, 
+function PipParser(repository = '', name = 'pip', filesystem, manifest_name = 'pip', lock_name = 'pip-lock', manifest_file_pattern, lock_file_pattern, 
 // these are ignored, but kept for consistnecy
 manifest_selectors, lock_selectors, recursive_lock_selectors) {
     if (typeof manifest_file_pattern === 'undefined')
@@ -1995,8 +2027,8 @@ manifest_selectors, lock_selectors, recursive_lock_selectors) {
     if (typeof recursive_lock_selectors === 'undefined')
         recursive_lock_selectors = selectors_1.LockSelectorsRecursiveArray;
     //-- Create the specification handlers
-    const manifestHandler = new classes_1.PipManifestHandler(filesystem, manifest_file_pattern);
-    const lockHandler = new classes_1.PipLockHandler(filesystem, lock_file_pattern);
+    const manifestHandler = new classes_1.PipManifestHandler(repository, filesystem, manifest_file_pattern);
+    const lockHandler = new classes_1.PipLockHandler(repository, filesystem, lock_file_pattern);
     //-- Create the specs
     const manifestSpec = new generics_1.Specification(manifest_name, [
         manifestHandler
@@ -2101,7 +2133,7 @@ class PipManifestHandler extends generics_1.SpecificationHandler {
     }
     // return a result from a line in the source file
     result(line, source) {
-        return new generics_2.Result(line, '', source.replace(process.cwd(), '.'), this.type, '', this.tags);
+        return new generics_2.Result(this.repository, line, '', source.replace(process.cwd(), '.'), this.type, '', this.tags);
     }
     // convert the file content to multiple lines
     by_line(content, source) {
