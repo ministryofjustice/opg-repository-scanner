@@ -16,6 +16,7 @@ export class ComposerManifestHandler extends ComposerSpecificationHandler
     protected result(map:Map<string, any>, source:string, selector:string) : IResult|boolean {
         if(map.has('name') && map.has('version')) {
             return new Result(
+                'REPONAME',
                 map.get('name'),
                 map.get('version'),
                 source.replace( process.cwd(), '.') ,

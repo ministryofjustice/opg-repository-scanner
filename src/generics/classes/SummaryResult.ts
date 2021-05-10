@@ -5,7 +5,8 @@ import { Result } from './Result';
 import { ResultMeta } from './ResultMeta';
 
 // Results is used to capture details about every package found
-export class SummaryResult{
+export class SummaryResult {
+
     name:Required<string> = ''
     version:string = ''
     tags:string[] = []

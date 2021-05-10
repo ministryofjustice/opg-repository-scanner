@@ -6,12 +6,14 @@ import { ResultMeta } from './ResultMeta';
 
 // Results is used to capture details about every package found
 export class Result implements IResult, IValidateable{
+    repository:Required<string> = ''
     name:Required<string> = ''
     tags:string[] = []
 
     occurances:ResultMeta[] = []
 
     constructor(
+        repository?: string,
         name?: string,
         version?:string,
         source?:string,
@@ -20,6 +22,7 @@ export class Result implements IResult, IValidateable{
         tags?:string[]
         ){
 
+        if(typeof repository !== 'undefined') this.repository = repository
         if(typeof name !== 'undefined') this.name = name
         if(typeof version !== 'undefined') this.occurances.push( new ResultMeta(version, source, type, selector) )
         if(typeof tags !== 'undefined') this.tags = tags

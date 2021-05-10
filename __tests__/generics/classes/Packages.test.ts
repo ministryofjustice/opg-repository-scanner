@@ -25,7 +25,7 @@ test('postive: test construction forms a valid package when creating directly', 
     const lName:string = 'lock-spec'
     // test function that always returns same result
     const tester = function(): Result[]{
-        return [new Result('test')]
+        return [new Result('testr', 'test')]
     }
     // handlers to load a file
     const manifestHandler = new SpecificationHandler(
@@ -75,12 +75,12 @@ test('postive: combine data sets should return less numbers', async() => {
         new Specification<SpecificationHandler, Result>('', [])
     )
     const manifest:IResult[] = [
-        new Result('pkg1', '*')
+        new Result('testr', 'pkg1', '*')
     ]
     const lock:IResult[] = [
-        new Result('pkg1', '0.0.1'),
-        new Result('pkg2', '1'),
-        new Result('pkg3', '1'),
+        new Result('testr', 'pkg1', '0.0.1'),
+        new Result('testr', 'pkg2', '1'),
+        new Result('testr', 'pkg3', '1'),
     ]
 
     const res = packages.combine(manifest, lock)

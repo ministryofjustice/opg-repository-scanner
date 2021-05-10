@@ -16,6 +16,6 @@ test('positve: test empty result should be invalid', async () => {
 })
 
 test('positve: test result with just a name should be true', async () => {
-    const res = new Result('test-name')
+    const res = new Result('testr', 'test-name')
     expect(res.valid()).toBeTruthy()
 })

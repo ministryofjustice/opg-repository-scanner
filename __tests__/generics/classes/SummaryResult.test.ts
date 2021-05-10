@@ -14,7 +14,7 @@ const sample_dir: string = './__samples__/'
 
 test('positve: version conversion between result and summary matches', async () => {
     // make a large result object
-    let res = new Result('test-result')
+    let res = new Result('testr', 'test-result')
     res.occurances.push(
         ...[
             new ResultMeta('^0.1.1', './test.manifest', ManifestType.Manifest, '*'),
@@ -34,7 +34,7 @@ test('positve: version conversion between result and summary matches', async () 
 
 test('positve: unique sources found correctly', async () => {
     // make a large result object
-    let res = new Result('test-result')
+    let res = new Result('testr', 'test-result')
     res.occurances.push(
         ...[
             new ResultMeta('^0.1.1', './test.manifest', ManifestType.Manifest, '*'),
@@ -52,7 +52,7 @@ test('positve: unique sources found correctly', async () => {
 
 test('positve: occurances conversion between result and summary finds correct number of merged occurances', async () => {
     // make a large result object
-    let res = new Result('test-result')
+    let res = new Result('testr', 'test-result')
     res.occurances.push(
         ...[
             new ResultMeta('^0.1.1', './test.manifest', ManifestType.Manifest, '*'),
@@ -72,7 +72,7 @@ test('positve: occurances conversion between result and summary finds correct nu
 
 test('positve: summary conversion succeeds', async () => {
     // make a large result object
-    let res = new Result('test-result')
+    let res = new Result('testr', 'test-result')
     res.occurances.push(
         ...[
             new ResultMeta('^0.1.1', './test.manifest', ManifestType.Manifest, '*'),

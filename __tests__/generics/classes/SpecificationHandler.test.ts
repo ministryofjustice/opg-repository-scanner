@@ -20,7 +20,7 @@ test('negative: test empty specification should be invalid', async () => {
 test('positve: test specification handler based on composer', async () => {
     // super simple function that returns a basic result
     const test = async function(): Promise<Result[]>{
-        return new Promise<Result[]>( resolve => { resolve([new Result('test')] ) } )
+        return new Promise<Result[]>( resolve => { resolve([new Result('testr', 'test')] ) } )
     }
     const handler = new SpecificationHandler(
         new Source(),
