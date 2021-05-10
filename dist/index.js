@@ -1907,6 +1907,9 @@ class SummarizedList extends List_1.List {
         }
         return summarised;
     }
+    markdown_escape(content) {
+        return content.replace(/\|/g, "\\|");
+    }
     // convert the packages data to markdown
     save_as_markdown(data, file, dir) {
         const packages = data.get('packages');
@@ -1916,7 +1919,13 @@ class SummarizedList extends List_1.List {
         for (const row of packages) {
             const occ = row.occurances_to_string_array(row.sources()).join('<br>');
             const tags = row.tags.join(', ');
-            markdown += `| ${row.repository} | ${row.name} | ${row.version} | ${occ} | ${tags} |\n`;
+            const cols = [`${row.repository}`, `${row.name}`, `${row.version}`, `${occ}`, `${tags}`];
+            // loop over all these bits
+            for (const col of cols) {
+                const escaped = this.markdown_escape(col);
+                markdown += '| ' + escaped + ' ';
+            }
+            markdown += '|\n';
         }
         // save content to the file
         const saved = this.save_file(markdown, file, dir);

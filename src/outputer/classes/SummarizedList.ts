@@ -21,6 +21,10 @@ export class SummarizedList extends List implements IOutputer{
         return summarised
     }
 
+    // escape | as they trigger cell splits
+    protected markdown_escape(content:string) : string{
+        return content.replace(/\|/g, "\\|")
+    }
 
     // convert the packages data to markdown
     protected save_as_markdown(data:Map<string,any>, file:string, dir?:string) : string|boolean {
@@ -31,7 +35,15 @@ export class SummarizedList extends List implements IOutputer{
         for (const row of packages) {
             const occ = row.occurances_to_string_array( row.sources() ).join('<br>')
             const tags = row.tags.join(', ')
-            markdown += `| ${row.repository} | ${row.name} | ${row.version} | ${occ} | ${tags} |\n`
+
+            const cols:string[] = [ `${row.repository}`, `${row.name}`, `${row.version}`, `${occ}`, `${tags}`]
+            // loop over all these bits
+            for(const col of cols) {
+                const escaped:string = this.markdown_escape(col)
+                markdown += '| ' + escaped + ' '
+            }
+            markdown += '|\n'
+
         }
         // save content to the file
         const saved = this.save_file(markdown, file, dir)
