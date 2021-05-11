@@ -1,3 +1,4 @@
+import * as core from '@actions/core'
 import { ManifestTypes } from "../enums"
 import { IFilePatterns, IParser, ITags } from "../interfaces"
 import { PackageInfo } from "./PackageInfo"
@@ -77,7 +78,7 @@ export class GenericParser implements IParser {
             ...await this.manifests(manifestTags, manifestPatterns),
             ...await this.locks(lockTags, lockPatterns)
         )
-
+        core.debug(`[${this.constructor.name}] packages finished`)
         return new Promise<PackageInfo[]>( (resolve) => {
             resolve(packages)
         })
