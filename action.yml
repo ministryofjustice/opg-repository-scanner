@@ -5,10 +5,6 @@ inputs:
   repository_name:
     description: 'Repository name with owner, used for reporting only. For example, ministryofjustice/opg-repository-scanner'
     default: ${{ github.repository }}
-  configuration_file:
-    required: false
-    description: 'A configuration file to load all config data. When this is set, all other input options will be ignored'
-    default: '-'
   source_directory:
     required: false
     description: 'Directory to use as the base for scanning.'
@@ -21,20 +17,11 @@ inputs:
     required: false
     description: 'List of folders / filepaths to exclude from all filesystem operations. This is parsed using JSON.parse to convert from a string.'
     default: '["(__samples__/*)", "(__tests__/*)", "(node_modules/*)","(vendor/*)"]'
-
-  manifests:
-    required: false
-    description: 'All the types of manifests to scan and parse for. Formatted as an array of objects with name & uses property.'
-    default: '[{"name":"composer","uses":"ComposerParser"},{"name":"package","uses":"PackageParser"}]'
-
   artifact_name:
     required: false
     description: 'The finished set of artifacts will be uploaded to this workflow under this name'
     default: 'repository-scan-result'
-  artifact_as:
-    required: false
-    description: 'Determine which output reports will be generated from the raw data. Parsed via JSON.parse'
-    detault: "['list','summarized-list']"
+
 
 runs:
   using: 'node12'
