@@ -11,14 +11,9 @@
     "lint": "eslint src/**/*.ts --fix",
     "package": "ncc build --source-map --license licenses.txt",
     "test": "jest",
-    "all": "rm -Rf ./lib && npm run build && npm run format && npm run lint && npm run package && npm test",
-    "debug": "rm -Rf ./lib && npm run build && npm run format && npm run lint && npm run package"
+    "all": "rm -Rf ./lib && rm -Rf ./dist && npm run build && npm run format && npm run lint && npm run package && npm test"
   },
-  "keywords": [
-    "actions",
-    "node",
-    "setup"
-  ],
+  "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -26,16 +21,15 @@
     "@actions/core": "^1.2.6",
     "@actions/glob": "^0.1.1",
     "@types/jspath": "^0.4.0",
-    "js-yaml": "^3.14.1",
     "jspath": "^0.4.0",
-    "reflect-metadata": "^0.1.13",
-    "typedjson": "^1.7.0"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",
     "@types/js-yaml": "^4.0.0",
     "@types/lodash": "^4.14.168",
     "@types/node": "^14.14.9",
+    "@types/uuid": "^8.3.0",
     "@typescript-eslint/parser": "^4.8.1",
     "@vercel/ncc": "^0.25.1",
     "eslint": "^7.17.0",
