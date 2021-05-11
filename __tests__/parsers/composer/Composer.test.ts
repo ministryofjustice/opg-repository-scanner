@@ -5,6 +5,27 @@ import {Composer} from '../../../src/parsers/composer/Composer'
 const sample_dir: string = './__samples__/app/php/valid/'
 
 
+test(`+ Test the tags function`, async () => {
+    const comp = new Composer()
+    const tags = comp.tags()
+    const locks = Composer.tags.lock
+    const manifest = Composer.tags.manifest
+    expect(tags.lock).toEqual(locks)
+    expect(tags.manifest).toEqual(manifest)
+})
+
+
+test(`+ Test the file patterns function`, async () => {
+    const comp = new Composer()
+    const patterns = comp.patterns()
+    const locks = Composer.filePatterns.lock
+    const manifest = Composer.filePatterns.manifest
+    expect(patterns.lock).toEqual(locks)
+    expect(patterns.manifest).toEqual(manifest)
+})
+
+
+
 test(`+ Test the locks function`, async () => {
     const dir = sample_dir + 'doctrine-instantiator/'
     const comp = new Composer().set(

@@ -29,9 +29,11 @@ export class Composer implements IParser {
         lock: [ManifestTypes.Lock, 'php']
     }
 
+    // Returned all the tags for composer
     tags():ITags{
         return Object.getPrototypeOf(this).constructor.tags
     }
+    // Return the static patterns property for this instance
     patterns():IFilePatterns{
         return Object.getPrototypeOf(this).constructor.filePatterns
     }

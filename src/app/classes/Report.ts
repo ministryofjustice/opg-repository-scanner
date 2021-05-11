@@ -38,7 +38,8 @@ export class Report {
         else this.parsers = PARSERS
     }
 
-
+    // allPackages processes all parsers configured and pushes all
+    // packages into top level array
     async allPackages(): Promise<void> {
         let packages = []
         const parsers = this.parsers
@@ -87,6 +88,15 @@ export class Report {
             resolve()
         })
 
+    }
+
+    // main function to generate a report of all packages
+    async generate(): Promise<void> {
+        await this.allPackages()
+
+        return new Promise<void>( (resolve) => {
+            resolve()
+        })
     }
 
 }

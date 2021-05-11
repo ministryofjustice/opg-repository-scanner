@@ -5,6 +5,28 @@ import {Npm} from '../../../src/parsers/npm/Npm'
 const sample_dir: string = './__samples__/app/npm/valid/'
 
 
+
+test(`+ Test the tags function`, async () => {
+    const comp = new Npm()
+    const tags = comp.tags()
+    const locks = Npm.tags.lock
+    const manifest = Npm.tags.manifest
+    expect(tags.lock).toEqual(locks)
+    expect(tags.manifest).toEqual(manifest)
+})
+
+
+test(`+ Test the file patterns function`, async () => {
+    const comp = new Npm()
+    const patterns = comp.patterns()
+    const locks = Npm.filePatterns.lock
+    const manifest = Npm.filePatterns.manifest
+    expect(patterns.lock).toEqual(locks)
+    expect(patterns.manifest).toEqual(manifest)
+})
+
+
+
 test(`+ Test the locks function`, async () => {
     const dir = sample_dir + 'simple/'
     const comp = new Npm().set(
