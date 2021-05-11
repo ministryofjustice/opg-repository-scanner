@@ -1,6 +1,7 @@
 import { PackageMeta } from "./PackageMeta"
 import { ManifestTypes } from "../enums"
 import { v4 as uuid } from 'uuid';
+import { IPackage } from "../interfaces";
 
 
 // PackageInfo is the base package data we're trying to construct
@@ -32,6 +33,12 @@ export class PackageInfo {
     // merging meta from other packages that have been found
     expand(other:PackageInfo): void {
         this.meta.push(...other.meta)
+    }
+
+    // convert this to flat array of packages
+    flat(): IPackage[] {
+        const flatMeta = this.meta.map((meta) => meta.flat(this.repository, this.name) )
+        return flatMeta
     }
 
 }

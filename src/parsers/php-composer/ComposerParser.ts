@@ -7,7 +7,7 @@ import { IComposerLock, IComposerManifest } from "./interfaces";
 
 
 
-export class Composer extends GenericParser implements IParser {
+export class ComposerParser extends GenericParser implements IParser {
 
     static filePatterns:IFilePatterns = {
         manifest: ["**/composer.json"],
@@ -15,8 +15,8 @@ export class Composer extends GenericParser implements IParser {
     }
 
     static tags:ITags = {
-        manifest: [ManifestTypes.Manifest, 'php'],
-        lock: [ManifestTypes.Lock, 'php']
+        manifest: [ManifestTypes.Manifest, 'php', 'composer'],
+        lock: [ManifestTypes.Lock, 'php', 'composer']
     }
 
     // helper method to return a GetPackages object
@@ -34,7 +34,7 @@ export class Composer extends GenericParser implements IParser {
     // process the lock files
     async locks(
         tags:string[],
-        patterns:string[] = Composer.filePatterns.lock
+        patterns:string[] = ComposerParser.filePatterns.lock
         ): Promise<PackageInfo[]> {
         const getter = this.getter(patterns, ManifestTypes.Lock)
         const packages = await getter.get<IComposerLock>(tags, true)
@@ -48,7 +48,7 @@ export class Composer extends GenericParser implements IParser {
     // process the manifest files
     async manifests(
         tags:string[],
-        patterns:string[] = Composer.filePatterns.manifest
+        patterns:string[] = ComposerParser.filePatterns.manifest
         ): Promise<PackageInfo[]> {
         const getter = this.getter(patterns, ManifestTypes.Manifest)
         const packages = await getter.get<IComposerManifest>(tags, true)

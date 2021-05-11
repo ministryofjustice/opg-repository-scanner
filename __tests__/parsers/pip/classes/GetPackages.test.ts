@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { PackageInfo, ManifestTypes } from '../../../../src/app';
-import { GetPackages } from '../../../../src/parsers/pip/classes';
-import { Pip } from '../../../../src/parsers/pip';
+import { GetPackages } from '../../../../src/parsers/python-pip/classes';
+import { PipParser as Pip } from '../../../../src/parsers/python-pip';
 import { IContent } from '../../../../src/app/interfaces';
 import { JsonContent } from '../../../../src/app/classes';
 

@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { PackageInfo, ManifestTypes } from '../../../src/app';
-import {Composer} from '../../../src/parsers/composer/Composer'
+import {ComposerParser as Composer} from '../../../src/parsers/php-composer/ComposerParser'
 
 const sample_dir: string = './__samples__/app/php/valid/'
 

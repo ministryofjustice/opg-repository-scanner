@@ -2,7 +2,6 @@ import * as core from '@actions/core'
 
 import { IParser } from '../interfaces'
 import { PackageInfo } from "./PackageInfo";
-import { PARSERS } from "../parsers";
 
 export class Report {
 
@@ -35,7 +34,13 @@ export class Report {
         this.exclusions = exclusions
 
         if(typeof parsers !== 'undefined') this.parsers = parsers
-        else this.parsers = PARSERS
+
+        core.debug(`[${this.constructor.name}] repository: ${repositoryName}`)
+        core.debug(`[${this.constructor.name}] directory: ${directory}`)
+        core.debug(`[${this.constructor.name}] followSymlinks: ${followSymlinks}`)
+        core.debug(`[${this.constructor.name}] exclusions: ${exclusions}`)
+        core.debug(`[${this.constructor.name}] parsers: ${this.parsers}`)
+
     }
 
     // allPackages processes all parsers configured and pushes all

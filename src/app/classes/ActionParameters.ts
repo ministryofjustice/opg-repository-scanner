@@ -24,10 +24,13 @@ export class ActionParameters implements IActionParameters{
         let input: ActionParameters = new ActionParameters()
 
         const repoName = core.getInput('repository_name')
+        core.debug(`repository_name: ${repoName}`)
         const dir = core.getInput('source_directory')
+        core.debug(`source_directory: ${dir}`)
         const symlink:boolean = (core.getInput('source_follow_symlinks') === 'true')
+        core.debug(`symlink: ${symlink}`)
         const exclude = core.getInput('source_exclude')
-
+        core.debug(`source_exclude: ${exclude}`)
 
         if (repoName && repoName.length > 0) input.repository_name = repoName
         if (dir && dir.length > 0) input.source_directory = dir

@@ -1,7 +1,8 @@
 import { ManifestTypes } from "../enums"
+import { IPackage, IPackageMeta } from "../interfaces"
 
 // meta data for the packages
-export class PackageMeta {
+export class PackageMeta implements IPackageMeta{
     version:string = ''
     type:ManifestTypes = ManifestTypes.Null
     license:string = ''
@@ -21,6 +22,19 @@ export class PackageMeta {
         if(typeof tags !== 'undefined') this.tags = tags
         if(typeof license !== 'undefined') this.license = license
 
+    }
+
+
+    flat(repository:string, name:string): IPackage {
+        return {
+            repository: repository,
+            name: name,
+            version: this.version,
+            type: this.type,
+            source: this.source,
+            license: this.license,
+            tags: this.tags.join(',')
+        }
     }
 
 }

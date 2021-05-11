@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import * as glob from '@actions/glob'
 
@@ -13,6 +14,26 @@ export class Files{
             return ! matched.includes(true)
         })
     }
+
+    // sanitisse directory name and create the directory if it doesnt exist
+    // returning the updated dir value
+    protected create_directory(dir:string):string{
+        // trim and add trialing slash
+        dir = dir.replace(/\/$/, "") + '/'
+        // make the directory
+        if(! fs.existsSync(dir)) fs.mkdirSync(dir)
+        // return the dir string
+        return dir
+    }
+
+    // save content to file (& dir) and return if the file exists
+    save(content:string, file:string, dir:string): boolean{
+        if (typeof dir !== 'undefined') dir = this.create_directory(dir)
+        const filepath = path.resolve(dir, file)
+        fs.writeFileSync(filepath, content)
+        return fs.existsSync(filepath)
+    }
+
 
     async get(
         directory:string,

@@ -1,3 +1,3 @@
-export {Composer} from './composer'
-export {Npm} from './npm'
-export {Pip} from './pip'
+export {ComposerParser} from './php-composer'
+export {NpmParser} from './node-npm'
+export {PipParser} from './python-pip'

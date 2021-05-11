@@ -10,6 +10,12 @@ export interface IParser {
     _locks:PackageInfo[]
     _lockFiles:string[]
 
+    repositoryName:string
+    directory:string
+    followSymlinks: boolean
+    exclusions:string[]
+
+
     tags(): ITags
     patterns(): IFilePatterns
     // setter instead of a constructor

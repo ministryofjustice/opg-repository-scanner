@@ -1,13 +1,13 @@
 import { IParser, ManifestTypes, PackageInfo } from "../../app";
+import { GenericParser } from "../../app/classes/GenericParser";
 
 import { ITags, IFilePatterns} from "../../app/interfaces";
-import { Composer } from "../composer";
 import { GetPackages } from "./classes";
 import { IPackageLock, IPackageManifest } from "./interfaces";
 
 
 
-export class Npm extends Composer implements IParser {
+export class NpmParser extends GenericParser implements IParser {
 
     static filePatterns:IFilePatterns = {
         manifest: ["**/package.json"],
@@ -15,8 +15,8 @@ export class Npm extends Composer implements IParser {
     }
 
     static tags:ITags = {
-        manifest: ['manifest', 'javascript'],
-        lock: ['lock', 'javascript']
+        manifest: [ManifestTypes.Manifest, 'javascript', 'npm'],
+        lock: [ManifestTypes.Lock, 'javascript', 'npm']
     }
 
     // helper method to return a GetPackages object
@@ -34,7 +34,7 @@ export class Npm extends Composer implements IParser {
     // process the lock files
     async locks(
         tags:string[],
-        patterns:string[] = Npm.filePatterns.lock
+        patterns:string[] = NpmParser.filePatterns.lock
         ):  Promise<PackageInfo[]> {
         const getter = this.getter(patterns, ManifestTypes.Lock)
         const packages = await getter.get<IPackageLock>(tags, true)
@@ -48,7 +48,7 @@ export class Npm extends Composer implements IParser {
     // process the manifest files
     async manifests(
         tags:string[],
-        patterns:string[] = Npm.filePatterns.manifest
+        patterns:string[] = NpmParser.filePatterns.manifest
         ): Promise<PackageInfo[]> {
         const getter = this.getter(patterns, ManifestTypes.Manifest)
         const packages = await getter.get<IPackageManifest>(tags, true)

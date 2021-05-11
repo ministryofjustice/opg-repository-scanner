@@ -4,7 +4,7 @@ import { GenericParser } from "../../app/classes/GenericParser";
 import { IContent, IFilePatterns, ITags } from "../../app/interfaces";
 import { GetPackages } from "./classes/GetPackages";
 
-export class Pip extends GenericParser implements IParser {
+export class PipParser extends GenericParser implements IParser {
 
     static filePatterns:IFilePatterns = {
         manifest: ["**/requirements.txt"],
@@ -19,7 +19,7 @@ export class Pip extends GenericParser implements IParser {
 
     async manifests(
         tags:string[],
-        patterns:string[] = Pip.filePatterns.manifest
+        patterns:string[] = PipParser.filePatterns.manifest
         ): Promise<PackageInfo[]> {
 
         const getter = new GetPackages(

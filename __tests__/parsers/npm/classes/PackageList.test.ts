@@ -2,8 +2,8 @@ import * as fs from 'fs';
 import { PackageInfo, ManifestTypes } from '../../../../src/app';
 
 import { JsonContent } from '../../../../src/app/classes'
-import { IPackageLock, IPackageManifest } from '../../../../src/parsers/npm/interfaces';
-import { PackageList } from '../../../../src/parsers/npm/classes';
+import { IPackageLock, IPackageManifest } from '../../../../src/parsers/node-npm/interfaces';
+import { PackageList } from '../../../../src/parsers/node-npm/classes';
 const sample_dir: string = './__samples__/app/npm/'
 
 

@@ -4,7 +4,6 @@ import { PackageInfo } from "./PackageInfo"
 
 export class GroupPackages {
 
-
     // group the package data passed in by the name property
     public static byName(packages:PackageInfo[]) : PackageInfo[] {
         let reduced:PackageInfo[] = []
@@ -20,11 +19,7 @@ export class GroupPackages {
             }
             reduced.push(pkg)
         }
-        /* eslint-disable no-console */
-        // console.log("uniques:", uniqueNames)
-        // console.log("reduced:", reduced)
 
-        /* eslint-enable no-console */
         return reduced
     }
 }

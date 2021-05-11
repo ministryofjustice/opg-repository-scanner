@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { Report } from '../../../src/app/classes';
-import { Composer } from '../../../src/parsers'
+import { ComposerParser as Composer } from '../../../src/parsers'
 
 const sample_dir: string = './__samples__/app/php/valid/laminas/'
 

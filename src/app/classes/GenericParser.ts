@@ -25,7 +25,7 @@ export class GenericParser implements IParser {
         lock: [ManifestTypes.Lock]
     }
 
-    // Returned all the tags for composer
+    // Returned all the tags
     tags():ITags{
         return Object.getPrototypeOf(this).constructor.tags
     }

@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { PackageList } from '../../parsers/composer/classes';
+import { PackageList } from '../../parsers/php-composer/classes';
 import { ManifestTypes } from '../enums';
 
 import { IContent, IContentReader, IGetPackages,  } from '../interfaces';

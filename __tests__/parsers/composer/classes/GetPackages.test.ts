@@ -2,8 +2,8 @@ import * as fs from 'fs';
 import { PackageInfo, ManifestTypes } from '../../../../src/app';
 
 import { JsonContent } from '../../../../src/app/classes'
-import { IComposerLock, IComposerManifest } from '../../../../src/parsers/composer/interfaces';
-import { GetPackages} from '../../../../src/parsers/composer/classes';
+import { IComposerLock, IComposerManifest } from '../../../../src/parsers/php-composer/interfaces';
+import { GetPackages} from '../../../../src/parsers/php-composer/classes';
 
 
 const sample_dir: string = './__samples__/app/php/valid/'
