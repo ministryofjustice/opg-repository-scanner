@@ -54,8 +54,11 @@ export class Report {
             /* eslint-disable no-console */
             if(core.isDebug()) console.log('Parser object: ', parser)
             /* eslint-enable no-console */
-
-            const found = await parser.packages()
+            const tags = parser.tags()
+            const patterns = parser.patterns()
+            const found = await parser.packages(
+                tags.manifest, tags.lock, patterns.manifest, patterns.lock
+            )
 
             core.info(
                 `[${parserName}] Found [${found.length}] packages.\n` +

@@ -1,9 +1,12 @@
 import { JsonParseError } from "../errors";
-import { IJsonContent } from "../interfaces";
+import { IContentReader, IJsonContent } from "../interfaces";
 
 
-export class JsonContent {
+export class JsonContent implements IContentReader{
 
+    as<T extends IJsonContent>(content: string): T{
+        return JsonContent.as<T>(content)
+    }
     // Parse the raw json content in `content` into a Interface of Type T
     public static as<T extends IJsonContent>(content: string): T {
 

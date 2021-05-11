@@ -25,8 +25,15 @@ export class Composer implements IParser {
     }
 
     static tags:ITags = {
-        manifest: ['manifest', 'php'],
-        lock: ['lock', 'php']
+        manifest: [ManifestTypes.Manifest, 'php'],
+        lock: [ManifestTypes.Lock, 'php']
+    }
+
+    tags():ITags{
+        return Object.getPrototypeOf(this).constructor.tags
+    }
+    patterns():IFilePatterns{
+        return Object.getPrototypeOf(this).constructor.filePatterns
     }
 
     // use a set instead of a construct so can push to
@@ -45,7 +52,7 @@ export class Composer implements IParser {
     }
 
     // helper method to return a GetPackages object
-    private getter(patterns:string[], type:ManifestTypes): GetPackages {
+    protected getter(patterns:string[], type:ManifestTypes): GetPackages {
         return new GetPackages(
             this.repositoryName,
             this.directory,
@@ -57,9 +64,12 @@ export class Composer implements IParser {
     }
 
     // process the lock files
-    async locks(): Promise<PackageInfo[]> {
-        const getter = this.getter(Composer.filePatterns.lock, ManifestTypes.Lock)
-        const packages = await getter.get<IComposerLock>([], true)
+    async locks(
+        tags:string[],
+        patterns:string[] = Composer.filePatterns.lock
+        ): Promise<PackageInfo[]> {
+        const getter = this.getter(patterns, ManifestTypes.Lock)
+        const packages = await getter.get<IComposerLock>(tags, true)
         this._locks = packages
         this._lockFiles = getter._files
         return new Promise<PackageInfo[]>( (resolve) => {
@@ -68,9 +78,12 @@ export class Composer implements IParser {
     }
 
     // process the manifest files
-    async manifests(): Promise<PackageInfo[]> {
-        const getter = this.getter(Composer.filePatterns.manifest, ManifestTypes.Manifest)
-        const packages = await getter.get<IComposerManifest>([], true)
+    async manifests(
+        tags:string[],
+        patterns:string[] = Composer.filePatterns.manifest
+        ): Promise<PackageInfo[]> {
+        const getter = this.getter(patterns, ManifestTypes.Manifest)
+        const packages = await getter.get<IComposerManifest>(tags, true)
         this._manifests = packages
         this._manifestFiles = getter._files
         return new Promise<PackageInfo[]>( (resolve) => {
@@ -79,12 +92,17 @@ export class Composer implements IParser {
     }
 
     // get all packages, merging locks and manifest
-    async packages(): Promise<PackageInfo[]> {
+    async packages(
+        manifestTags: string[],
+        lockTags: string[],
+        manifestPatterns: string[],
+        lockPatterns: string[]
+    ): Promise<PackageInfo[]> {
         let packages: PackageInfo[] = []
         // merge in both manifests and lock files
         packages.push(
-            ...await this.manifests(),
-            ...await this.locks()
+            ...await this.manifests(manifestTags, manifestPatterns),
+            ...await this.locks(lockTags, lockPatterns)
         )
 
         return new Promise<PackageInfo[]>( (resolve) => {
