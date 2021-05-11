@@ -1,2 +1,0 @@
-
-export {IManifestResults} from './IManifestResults'

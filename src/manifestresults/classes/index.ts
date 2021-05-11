@@ -1,2 +1,0 @@
-
-export {ManifestResults} from './ManifestResults'
