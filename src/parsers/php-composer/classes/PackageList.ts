@@ -97,13 +97,15 @@ export class PackageList {
         ]
 
         for(const item of topLevel) {
+
             packages.push( new PackageInfo(
                 repository,
                 item.name,
                 item.version,
                 type,
                 source,
-                tags
+                tags,
+                item.license?.join(",") ?? ""
             ))
 
             if(recursive) {

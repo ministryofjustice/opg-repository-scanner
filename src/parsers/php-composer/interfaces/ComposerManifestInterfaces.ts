@@ -15,4 +15,5 @@ export interface IComposerManifest extends IJsonContent {
     'require-dev'?: IComposerManifestRequire,
     version?:string,
     description?:string
+    license?:string[]
 }
