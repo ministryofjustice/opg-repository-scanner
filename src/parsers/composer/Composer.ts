@@ -1,4 +1,5 @@
 import { IParser, ManifestTypes, PackageInfo } from "../../app";
+import { GenericParser } from "../../app/classes/GenericParser";
 
 import { ITags, IFilePatterns} from "../../app/interfaces";
 import { GetPackages } from "./classes";
@@ -6,18 +7,7 @@ import { IComposerLock, IComposerManifest } from "./interfaces";
 
 
 
-export class Composer implements IParser {
-    _manifests:PackageInfo[] = []
-    _manifestFiles:string[] = []
-    _locks:PackageInfo[] = []
-    _lockFiles:string[] = []
-
-
-    repositoryName:string = ''
-    directory:string = ''
-    followSymlinks: boolean = false
-    exclusions:string[] = []
-
+export class Composer extends GenericParser implements IParser {
 
     static filePatterns:IFilePatterns = {
         manifest: ["**/composer.json"],
@@ -27,30 +17,6 @@ export class Composer implements IParser {
     static tags:ITags = {
         manifest: [ManifestTypes.Manifest, 'php'],
         lock: [ManifestTypes.Lock, 'php']
-    }
-
-    // Returned all the tags for composer
-    tags():ITags{
-        return Object.getPrototypeOf(this).constructor.tags
-    }
-    // Return the static patterns property for this instance
-    patterns():IFilePatterns{
-        return Object.getPrototypeOf(this).constructor.filePatterns
-    }
-
-    // use a set instead of a construct so can push to
-    // the PARSERS global and then call a set after
-    set(
-        repositoryName:string,
-        directory:string,
-        exclusions:string[],
-        followSymlinks:boolean,
-    ) : IParser {
-        this.repositoryName = repositoryName
-        this.directory = directory
-        this.followSymlinks = followSymlinks
-        this.exclusions = exclusions
-        return this
     }
 
     // helper method to return a GetPackages object
@@ -93,23 +59,5 @@ export class Composer implements IParser {
         })
     }
 
-    // get all packages, merging locks and manifest
-    async packages(
-        manifestTags: string[],
-        lockTags: string[],
-        manifestPatterns: string[],
-        lockPatterns: string[]
-    ): Promise<PackageInfo[]> {
-        let packages: PackageInfo[] = []
-        // merge in both manifests and lock files
-        packages.push(
-            ...await this.manifests(manifestTags, manifestPatterns),
-            ...await this.locks(lockTags, lockPatterns)
-        )
-
-        return new Promise<PackageInfo[]>( (resolve) => {
-            resolve(packages)
-        })
-    }
 
 }
