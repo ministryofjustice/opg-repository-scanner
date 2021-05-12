@@ -1,8 +1,8 @@
 {
-  "name": "tool-and-asset-scanning",
+  "name": "repository-scanner",
   "version": "0.0.0",
   "private": true,
-  "description": "Tool and asset scanning",
+  "description": "Repository scanning action to read all packages installed via support manifest and lock files.",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -14,7 +14,7 @@
     "all": "rm -Rf ./lib && rm -Rf ./dist && npm run build && npm run format && npm run lint && npm run package && npm test",
     "tester": "INPUT_SOURCE_DIRECTORY='./test-repo' INPUT_SOURCE_FOLLOW_SYMLINKS='true' INPUT_REPOSITORY_NAME='digideps' node ./dist/index.js"
   },
-  "keywords": [],
+  "keywords": ["github", "action", "dependancies", "SCA"],
   "author": "",
   "license": "MIT",
   "dependencies": {
