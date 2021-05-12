@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import {JsonContent} from '../../../src/app/classes'
-import { IComposerLock, IComposerManifest } from '../../../src/parsers/composer/interfaces';
+import { IComposerLock, IComposerManifest } from "../../../src/parsers/php-composer/interfaces"
 const sample_dir: string = './__samples__/app/php/'
 
 //--- Test parsing of the json files
