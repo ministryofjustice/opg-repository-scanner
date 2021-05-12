@@ -7,15 +7,20 @@ This action is intended to load various forms of manifest & lock files and parse
 At the moment, this action only supports the following tooling and languages:
 
 - PHP
-    - composer.json
-    - composer.lock
+    - composer
+        - `composer.json` & `composer.lock`
 - Javascript
-    - package.json
-    - package-lock.json
+    - npm
+        - `package.json` & `package-lock.json`
+- Python
+    - pip
+        - `requirements.txt`
+
+
 
 ## Inputs
 
-Currently, GitHub actions dont allow for complex / nested variable structures, so we are using `JSON.stringify` versions which are then parsed using `JSON.parse` - these are marked with a **\***
+Currently, GitHub actions dont allow for complex / nested variable structures, so where required inputs are coverted using `JSON.parse` - these are marked with a **\***
 
 ### `source_directory`
 
@@ -39,14 +44,6 @@ A `JSON.stringify()` result of an array. Contains a series of filepath patterns 
 
 The intention here is to provide a way to remove known unhappy paths or folders.
 
-### `manifests` **\***
-
-**Default: `'[{"name":"composer","uses":"ComposerParser"},{"name":"package","uses":"PackageParser"}]'`**
-
-The `manifests` property sets which manifest & lock scans we should use for this repository. It will be compared to whats listed in `AvailableManifestParsers` [here](https://github.com/ministryofjustice/opg-repository-scanner/blob/main/src/manifestresults/AvailableManifestsParsers.ts).
-
-Any unrecognised names will be ignroed and not run.
-
 
 ### `artifact_name`
 
@@ -54,43 +51,36 @@ Any unrecognised names will be ignroed and not run.
 
 The artifact created at the end will be uploaded to the workflow under this name.
 
-### `artifact_as` **\***
-
-**Default: `"['json']"`**
-
-Listing of output reports to be generated for this artifact. Allowed versions are listed in `AvailableOutputers` [here](https://github.com/ministryofjustice/opg-repository-scanner/blob/main/src/outputer/index.ts).
-
-
-### `configuration_file`
-
-If used, this should point to a `yaml` file that contains all the configuration data in a data structure with an exmaple shown [here](https://github.com/ministryofjustice/opg-repository-scanner/tree/main/__samples__/config/valid/sample.yml).
-
 
 ## Output
 
-This action generates an artifact of all reports and uploads it to the completed workflow.
-
+This action generates an artifact of all reports and uploads it to the completed workflow as `artifact_name`
 
 
 ## Process flow
 
-- **Main.ts** reads and creates the configuration data
-- **Main.ts** creates an instance of `ManifestResults` passing in the configuration and calls `.process()`
-- **ManifestResults** `.process()` calls `.manifests()` to loop over each `configuration.manifests` entry and calls `.run_parser(parser)`
-- **ManifestResults** `.run_parser(parser)` looks for `parser.uses` within `AvailableManifestParsers` and if found, checks its valid. `AvailableManifestParsers` is map of name & function, the function is a factory creation method.
-- **ManifestResults** `.run_parser(parser)` then calls `.instance(manifest)` to create a new IPackages compatible class using the function from `AvailableManifestParsers`. It then calls `.get(true)` on the newly created class.
-- **Packages** has `manifest` & `lock` properties configured from the factory creation function
-- **Packages** `.get(true)` calls `.parse()` on both the manifest and the lock. This is handled in a generic class - `Specification`
-- **Specification** is also setup in the factory creation function and attached to `Packages` with handlers being passed in
-- **Specification** `.parse()` iterates over its `.handlers` array and calls `.process()` on each. A handler is aimed at processing the specifics of an exact manifest / lock file, so these are targeted to languages.
-- **ISpecificationHandler** classes contain a filepath pattern to find files, and create a `.results` array while processing files. How it processes those files is determined by the specific class within the overwridden `.process()` method. It is generally aimed at processing json like files using jspath selectors, but this is not true of all
+- **main.ts** reads and creates the configuration data
+- **main.ts** contains `PARSERS` constant which contains every parser that will be run and `OUTPUTS` which has all the output handlers
+- **main.ts** creates a new `Report` with the configuration data and the `PARSERS` and then calls `.generate()`
+- **Report.generate()** iterates over the `PARSERS` passed in `.allPackages()` method which in turn calls `.packages()` on each parser which returns an array of `PackageInfo`.
+- how this is handled is determined within the parser itself
+- **main.ts** will then create an `Output` class with the `OUTPUTS` passed in and calls `.from(report)` to create all the report files and return the files that have been created
+
+## Adding new parsers
+
+Underneath the `src/parsers` folder create a new root named appropriately (`$lang-$tool`) with a base class called `${tool}Parser`. This class must implement `IParser`, beyond that its self contained with helpful classes and utilities in `src/app`.
+
+Add testing under `./__tests__/` and then add the class to `PARSERS` in `main.ts`
+
+## Adding new output reports
+
+Under `src/outputs` folder, create a new folder and then a base class inside that which implements `IOutput`. Add testing to the main `./__tests__/` folder and add the class to `OUTPUTS` in `main.ts`.
 
 
-## Adding new inputs
+## Adding new action inputs
 
 Tried to reduce the amount of work required to add a new input param to the action, but its a bit messier than ideal. There are **4** areas that require changes:
 
 - `./action.yml` - the actual action configuration file
-- `./src/input/action_yaml.ts` - a map structure and function to then iterate over and fetch details from `core.getInput`
-- `./src/input/input_to_config.ts` - function that creates a skel object to map from the inputs in `action_yaml.ts` and converts to a `Config` class
-- `./src/config/classes/Config.ts` - will need to add the property to this class so its parsed neatly
+- `IActionParameters` - will need the new fields adding
+- `ActionParameters` - will need the fields and the `fromCoreInput` method updating
