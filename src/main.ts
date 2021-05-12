@@ -6,11 +6,14 @@ import {Output} from './app/classes/Output'
 import {NpmParser, PipParser, ComposerParser} from './parsers'
 import {IOutput} from './app/interfaces'
 import {Raw} from './outputs/raw'
+import {GroupAndCount} from './outputs/groupAndCount'
 
 async function run(): Promise<void> {
     // this PARSERS object is where parsers need to push into
     const PARSERS: IParser[] = [new PipParser(), new NpmParser(), new ComposerParser()]
-    const OUTPUTS: IOutput[] = [new Raw()]
+    // OUTPUTS contain all the output generators
+    const OUTPUTS: IOutput[] = [new Raw(), new GroupAndCount()]
+
     try {
         core.info('Starting action.')
         const parameters = ActionParameters.fromCoreInput()
@@ -26,21 +29,29 @@ async function run(): Promise<void> {
             parameters.source_follow_symlinks,
             PARSERS
         )
-        core.info('Report constructed.')
 
+        core.info('Report constructed.')
         /* eslint-disable no-console */
         if (core.isDebug()) console.log(report)
         /* eslint-enable no-console */
 
         await report.generate()
         core.info('Report generated.')
-
         /* eslint-disable no-console */
         if (core.isDebug()) console.log(report)
         /* eslint-enable no-console */
 
         const out = new Output(OUTPUTS)
         const files = await out.from(report)
+        core.info(`Created [${files.length}] report files.`)
+
+        core.info(`Uploading artifact.`)
+        const artifact_name = parameters.artifact_name
+        const dir = __dirname + '/../'
+        const artifact_client = artifact.create()
+        const response = await artifact_client.uploadArtifact(artifact_name, files, dir, {
+            continueOnError: false
+        })
     } catch (error) {
         core.error(error.message)
         core.setFailed(error.message)
