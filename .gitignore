@@ -100,3 +100,4 @@ lib/**/*
 
 # ignore the dest for now
 dist/
+__artifacts__/
