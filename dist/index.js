@@ -1042,7 +1042,7 @@ class Simple {
         const all = [...new Set(classes_1.GroupPackages
                 .toFlat(this.report.packages)
                 .reduce((arr, i) => { arr.push(i.name); return arr; }, new Array()))].sort();
-        core.info(`[${this.constructor.name}] found [${all.length}] packages.`);
+        core.info(`[${this.constructor.name}] found [${all.length}] packages (without duplicates)`);
         return new Map([
             [this.filename, JSON.stringify(all)]
         ]);
