@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { PackageInfo, ManifestTypes } from '../../../src/app';
-import {NpmParser as Npm} from '../../../src/parsers/node-npm/NpmParser'
+import {NpmParser as Npm} from '../../../src/parsers/javascript-npm/NpmParser'
 
 const sample_dir: string = './__samples__/app/npm/valid/'
 

@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { PackageInfo, ManifestTypes } from '../../../../src/app';
 
-import { GetPackages} from '../../../../src/parsers/node-npm/classes';
+import { GetPackages} from '../../../../src/parsers/javascript-npm/classes';
 
 
 const sample_dir: string = './__samples__/app/npm/valid/'
