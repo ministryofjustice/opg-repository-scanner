@@ -7,12 +7,13 @@ import {NpmParser, PipParser, ComposerParser} from './parsers'
 import {IOutput} from './app/interfaces'
 import {Raw} from './outputs/raw'
 import {GroupAndCount} from './outputs/groupAndCount'
+import {Simple} from './outputs/simple'
 
 async function run(): Promise<void> {
     // this PARSERS object is where parsers need to push into
     const PARSERS: IParser[] = [new PipParser(), new NpmParser(), new ComposerParser()]
     // OUTPUTS contain all the output generators
-    const OUTPUTS: IOutput[] = [new Raw(), new GroupAndCount()]
+    const OUTPUTS: IOutput[] = [new Simple(), new Raw(), new GroupAndCount()]
 
     try {
         core.info('Starting action.')

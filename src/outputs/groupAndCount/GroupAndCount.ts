@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import * as core from '@actions/core'
 
 import { Raw } from '../raw/Raw'
 import { GroupPackages, Report } from "../../app/classes";
@@ -15,6 +15,7 @@ export class GroupAndCount extends Raw implements IOutput {
     process(): Map<string, string> {
         let files:Map<string, string> = new Map<string,string>()
         const flat = GroupPackages.byNameAndLocationWithCounts(this.report.packages)
+        core.info(`[${this.constructor.name}] found [${flat.length}] packages (removing duplications)`)
         // json
         const json: IOutputContent = {packages: flat}
         files.set('groupedWithCount.json', JSON.stringify(json))

@@ -1,23 +1,19 @@
-import * as fs from 'fs';
 import * as core from '@actions/core'
+
 import { Files, GroupPackages, Report } from "../../app/classes";
 import { IOutput, IPackage } from "../../app/interfaces";
 import { IOutputContent } from '../../app/interfaces/IOutputContent'
+import { Simple } from '../simple/Simple';
 
-export class Raw implements IOutput {
+export class Raw extends Simple implements IOutput {
     filename:string = 'raw.json'
     directory:string = './__artifacts__/'
     report: Report = new Report('', '', [], false, [])
 
-
-    set(report: Report) : IOutput {
-        this.report = report
-        return this
-    }
-
     process(): Map<string,string> {
         const all:IPackage[] = GroupPackages.toFlat(this.report.packages)
         const obj: IOutputContent = {packages: all}
+        core.info(`[${this.constructor.name}] found [${all.length}] packages.`)
 
         return new Map<string,string>([
             [this.filename, JSON.stringify(obj)]
@@ -25,19 +21,4 @@ export class Raw implements IOutput {
     }
 
 
-    async save(): Promise<string[]> {
-        let files:string[] = []
-        const contentMap = this.process()
-        const f = new Files()
-
-        // loop over all returned content and save
-        for(const [file, content] of contentMap.entries() ) {
-            const saved = f.save( content ?? '', file, this.directory)
-            if(saved) files.push(this.directory + file)
-        }
-
-        return new Promise<string[]>((resolve) => {
-            resolve(files)
-        })
-    }
 }
