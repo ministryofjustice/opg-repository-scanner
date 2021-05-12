@@ -59,7 +59,7 @@ export class PackageList {
 
         // merge the require & require dev together
         const requires = [
-                ...Object.entries(manifest.require),
+                ...Object.entries(manifest.require ?? {} ),
                 ...Object.entries(manifest["require-dev"] ?? {} )
         ]
 
