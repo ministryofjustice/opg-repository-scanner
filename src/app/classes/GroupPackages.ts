@@ -1,4 +1,5 @@
 import { ManifestTypes } from "../enums"
+import { IPackage } from "../interfaces"
 import { PackageInfo } from "./PackageInfo"
 
 
@@ -21,5 +22,54 @@ export class GroupPackages {
         }
 
         return reduced
+    }
+
+
+    // reduce packages to flat version
+    public static toFlat(packages:PackageInfo[]): IPackage[] {
+        let allFlat:IPackage[] = []
+        for(const pkg of packages)  allFlat.push(...pkg.flat())
+        return allFlat
+    }
+
+
+    public static byNameAndLocationWithCounts(packages:PackageInfo[]) : IPackage[] {
+        let flat:IPackage[] = []
+        const byName = GroupPackages.byName(packages)
+
+        // expand out each grouped meta data
+        for(const item of byName) {
+            // map the sources to their value with a counter
+            const sources = item.meta.reduce(
+                (map, e) => map.set(e.source, (map.get(e.source) || 0) + 1),
+                new Map()
+            )
+            // fetch unique versions of the other fields
+            const versions = [...new Set( item.meta.map(i => i.version) ) ]
+            const types = [...new Set( item.meta.map(i => i.type) ) ].sort()
+            const licenses = [...new Set( item.meta.map(i => i.license) ) ].sort()
+            // get all the unique tags
+            const tags = [...new Set( item.meta.reduce(
+                        (arr, i) => { arr.push(...i.tags); return arr },
+                        new Array<string>()
+                    ) ) ].sort()
+
+            // generate a IPackage object from this item
+            const pkg:IPackage = {
+                repository: item.repository,
+                name: item.name,
+                version: (
+                    (versions.length > 1 ) ? `${versions.shift()} (+${versions.length} others)` : `${versions.shift()}`
+                ),
+                type: types.join(', '),
+                license: licenses.join(', '),
+                tags: tags.join(', '),
+                source: Array.from(sources, ([name, count]) => (`${name} (count: ${count})`) ).join('<br> ')
+            }
+
+            flat.push(pkg)
+        }
+
+        return flat
     }
 }

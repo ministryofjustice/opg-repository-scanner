@@ -2,11 +2,12 @@ import { PackageMeta } from "./PackageMeta"
 import { ManifestTypes } from "../enums"
 import { v4 as uuid } from 'uuid';
 import { IPackage } from "../interfaces";
+import { IPackageInfo } from "../interfaces/IPackages";
 
 
 // PackageInfo is the base package data we're trying to construct
 // from each parser type
-export class PackageInfo {
+export class PackageInfo implements IPackageInfo{
     _id: string = '';
     repository:string = ''
     name:string = ''
@@ -40,5 +41,6 @@ export class PackageInfo {
         const flatMeta = this.meta.map((meta) => meta.flat(this.repository, this.name) )
         return flatMeta
     }
+
 
 }

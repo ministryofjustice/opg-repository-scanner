@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 
-import { Files, Report } from "../../app/classes";
+import { Files, GroupPackages, Report } from "../../app/classes";
 import { IOutput, IPackage } from "../../app/interfaces";
-import { IRaw } from './IRaw'
+import { IOutputContent } from '../../app/interfaces/IOutputContent'
 
 export class Raw implements IOutput {
     filename:string = 'raw.json'
@@ -15,22 +15,26 @@ export class Raw implements IOutput {
         return this
     }
 
+    process(): Map<string,string> {
+        const all:IPackage[] = GroupPackages.toFlat(this.report.packages)
+        const obj: IOutputContent = {packages: all}
+
+        return new Map<string,string>([
+            [this.filename, JSON.stringify(obj)]
+        ])
+    }
+
+
     async save(): Promise<string[]> {
         let files:string[] = []
-
-        let all:IPackage[] = []
-        // save all packages without an duplication, just raw data
-        for(const pkg of this.report.packages) {
-            const flat = pkg.flat()
-            all.push(...flat)
-        }
-
-        const obj: IRaw = {packages: all}
-        const content = JSON.stringify(obj)
+        const contentMap = this.process()
         const f = new Files()
-        const saved = f.save(content, this.filename, this.directory)
-        if(saved) files.push(this.directory + this.filename)
 
+        // loop over all returned content and save
+        for(const [file, content] of Object.entries(contentMap) ) {
+            const saved = f.save( content ?? '', file, this.directory)
+            if(saved) files.push(this.directory + file)
+        }
 
         return new Promise<string[]>((resolve) => {
             resolve(files)

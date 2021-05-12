@@ -33,7 +33,7 @@ export class PackageMeta implements IPackageMeta{
             type: this.type,
             source: this.source,
             license: this.license,
-            tags: this.tags.join(',')
+            tags: this.tags.join(', ')
         }
     }
 

@@ -7,11 +7,3 @@ export interface IPackageMeta{
     source:string
     tags:string[]
 }
-
-export interface IFlatPackage{
-    version:string
-    type:ManifestTypes
-    license:string
-    source:string
-    tags:string
-}
