@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 
 import { Raw } from '../raw/Raw'
-import { Files, GroupPackages, Report } from "../../app/classes";
-import { IOutput, IPackage } from "../../app/interfaces";
+import { GroupPackages, Report } from "../../app/classes";
+import { IOutput } from "../../app/interfaces";
 import { IOutputContent } from '../../app/interfaces/IOutputContent';
 
 
@@ -19,14 +19,14 @@ export class GroupAndCount extends Raw implements IOutput {
         const json: IOutputContent = {packages: flat}
         files.set('groupedWithCount.json', JSON.stringify(json))
         // markdown
-        let markdown = '| Repository | Package | Version | License | Occurances | Tags |\n| -- | -- | -- | -- | -- | -- |\n'
+        let markdown = "| Repository | Package | Version | Occurances | Tags | License |\n| -- | -- | -- | -- | -- | -- |\n"
         for (const row of flat) {
-            const cols:string[] = [ row.repository, row.name, row.version, row.license, row.source, row.tags]
+            const cols:string[] = [ row.repository, row.name, row.version, row.source, row.tags, row.license]
             // output and escape the column data
             for(const col of cols) markdown += `| ${col.replace(/\|/g, "\\|")} `
-            markdown += '|\n'
+            markdown += "|\n"
         }
-        files.set('groupedWithCount.md', JSON.stringify(markdown))
+        files.set('groupedWithCount.md', markdown)
 
         return files
     }

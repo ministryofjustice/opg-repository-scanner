@@ -44,10 +44,10 @@ export class GroupPackages {
                 (map, e) => map.set(e.source, (map.get(e.source) || 0) + 1),
                 new Map()
             )
-            // fetch unique versions of the other fields
-            const versions = [...new Set( item.meta.map(i => i.version) ) ]
-            const types = [...new Set( item.meta.map(i => i.type) ) ].sort()
-            const licenses = [...new Set( item.meta.map(i => i.license) ) ].sort()
+            // fetch unique versions of the other fields, remove emptys using filter, sort for neatness
+            const versions = [...new Set( item.meta.map(i => i.version).filter(i => i) ) ]
+            const types = [...new Set( item.meta.map(i => i.type).filter(i => i) ) ].sort()
+            const licenses = [...new Set( item.meta.map(i => i.license).filter(i => i)  ) ].sort()
             // get all the unique tags
             const tags = [...new Set( item.meta.reduce(
                         (arr, i) => { arr.push(...i.tags); return arr },
@@ -64,7 +64,7 @@ export class GroupPackages {
                 type: types.join(', '),
                 license: licenses.join(', '),
                 tags: tags.join(', '),
-                source: Array.from(sources, ([name, count]) => (`${name} (count: ${count})`) ).join('<br> ')
+                source: Array.from(sources, ([name, count]) => (`${name} (count: ${count})`) ).join('<br>')
             }
 
             flat.push(pkg)

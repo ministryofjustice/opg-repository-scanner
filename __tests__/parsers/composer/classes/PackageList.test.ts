@@ -103,3 +103,61 @@ test(`+ Test the get<t> matches correct T types`, async () => {
     expect(found[0]).toBeInstanceOf(PackageInfo)
 
 })
+
+
+const digidepsComposerLock = [
+    'projects/digideps/api/composer.lock',
+    'projects/digideps/behat/composer.lock',
+    'projects/digideps/client/composer.lock'
+]
+
+digidepsComposerLock.forEach(lockfile => {
+    test(`+ "${lockfile}" project composer lock sample`, async () => {
+
+        const file = sample_dir + lockfile
+        const fileContent = fs.readFileSync(file, 'utf8')
+        const lock = JsonContent.as<IComposerLock>(fileContent)
+
+        let found = PackageList.get<IComposerLock>(
+            lock,
+            'test-repo',
+            'source!',
+            ManifestTypes.Lock,
+            ['test'],
+            true
+        )
+
+        expect(found.length).toBeGreaterThan(10)
+        expect(found[0]).toBeInstanceOf(PackageInfo)
+
+    })
+})
+
+
+const digidepsComposerManifest = [
+    'projects/digideps/api/composer.json',
+    'projects/digideps/behat/composer.json',
+    'projects/digideps/client/composer.json'
+]
+
+digidepsComposerManifest.forEach(mfile => {
+    test(`+ "${mfile}" project composer sample`, async () => {
+
+        const file = sample_dir + mfile
+        const fileContent = fs.readFileSync(file, 'utf8')
+        const m = JsonContent.as<IComposerManifest>(fileContent)
+
+        let found = PackageList.get<IComposerManifest>(
+            m,
+            'test-repo',
+            'source!',
+            ManifestTypes.Manifest,
+            ['test'],
+            true
+        )
+
+        expect(found.length).toBeGreaterThan(10)
+        expect(found[0]).toBeInstanceOf(PackageInfo)
+
+    })
+})

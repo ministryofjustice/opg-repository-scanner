@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-
+import * as core from '@actions/core'
 import { Files, GroupPackages, Report } from "../../app/classes";
 import { IOutput, IPackage } from "../../app/interfaces";
 import { IOutputContent } from '../../app/interfaces/IOutputContent'
@@ -31,7 +31,7 @@ export class Raw implements IOutput {
         const f = new Files()
 
         // loop over all returned content and save
-        for(const [file, content] of Object.entries(contentMap) ) {
+        for(const [file, content] of contentMap.entries() ) {
             const saved = f.save( content ?? '', file, this.directory)
             if(saved) files.push(this.directory + file)
         }

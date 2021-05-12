@@ -1,3 +1,4 @@
+import * as core from '@actions/core'
 import { Report } from './Report';
 import { IOutput } from '../interfaces';
 
@@ -17,7 +18,9 @@ export class Output{
         let files:string[] = []
 
         for(const handler of this.outputs) {
+            core.info(`[${handler.constructor.name}]`)
             const res = await handler.set(report).save()
+            core.info(`[${handler.constructor.name}] generated [${res.length}] files`)
             files.push(...res)
         }
 
