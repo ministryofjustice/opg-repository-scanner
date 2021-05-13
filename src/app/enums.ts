@@ -3,3 +3,8 @@ export const enum ManifestTypes {
     Manifest = 'Manifest',
     Lock = 'Lock'
 }
+
+export const enum PackageType {
+    ThirdParty = 'third-party',
+    FirstParty = 'first-party'
+}
