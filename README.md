@@ -12,6 +12,8 @@ At the moment, this action only supports the following tooling and languages:
 - Javascript
     - npm
         - `package.json` & `package-lock.json`
+    - yarn
+        - `yarn.lock`
 - Python
     - pip
         - `requirements.txt`
