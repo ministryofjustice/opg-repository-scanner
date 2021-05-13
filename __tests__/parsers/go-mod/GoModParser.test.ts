@@ -2,11 +2,7 @@ import * as fs from 'fs';
 
 import { GoModParser } from "../../../src/parsers/go-mod/GoModParser"
 
-
 const sample_dir: string = './__samples__/app/go/'
-
-
-
 
 test(`+ Test modules are found in a go.mod.`, async () => {
     const dir = sample_dir + 'valid/simple/'

@@ -13,7 +13,7 @@ export class GoManifestPackages {
             .map((line) => line.split(" "))
     }
 
-    // -- need to test against tidy manifest files (they contains suffix data!)
+    // --
     static get(
         content:string,
         repository:string,
