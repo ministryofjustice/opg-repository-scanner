@@ -268,8 +268,8 @@ GenericParser.filePatterns = {
     lock: [""]
 };
 GenericParser.tags = {
-    manifest: ["Manifest" /* Manifest */],
-    lock: ["Lock" /* Lock */]
+    manifest: ["manifest" /* Manifest */],
+    lock: ["lock" /* Lock */]
 };
 
 
@@ -1163,7 +1163,7 @@ class GoModParser extends GenericParser_1.GenericParser {
     locks(tags, patterns = GoModParser.filePatterns.manifest) {
         return __awaiter(this, void 0, void 0, function* () {
             let packages = [];
-            const files = yield this.files(GoModParser.filePatterns.lock, "Lock" /* Lock */);
+            const files = yield this.files(GoModParser.filePatterns.lock, "lock" /* Lock */);
             for (const file of files) {
                 const content = fs.readFileSync(file, 'utf8');
                 packages.push(...GoLockPackages_1.GoLockPackages.get(content, this.repositoryName, file, tags));
@@ -1179,7 +1179,7 @@ class GoModParser extends GenericParser_1.GenericParser {
     manifests(tags, patterns = GoModParser.filePatterns.manifest) {
         return __awaiter(this, void 0, void 0, function* () {
             let packages = [];
-            const files = yield this.files(GoModParser.filePatterns.manifest, "Manifest" /* Manifest */);
+            const files = yield this.files(GoModParser.filePatterns.manifest, "manifest" /* Manifest */);
             for (const file of files) {
                 const content = fs.readFileSync(file, 'utf8');
                 packages.push(...GoManifestPackages_1.GoManifestPackages.get(content, this.repositoryName, file, tags));
@@ -1198,8 +1198,8 @@ GoModParser.filePatterns = {
     lock: ["**/go.sum"]
 };
 GoModParser.tags = {
-    manifest: ["Manifest" /* Manifest */, 'golang', 'gomod'],
-    lock: ["Lock" /* Lock */, 'golang', 'gomod']
+    manifest: ["manifest" /* Manifest */, 'golang', 'gomod'],
+    lock: ["lock" /* Lock */, 'golang', 'gomod']
 };
 
 
@@ -1226,7 +1226,7 @@ class GoLockPackages {
         // loop over all packages found
         for (const row of found) {
             const [name, version, extras] = row;
-            packages.push(new app_1.PackageInfo(repository, name, version.replace("/go.mod", ""), "Manifest" /* Manifest */, source, tags));
+            packages.push(new app_1.PackageInfo(repository, name, version.replace("/go.mod", ""), "manifest" /* Manifest */, source, tags));
         }
         return packages;
     }
@@ -1259,7 +1259,7 @@ class GoManifestPackages {
         // get the go version
         const [gName, gVersion] = (_a = GoManifestPackages.version(content).pop()) !== null && _a !== void 0 ? _a : ['', ''];
         // and push the go version into the set
-        packages.push(new app_1.PackageInfo(repository, gName, gVersion, "Manifest" /* Manifest */, source, tags));
+        packages.push(new app_1.PackageInfo(repository, gName, gVersion, "manifest" /* Manifest */, source, tags));
         // get all the packages from the require block
         const found = content
             .split('\n')
@@ -1278,7 +1278,7 @@ class GoManifestPackages {
             let t = tags;
             if (extras && extras.indexOf("indirect"))
                 t.push("third-party" /* ThirdParty */);
-            packages.push(new app_1.PackageInfo(repository, name, version, "Manifest" /* Manifest */, source, t));
+            packages.push(new app_1.PackageInfo(repository, name, version, "manifest" /* Manifest */, source, t));
         }
         return packages;
     }
@@ -1348,7 +1348,7 @@ class NpmParser extends GenericParser_1.GenericParser {
     // process the lock files
     locks(tags, patterns = NpmParser.filePatterns.lock) {
         return __awaiter(this, void 0, void 0, function* () {
-            const getter = this.getter(patterns, "Lock" /* Lock */);
+            const getter = this.getter(patterns, "lock" /* Lock */);
             const packages = yield getter.get(tags, true);
             this._locks = packages;
             this._lockFiles = getter._files;
@@ -1360,7 +1360,7 @@ class NpmParser extends GenericParser_1.GenericParser {
     // process the manifest files
     manifests(tags, patterns = NpmParser.filePatterns.manifest) {
         return __awaiter(this, void 0, void 0, function* () {
-            const getter = this.getter(patterns, "Manifest" /* Manifest */);
+            const getter = this.getter(patterns, "manifest" /* Manifest */);
             const packages = yield getter.get(tags, true);
             this._manifests = packages;
             this._manifestFiles = getter._files;
@@ -1376,8 +1376,8 @@ NpmParser.filePatterns = {
     lock: ["**/package-lock.json"]
 };
 NpmParser.tags = {
-    manifest: ["Manifest" /* Manifest */, 'javascript', 'npm'],
-    lock: ["Lock" /* Lock */, 'javascript', 'npm']
+    manifest: ["manifest" /* Manifest */, 'javascript', 'npm'],
+    lock: ["lock" /* Lock */, 'javascript', 'npm']
 };
 
 
@@ -1485,21 +1485,21 @@ const PackageInfo_1 = __webpack_require__(415);
 class PackageList {
     static get(object, repository, source, type, tags = [], recursive = false) {
         core.info(`PackageList getting [${type}] data from [${source}].`);
-        if (type === "Lock" /* Lock */) {
+        if (type === "lock" /* Lock */) {
             return PackageList.lock(object, repository, source, type, tags, recursive);
         }
-        else if (type === "Manifest" /* Manifest */) {
+        else if (type === "manifest" /* Manifest */) {
             return PackageList.manifest(object, repository, source, type, tags);
         }
         return [];
     }
     static manifest(manifest, repository, source, type, tags = []) {
-        var _a;
+        var _a, _b;
         let packages = [];
         // merge the require & require dev together
         const requires = [
-            ...Object.entries(manifest.dependencies),
-            ...Object.entries((_a = manifest.devDependencies) !== null && _a !== void 0 ? _a : {})
+            ...Object.entries((_a = manifest.dependencies) !== null && _a !== void 0 ? _a : {}),
+            ...Object.entries((_b = manifest.devDependencies) !== null && _b !== void 0 ? _b : {})
         ];
         for (const [key, version] of requires) {
             packages.push(new PackageInfo_1.PackageInfo(repository, key, version, type, source, tags));
@@ -1572,7 +1572,7 @@ class YarnParser extends GenericParser_1.GenericParser {
     // get just the locks
     locks(tags, patterns = YarnParser.filePatterns.manifest) {
         return __awaiter(this, void 0, void 0, function* () {
-            const getter = new GetPackages_1.GetPackages(this.repositoryName, this.directory, patterns, this.exclusions, "Lock" /* Lock */, this.followSymlinks);
+            const getter = new GetPackages_1.GetPackages(this.repositoryName, this.directory, patterns, this.exclusions, "lock" /* Lock */, this.followSymlinks);
             // will pass in JsonContent even though we dont use it
             const packages = yield getter.get(tags, true);
             this._locks = packages;
@@ -1589,8 +1589,8 @@ YarnParser.filePatterns = {
     lock: ['**/yarn.lock']
 };
 YarnParser.tags = {
-    manifest: ["Manifest" /* Manifest */, 'javascript', 'yarn'],
-    lock: ["Lock" /* Lock */, 'javascript', 'yarn']
+    manifest: ["manifest" /* Manifest */, 'javascript', 'yarn'],
+    lock: ["lock" /* Lock */, 'javascript', 'yarn']
 };
 
 
@@ -1683,7 +1683,7 @@ class GetPackages extends GetPackages_1.GetPackages {
                     versions.push(version);
                     // now create packageinfo for each one found
                     for (const v of versions) {
-                        packages.push(new classes_1.PackageInfo(this.repositoryName, name, v, "Lock" /* Lock */, file, tags));
+                        packages.push(new classes_1.PackageInfo(this.repositoryName, name, v, "lock" /* Lock */, file, tags));
                     }
                 }
             }
@@ -1738,7 +1738,7 @@ class ComposerParser extends GenericParser_1.GenericParser {
     // process the lock files
     locks(tags, patterns = ComposerParser.filePatterns.lock) {
         return __awaiter(this, void 0, void 0, function* () {
-            const getter = this.getter(patterns, "Lock" /* Lock */);
+            const getter = this.getter(patterns, "lock" /* Lock */);
             const packages = yield getter.get(tags, true);
             this._locks = packages;
             this._lockFiles = getter._files;
@@ -1750,7 +1750,7 @@ class ComposerParser extends GenericParser_1.GenericParser {
     // process the manifest files
     manifests(tags, patterns = ComposerParser.filePatterns.manifest) {
         return __awaiter(this, void 0, void 0, function* () {
-            const getter = this.getter(patterns, "Manifest" /* Manifest */);
+            const getter = this.getter(patterns, "manifest" /* Manifest */);
             const packages = yield getter.get(tags, true);
             this._manifests = packages;
             this._manifestFiles = getter._files;
@@ -1766,8 +1766,8 @@ ComposerParser.filePatterns = {
     lock: ["**/composer.lock"]
 };
 ComposerParser.tags = {
-    manifest: ["Manifest" /* Manifest */, 'php', 'composer'],
-    lock: ["Lock" /* Lock */, 'php', 'composer']
+    manifest: ["manifest" /* Manifest */, 'php', 'composer'],
+    lock: ["lock" /* Lock */, 'php', 'composer']
 };
 
 
@@ -1874,10 +1874,10 @@ class PackageList {
     // - useful for calling in higher level areas
     static get(object, repository, source, type, tags = [], recursive = false) {
         core.info(`PackageList getting [${type}] data from [${source}].`);
-        if (type === "Lock" /* Lock */) {
+        if (type === "lock" /* Lock */) {
             return PackageList.lock(object, repository, source, type, tags, recursive);
         }
-        else if (type === "Manifest" /* Manifest */) {
+        else if (type === "manifest" /* Manifest */) {
             return PackageList.manifest(object, repository, source, type, tags);
         }
         return [];
@@ -1913,7 +1913,7 @@ class PackageList {
             packages.push(new PackageInfo_1.PackageInfo(repository, item.name, item.version, type, source, tags, (_c = (_b = item.license) === null || _b === void 0 ? void 0 : _b.join(",")) !== null && _c !== void 0 ? _c : ""));
             if (recursive) {
                 // use the manifest parser on this item, but set the type to be lock and tags to match
-                packages.push(...PackageList.manifest(item, repository, source, "Lock" /* Lock */, tags));
+                packages.push(...PackageList.manifest(item, repository, source, "lock" /* Lock */, tags));
             }
         }
         return packages;
@@ -1974,7 +1974,7 @@ const GetPackages_1 = __webpack_require__(9501);
 class PipParser extends GenericParser_1.GenericParser {
     manifests(tags, patterns = PipParser.filePatterns.manifest) {
         return __awaiter(this, void 0, void 0, function* () {
-            const getter = new GetPackages_1.GetPackages(this.repositoryName, this.directory, patterns, this.exclusions, "Manifest" /* Manifest */, this.followSymlinks);
+            const getter = new GetPackages_1.GetPackages(this.repositoryName, this.directory, patterns, this.exclusions, "manifest" /* Manifest */, this.followSymlinks);
             // will pass in JsonContent even though we dont use it
             const packages = yield getter.get(tags, true, new classes_1.JsonContent());
             this._manifests = packages;
@@ -1991,8 +1991,8 @@ PipParser.filePatterns = {
     lock: []
 };
 PipParser.tags = {
-    manifest: ["Manifest" /* Manifest */, 'python', 'pip'],
-    lock: ["Lock" /* Lock */, 'python', 'pip']
+    manifest: ["manifest" /* Manifest */, 'python', 'pip'],
+    lock: ["lock" /* Lock */, 'python', 'pip']
 };
 
 
@@ -2048,7 +2048,7 @@ class GetPackages extends GetPackages_1.GetPackages {
                 const filePackages = content.split('\n');
                 for (const line of filePackages) {
                     if (line.length > 0) {
-                        packages.push(new classes_1.PackageInfo(this.repositoryName, line, "", "Manifest" /* Manifest */, file.replace(process.cwd(), '.'), tags, ""));
+                        packages.push(new classes_1.PackageInfo(this.repositoryName, line, "", "manifest" /* Manifest */, file.replace(process.cwd(), '.'), tags, ""));
                     }
                 }
             }
