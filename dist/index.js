@@ -698,7 +698,7 @@ exports.Report = Report;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Report = exports.Files = exports.PackageMeta = exports.JsonContent = exports.GroupPackages = exports.PackageInfo = exports.ActionParameters = void 0;
+exports.Output = exports.Report = exports.Files = exports.PackageMeta = exports.JsonContent = exports.GroupPackages = exports.PackageInfo = exports.ActionParameters = void 0;
 var ActionParameters_1 = __webpack_require__(3285);
 Object.defineProperty(exports, "ActionParameters", ({ enumerable: true, get: function () { return ActionParameters_1.ActionParameters; } }));
 var PackageInfo_1 = __webpack_require__(415);
@@ -713,6 +713,8 @@ var Files_1 = __webpack_require__(9276);
 Object.defineProperty(exports, "Files", ({ enumerable: true, get: function () { return Files_1.Files; } }));
 var Report_1 = __webpack_require__(8642);
 Object.defineProperty(exports, "Report", ({ enumerable: true, get: function () { return Report_1.Report; } }));
+var Output_1 = __webpack_require__(4909);
+Object.defineProperty(exports, "Output", ({ enumerable: true, get: function () { return Output_1.Output; } }));
 
 
 /***/ }),
@@ -755,11 +757,16 @@ Object.defineProperty(exports, "JsonParseError", ({ enumerable: true, get: funct
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GroupPackages = exports.PackageInfo = exports.ActionParameters = void 0;
+exports.Output = exports.Report = exports.Files = exports.PackageMeta = exports.JsonContent = exports.GroupPackages = exports.PackageInfo = exports.ActionParameters = void 0;
 var classes_1 = __webpack_require__(9212);
 Object.defineProperty(exports, "ActionParameters", ({ enumerable: true, get: function () { return classes_1.ActionParameters; } }));
 Object.defineProperty(exports, "PackageInfo", ({ enumerable: true, get: function () { return classes_1.PackageInfo; } }));
 Object.defineProperty(exports, "GroupPackages", ({ enumerable: true, get: function () { return classes_1.GroupPackages; } }));
+Object.defineProperty(exports, "JsonContent", ({ enumerable: true, get: function () { return classes_1.JsonContent; } }));
+Object.defineProperty(exports, "PackageMeta", ({ enumerable: true, get: function () { return classes_1.PackageMeta; } }));
+Object.defineProperty(exports, "Files", ({ enumerable: true, get: function () { return classes_1.Files; } }));
+Object.defineProperty(exports, "Report", ({ enumerable: true, get: function () { return classes_1.Report; } }));
+Object.defineProperty(exports, "Output", ({ enumerable: true, get: function () { return classes_1.Output; } }));
 
 
 /***/ }),
@@ -801,19 +808,20 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__webpack_require__(2186));
 const artifact = __importStar(__webpack_require__(2605));
 const app_1 = __webpack_require__(8384);
-const classes_1 = __webpack_require__(9212);
-const Output_1 = __webpack_require__(4909);
 const parsers_1 = __webpack_require__(1295);
-const raw_1 = __webpack_require__(429);
-const groupAndCount_1 = __webpack_require__(2439);
-const simple_1 = __webpack_require__(9619);
-const GoModParser_1 = __webpack_require__(3540);
+const outputs_1 = __webpack_require__(7306);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         // this PARSERS object is where parsers need to push into
-        const PARSERS = [new parsers_1.PipParser(), new parsers_1.NpmParser(), new parsers_1.ComposerParser(), new GoModParser_1.GoModParser()];
+        const PARSERS = [
+            new parsers_1.ComposerParser(),
+            new parsers_1.GoModParser(),
+            new parsers_1.NpmParser(),
+            new parsers_1.PipParser(),
+            new parsers_1.YarnParser()
+        ];
         // OUTPUTS contain all the output generators
-        const OUTPUTS = [new simple_1.Simple(), new raw_1.Raw(), new groupAndCount_1.GroupAndCount()];
+        const OUTPUTS = [new outputs_1.Simple(), new outputs_1.Raw(), new outputs_1.GroupAndCount()];
         try {
             core.info('Starting action.');
             const parameters = app_1.ActionParameters.fromCoreInput();
@@ -822,7 +830,7 @@ function run() {
             if (core.isDebug())
                 console.log(parameters);
             /* eslint-enable no-console */
-            const report = new classes_1.Report(parameters.repository_name, parameters.source_directory, parameters.source_exclude, parameters.source_follow_symlinks, PARSERS);
+            const report = new app_1.Report(parameters.repository_name, parameters.source_directory, parameters.source_exclude, parameters.source_follow_symlinks, PARSERS);
             core.info('Report constructed.');
             /* eslint-disable no-console */
             if (core.isDebug())
@@ -834,7 +842,7 @@ function run() {
             if (core.isDebug())
                 console.log(report);
             /* eslint-enable no-console */
-            const out = new Output_1.Output(OUTPUTS);
+            const out = new app_1.Output(OUTPUTS);
             const files = yield out.from(report);
             core.info(`Created [${files.length}] report files.`);
             core.info(`Uploading artifact.`);
@@ -925,6 +933,23 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GroupAndCount = void 0;
 var GroupAndCount_1 = __webpack_require__(5377);
 Object.defineProperty(exports, "GroupAndCount", ({ enumerable: true, get: function () { return GroupAndCount_1.GroupAndCount; } }));
+
+
+/***/ }),
+
+/***/ 7306:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GroupAndCount = exports.Raw = exports.Simple = void 0;
+var simple_1 = __webpack_require__(9619);
+Object.defineProperty(exports, "Simple", ({ enumerable: true, get: function () { return simple_1.Simple; } }));
+var raw_1 = __webpack_require__(429);
+Object.defineProperty(exports, "Raw", ({ enumerable: true, get: function () { return raw_1.Raw; } }));
+var groupAndCount_1 = __webpack_require__(2439);
+Object.defineProperty(exports, "GroupAndCount", ({ enumerable: true, get: function () { return groupAndCount_1.GroupAndCount; } }));
 
 
 /***/ }),
@@ -1263,19 +1288,36 @@ exports.GoManifestPackages = GoManifestPackages;
 
 /***/ }),
 
+/***/ 9154:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GoModParser = void 0;
+var GoModParser_1 = __webpack_require__(3540);
+Object.defineProperty(exports, "GoModParser", ({ enumerable: true, get: function () { return GoModParser_1.GoModParser; } }));
+
+
+/***/ }),
+
 /***/ 1295:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PipParser = exports.NpmParser = exports.ComposerParser = void 0;
+exports.YarnParser = exports.GoModParser = exports.PipParser = exports.NpmParser = exports.ComposerParser = void 0;
 var php_composer_1 = __webpack_require__(6397);
 Object.defineProperty(exports, "ComposerParser", ({ enumerable: true, get: function () { return php_composer_1.ComposerParser; } }));
 var javascript_npm_1 = __webpack_require__(819);
 Object.defineProperty(exports, "NpmParser", ({ enumerable: true, get: function () { return javascript_npm_1.NpmParser; } }));
 var python_pip_1 = __webpack_require__(2102);
 Object.defineProperty(exports, "PipParser", ({ enumerable: true, get: function () { return python_pip_1.PipParser; } }));
+var go_mod_1 = __webpack_require__(9154);
+Object.defineProperty(exports, "GoModParser", ({ enumerable: true, get: function () { return go_mod_1.GoModParser; } }));
+var javascript_yarn_1 = __webpack_require__(4570);
+Object.defineProperty(exports, "YarnParser", ({ enumerable: true, get: function () { return javascript_yarn_1.YarnParser; } }));
 
 
 /***/ }),
@@ -1504,6 +1546,168 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NpmParser = void 0;
 var NpmParser_1 = __webpack_require__(9719);
 Object.defineProperty(exports, "NpmParser", ({ enumerable: true, get: function () { return NpmParser_1.NpmParser; } }));
+
+
+/***/ }),
+
+/***/ 9821:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.YarnParser = void 0;
+const GenericParser_1 = __webpack_require__(5090);
+const GetPackages_1 = __webpack_require__(8773);
+class YarnParser extends GenericParser_1.GenericParser {
+    // get just the locks
+    locks(tags, patterns = YarnParser.filePatterns.manifest) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const getter = new GetPackages_1.GetPackages(this.repositoryName, this.directory, patterns, this.exclusions, "Lock" /* Lock */, this.followSymlinks);
+            // will pass in JsonContent even though we dont use it
+            const packages = yield getter.get(tags, true);
+            this._locks = packages;
+            this._lockFiles = getter._files;
+            return new Promise((resolve) => {
+                resolve(packages);
+            });
+        });
+    }
+}
+exports.YarnParser = YarnParser;
+YarnParser.filePatterns = {
+    manifest: [],
+    lock: ['**/yarn.lock']
+};
+YarnParser.tags = {
+    manifest: ["Manifest" /* Manifest */, 'javascript', 'yarn'],
+    lock: ["Lock" /* Lock */, 'javascript', 'yarn']
+};
+
+
+/***/ }),
+
+/***/ 8773:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GetPackages = void 0;
+const fs = __importStar(__webpack_require__(5747));
+const classes_1 = __webpack_require__(9212);
+const GetPackages_1 = __webpack_require__(2011);
+class GetPackages extends GetPackages_1.GetPackages {
+    // Yarn packages are structured as
+    //
+    // package@version, package@version2:
+    //      version: "version"
+    //      otherField: "value"
+    //
+    // Use regex to find just the key and version
+    get(tags, recursive, reader = new classes_1.JsonContent()) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            let packages = [];
+            const files = yield this.files();
+            // now loop over each file and get content
+            for (const file of files) {
+                const content = fs.readFileSync(file, 'utf8');
+                // does a multlie line match on just the package key & version field
+                const matches = (_a = content.match(/(.*):\n.*version "(.*)"/gm)) !== null && _a !== void 0 ? _a : [];
+                for (const match of matches) {
+                    // split by new lines to seperate the declaration key and the version
+                    // field name
+                    const split = match.split('\n').filter(i => i);
+                    // just get the key, which is yarn can be , seperated
+                    const packageKeys = split
+                        .filter(i => (i.indexOf('@') >= 0))
+                        .join()
+                        // some packages start with @, so yarn escapes that
+                        // with double quotes wrapping the name, so replace with
+                        // html encoded
+                        .replace(/"@/g, '"&#64;')
+                        .split(",");
+                    // get the first name used on the declaration line
+                    const name = (_b = packageKeys
+                        .map(i => { var _a; return (_a = i.split("@").shift()) === null || _a === void 0 ? void 0 : _a.replace(/"/g, '').trim(); })
+                        .shift()) === null || _b === void 0 ? void 0 : _b.replace('&#64;', '@');
+                    // get all the versions from the package declaration line
+                    let versions = packageKeys
+                        .map(i => { var _a; return (_a = i.split("@").pop()) === null || _a === void 0 ? void 0 : _a.replace(':', '').trim(); });
+                    // get the version listed in the version field
+                    const version = split
+                        .filter(i => (i.indexOf("version") >= 0))
+                        .map(i => i.replace("version", "")
+                        .replace(/"/g, "")
+                        .replace(/'/g, '')
+                        .trim()).shift();
+                    // push version into the versions list
+                    versions.push(version);
+                    // now create packageinfo for each one found
+                    for (const v of versions) {
+                        packages.push(new classes_1.PackageInfo(this.repositoryName, name, v, "Lock" /* Lock */, file, tags));
+                    }
+                }
+            }
+            return new Promise((resolve) => {
+                resolve(packages);
+            });
+        });
+    }
+}
+exports.GetPackages = GetPackages;
+
+
+/***/ }),
+
+/***/ 4570:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.YarnParser = void 0;
+// export the composer object as well
+var YarnParser_1 = __webpack_require__(9821);
+Object.defineProperty(exports, "YarnParser", ({ enumerable: true, get: function () { return YarnParser_1.YarnParser; } }));
 
 
 /***/ }),
