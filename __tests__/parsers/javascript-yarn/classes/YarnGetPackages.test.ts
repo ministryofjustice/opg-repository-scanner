@@ -66,7 +66,7 @@ test(`+ Test package with @ in the name is found correctly`, async () => {
 })
 
 
-test.only(`+ Test large files are all parsed correctly`, async () => {
+test(`+ Test large files are all parsed correctly`, async () => {
 
     const get = new GetPackages(
         'test-repo',
