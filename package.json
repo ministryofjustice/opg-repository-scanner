@@ -12,7 +12,7 @@
     "package": "ncc build --source-map --license licenses.txt",
     "test": "jest",
     "all": "rm -Rf ./lib && rm -Rf ./dist && npm run build && npm run format && npm run lint && npm run package && npm test",
-    "tester": "INPUT_SOURCE_DIRECTORY='./test-repo' INPUT_SOURCE_FOLLOW_SYMLINKS='true' INPUT_REPOSITORY_NAME='digideps' node ./dist/index.js"
+    "tester": "INPUT_SOURCE_DIRECTORY='./test-repo' INPUT_SOURCE_FOLLOW_SYMLINKS='true' INPUT_REPOSITORY_NAME='test-repo' node ./dist/index.js"
   },
   "keywords": [
     "github",
