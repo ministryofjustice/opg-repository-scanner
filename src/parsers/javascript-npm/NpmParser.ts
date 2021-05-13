@@ -36,8 +36,10 @@ export class NpmParser extends GenericParser implements IParser {
         tags:string[],
         patterns:string[] = NpmParser.filePatterns.lock
         ):  Promise<PackageInfo[]> {
+
         const getter = this.getter(patterns, ManifestTypes.Lock)
         const packages = await getter.get<IPackageLock>(tags, true)
+
         this._locks = packages
         this._lockFiles = getter._files
         return new Promise<PackageInfo[]>( (resolve) => {
@@ -52,6 +54,7 @@ export class NpmParser extends GenericParser implements IParser {
         ): Promise<PackageInfo[]> {
         const getter = this.getter(patterns, ManifestTypes.Manifest)
         const packages = await getter.get<IPackageManifest>(tags, true)
+
         this._manifests = packages
         this._manifestFiles = getter._files
         return new Promise<PackageInfo[]>( (resolve) => {

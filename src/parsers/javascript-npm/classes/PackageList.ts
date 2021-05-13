@@ -27,6 +27,7 @@ export class PackageList {
                 recursive
             )
         } else if (type === ManifestTypes.Manifest) {
+
             return PackageList.manifest(
                 object as IPackageManifest,
                 repository,
