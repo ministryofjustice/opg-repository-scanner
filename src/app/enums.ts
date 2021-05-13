@@ -1,7 +1,7 @@
 export const enum ManifestTypes {
     Null = '',
-    Manifest = 'Manifest',
-    Lock = 'Lock'
+    Manifest = 'manifest',
+    Lock = 'lock'
 }
 
 export const enum PackageType {
