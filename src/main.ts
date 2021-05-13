@@ -8,10 +8,11 @@ import {Raw, GroupAndCount, Simple} from './outputs'
 async function run(): Promise<void> {
     // this PARSERS object is where parsers need to push into
     const PARSERS: IParser[] = [
-        new PipParser(),
-        new NpmParser(),
         new ComposerParser(),
-        new GoModParser()
+        new GoModParser(),
+        new NpmParser(),
+        new PipParser(),
+        new YarnParser()
     ]
     // OUTPUTS contain all the output generators
     const OUTPUTS: IOutput[] = [new Simple(), new Raw(), new GroupAndCount()]
