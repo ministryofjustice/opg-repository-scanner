@@ -1,3 +1,12 @@
-export {ActionParameters, PackageInfo, GroupPackages} from './classes'
-export {IActionParameters, IParser} from './interfaces'
+export {
+    ActionParameters,
+    PackageInfo,
+    GroupPackages,
+    JsonContent,
+    PackageMeta,
+    Files,
+    Report,
+    Output
+} from './classes'
+export {IActionParameters, IParser, IOutput} from './interfaces'
 export {ManifestTypes, PackageType} from './enums'

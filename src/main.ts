@@ -1,14 +1,9 @@
 import * as core from '@actions/core'
 import * as artifact from '@actions/artifact'
-import {ActionParameters, IParser} from './app'
-import {Report} from './app/classes'
-import {Output} from './app/classes/Output'
-import {NpmParser, PipParser, ComposerParser} from './parsers'
-import {IOutput} from './app/interfaces'
-import {Raw} from './outputs/raw'
-import {GroupAndCount} from './outputs/groupAndCount'
-import {Simple} from './outputs/simple'
-import {GoModParser} from './parsers/go-mod/GoModParser'
+
+import {ActionParameters, IParser, Report, Output, IOutput} from './app'
+import {NpmParser, PipParser, ComposerParser, GoModParser, YarnParser} from './parsers'
+import {Raw, GroupAndCount, Simple} from './outputs'
 
 async function run(): Promise<void> {
     // this PARSERS object is where parsers need to push into
