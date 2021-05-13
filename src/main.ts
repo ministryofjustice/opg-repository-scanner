@@ -8,10 +8,16 @@ import {IOutput} from './app/interfaces'
 import {Raw} from './outputs/raw'
 import {GroupAndCount} from './outputs/groupAndCount'
 import {Simple} from './outputs/simple'
+import {GoModParser} from './parsers/go-mod/GoModParser'
 
 async function run(): Promise<void> {
     // this PARSERS object is where parsers need to push into
-    const PARSERS: IParser[] = [new PipParser(), new NpmParser(), new ComposerParser()]
+    const PARSERS: IParser[] = [
+        new PipParser(),
+        new NpmParser(),
+        new ComposerParser(),
+        new GoModParser()
+    ]
     // OUTPUTS contain all the output generators
     const OUTPUTS: IOutput[] = [new Simple(), new Raw(), new GroupAndCount()]
 

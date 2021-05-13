@@ -15,6 +15,9 @@ At the moment, this action only supports the following tooling and languages:
 - Python
     - pip
         - `requirements.txt`
+- Go
+    - mod
+        - `go.mod` & `go.sum`
 
 
 

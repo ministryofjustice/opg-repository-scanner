@@ -807,10 +807,11 @@ const parsers_1 = __webpack_require__(1295);
 const raw_1 = __webpack_require__(429);
 const groupAndCount_1 = __webpack_require__(2439);
 const simple_1 = __webpack_require__(9619);
+const GoModParser_1 = __webpack_require__(3540);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         // this PARSERS object is where parsers need to push into
-        const PARSERS = [new parsers_1.PipParser(), new parsers_1.NpmParser(), new parsers_1.ComposerParser()];
+        const PARSERS = [new parsers_1.PipParser(), new parsers_1.NpmParser(), new parsers_1.ComposerParser(), new GoModParser_1.GoModParser()];
         // OUTPUTS contain all the output generators
         const OUTPUTS = [new simple_1.Simple(), new raw_1.Raw(), new groupAndCount_1.GroupAndCount()];
         try {
@@ -1082,6 +1083,186 @@ Object.defineProperty(exports, "Simple", ({ enumerable: true, get: function () {
 
 /***/ }),
 
+/***/ 3540:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GoModParser = void 0;
+const fs = __importStar(__webpack_require__(5747));
+const GenericParser_1 = __webpack_require__(5090);
+const GetPackages_1 = __webpack_require__(2011);
+const GoLockPackages_1 = __webpack_require__(1500);
+const GoManifestPackages_1 = __webpack_require__(43);
+class GoModParser extends GenericParser_1.GenericParser {
+    // Quick wrapper for calling GetPackages.files()
+    files(patterns, type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const getter = new GetPackages_1.GetPackages(this.repositoryName, this.directory, patterns, this.exclusions, type, this.followSymlinks);
+            const files = yield getter.files();
+            return new Promise((resolve) => {
+                resolve(files);
+            });
+        });
+    }
+    //
+    locks(tags, patterns = GoModParser.filePatterns.manifest) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let packages = [];
+            const files = yield this.files(GoModParser.filePatterns.lock, "Lock" /* Lock */);
+            for (const file of files) {
+                const content = fs.readFileSync(file, 'utf8');
+                packages.push(...GoLockPackages_1.GoLockPackages.get(content, this.repositoryName, file, tags));
+            }
+            this._lockFiles = files;
+            this._locks = packages;
+            return new Promise((resolve) => {
+                resolve(packages);
+            });
+        });
+    }
+    //
+    manifests(tags, patterns = GoModParser.filePatterns.manifest) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let packages = [];
+            const files = yield this.files(GoModParser.filePatterns.manifest, "Manifest" /* Manifest */);
+            for (const file of files) {
+                const content = fs.readFileSync(file, 'utf8');
+                packages.push(...GoManifestPackages_1.GoManifestPackages.get(content, this.repositoryName, file, tags));
+            }
+            this._manifests = packages;
+            this._manifestFiles = files;
+            return new Promise((resolve) => {
+                resolve(packages);
+            });
+        });
+    }
+}
+exports.GoModParser = GoModParser;
+GoModParser.filePatterns = {
+    manifest: ["**/go.mod"],
+    lock: ["**/go.sum"]
+};
+GoModParser.tags = {
+    manifest: ["Manifest" /* Manifest */, 'golang', 'gomod'],
+    lock: ["Lock" /* Lock */, 'golang', 'gomod']
+};
+
+
+/***/ }),
+
+/***/ 1500:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GoLockPackages = void 0;
+const app_1 = __webpack_require__(8384);
+class GoLockPackages {
+    static get(content, repository, source, tags) {
+        let packages = [];
+        // get all the packages
+        const found = content
+            .split('\n')
+            // only lines with a " v" - which is on every module line
+            .filter(i => i.includes(" v"))
+            // split the line by " " so its [name, version/go.mod, extras]
+            .map((line) => line.split(" "));
+        // loop over all packages found
+        for (const row of found) {
+            const [name, version, extras] = row;
+            packages.push(new app_1.PackageInfo(repository, name, version.replace("/go.mod", ""), "Manifest" /* Manifest */, source, tags));
+        }
+        return packages;
+    }
+}
+exports.GoLockPackages = GoLockPackages;
+
+
+/***/ }),
+
+/***/ 43:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GoManifestPackages = void 0;
+const app_1 = __webpack_require__(8384);
+class GoManifestPackages {
+    static version(content) {
+        return content
+            .split('\n')
+            // find the line that starts with "go ", which is the version line
+            .filter(i => i.indexOf("go ") === 0)
+            .map((line) => line.split(" "));
+    }
+    // --
+    static get(content, repository, source, tags) {
+        var _a;
+        let packages = [];
+        // get the go version
+        const [gName, gVersion] = (_a = GoManifestPackages.version(content).pop()) !== null && _a !== void 0 ? _a : ['', ''];
+        // and push the go version into the set
+        packages.push(new app_1.PackageInfo(repository, gName, gVersion, "Manifest" /* Manifest */, source, tags));
+        // get all the packages from the require block
+        const found = content
+            .split('\n')
+            // only lines with a " v" - which is on every module line
+            .filter(i => i.includes(" v"))
+            // remove the tab characters
+            // remove spacing from the indirect comment generated from `go mod tidy`
+            // split the line by " " so its [name, version, extras]
+            .map((line) => line
+            .replace('\t', '')
+            .replace('// indirect', '//indirect')
+            .split(" "));
+        // loop over all packages found
+        for (const row of found) {
+            const [name, version, extras] = row;
+            let t = tags;
+            if (extras && extras.indexOf("indirect"))
+                t.push("third-party" /* ThirdParty */);
+            packages.push(new app_1.PackageInfo(repository, name, version, "Manifest" /* Manifest */, source, t));
+        }
+        return packages;
+    }
+}
+exports.GoManifestPackages = GoManifestPackages;
+
+
+/***/ }),
+
 /***/ 1295:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -1091,15 +1272,15 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PipParser = exports.NpmParser = exports.ComposerParser = void 0;
 var php_composer_1 = __webpack_require__(6397);
 Object.defineProperty(exports, "ComposerParser", ({ enumerable: true, get: function () { return php_composer_1.ComposerParser; } }));
-var node_npm_1 = __webpack_require__(9201);
-Object.defineProperty(exports, "NpmParser", ({ enumerable: true, get: function () { return node_npm_1.NpmParser; } }));
+var javascript_npm_1 = __webpack_require__(819);
+Object.defineProperty(exports, "NpmParser", ({ enumerable: true, get: function () { return javascript_npm_1.NpmParser; } }));
 var python_pip_1 = __webpack_require__(2102);
 Object.defineProperty(exports, "PipParser", ({ enumerable: true, get: function () { return python_pip_1.PipParser; } }));
 
 
 /***/ }),
 
-/***/ 7092:
+/***/ 9719:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1116,7 +1297,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NpmParser = void 0;
 const GenericParser_1 = __webpack_require__(5090);
-const classes_1 = __webpack_require__(858);
+const classes_1 = __webpack_require__(6318);
 class NpmParser extends GenericParser_1.GenericParser {
     // helper method to return a GetPackages object
     getter(patterns, type) {
@@ -1160,7 +1341,7 @@ NpmParser.tags = {
 
 /***/ }),
 
-/***/ 2437:
+/***/ 7822:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1197,7 +1378,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GetPackages = void 0;
 const fs = __importStar(__webpack_require__(5747));
 const classes_1 = __webpack_require__(9212);
-const PackageList_1 = __webpack_require__(8242);
+const PackageList_1 = __webpack_require__(1913);
 const GetPackages_1 = __webpack_require__(2011);
 class GetPackages extends GetPackages_1.GetPackages {
     constructor() {
@@ -1231,7 +1412,7 @@ exports.GetPackages = GetPackages;
 
 /***/ }),
 
-/***/ 8242:
+/***/ 1913:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1299,29 +1480,29 @@ exports.PackageList = PackageList;
 
 /***/ }),
 
-/***/ 858:
+/***/ 6318:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GetPackages = exports.PackageList = void 0;
-var PackageList_1 = __webpack_require__(8242);
+var PackageList_1 = __webpack_require__(1913);
 Object.defineProperty(exports, "PackageList", ({ enumerable: true, get: function () { return PackageList_1.PackageList; } }));
-var GetPackages_1 = __webpack_require__(2437);
+var GetPackages_1 = __webpack_require__(7822);
 Object.defineProperty(exports, "GetPackages", ({ enumerable: true, get: function () { return GetPackages_1.GetPackages; } }));
 
 
 /***/ }),
 
-/***/ 9201:
+/***/ 819:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NpmParser = void 0;
-var NpmParser_1 = __webpack_require__(7092);
+var NpmParser_1 = __webpack_require__(9719);
 Object.defineProperty(exports, "NpmParser", ({ enumerable: true, get: function () { return NpmParser_1.NpmParser; } }));
 
 
