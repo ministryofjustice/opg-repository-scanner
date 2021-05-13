@@ -1,0 +1,3 @@
+export {
+    GoModParser
+} from './GoModParser'
