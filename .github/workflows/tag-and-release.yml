@@ -3,8 +3,8 @@ name: "Tag & Release"
 
 on:
   push:
-    branch:
-      - "release*"
+    branches:
+      - "releases/*"
 
 jobs:
   release:

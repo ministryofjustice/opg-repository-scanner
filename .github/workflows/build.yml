@@ -1,9 +1,9 @@
 ---
-name: "Build for release"
+name: "Create build files ready for release"
 
 on:
   push:
-    branch:
+    branches:
       - "main"
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
           npm run all
       - run: git config --global user.email "tools@digital.justice.gov.uk"
       - run: git config --global user.name "Github Action"
-      - run: git checkout -b release/${{steps.date.outputs.date}}
+      - run: git checkout -b releases/${{steps.date.outputs.date}}
       - run: git add ./dist/ --force
       - run: git commit -m "Build files for release"
-      - run: git push origin release/${{steps.date.outputs.date}}
+      - run: git push origin releases/${{steps.date.outputs.date}}
