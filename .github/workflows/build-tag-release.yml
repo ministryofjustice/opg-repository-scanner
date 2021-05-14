@@ -44,6 +44,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INITIAL_VERSION: 0.1.0
           DEFAULT_BUMP: patch
-          PRERELEASE_SUFFIX: ${{ env.BRANCH_NAME }}
-          RELEASE_BRANCHES: main
+          RELEASE_BRANCHES: main,releases/*
           WITH_V: true
