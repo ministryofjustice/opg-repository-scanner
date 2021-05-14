@@ -46,3 +46,14 @@ jobs:
           DEFAULT_BUMP: patch
           RELEASE_BRANCHES: main,releases/*
           WITH_V: true
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.create_tag.outputs.new_tag }}
+          release_name: ${{ steps.create_tag.outputs.new_tag }}
+          draft: false
+          prerelease: false
