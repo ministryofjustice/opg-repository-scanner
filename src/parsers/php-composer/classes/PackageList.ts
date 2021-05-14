@@ -19,7 +19,7 @@ export class PackageList {
         recursive:boolean = false
         ): PackageInfo[] {
 
-        core.info(`PackageList getting [${type}] data from [${source}].`)
+        core.debug(`[${this.constructor.name}] getting [${type}] data from [${source}].`)
         if(type === ManifestTypes.Lock) {
             return PackageList.lock(
                 object as IComposerLock,

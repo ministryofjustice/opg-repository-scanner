@@ -16,14 +16,27 @@ export class Output{
     // Use the report to pass into each Outputter
     async from(report:Report): Promise<string[]> {
         let files:string[] = []
+        let promises = []
 
         for(const handler of this.outputs) {
-            core.info(`[${handler.constructor.name}]`)
-            const res = await handler.set(report).save()
-            core.info(`[${handler.constructor.name}] generated [${res.length}] files`)
-            files.push(...res)
+            promises.push(
+                new Promise( (resolve) => {
+                    core.debug(`[${handler.constructor.name}] Starting`)
+                    resolve(
+                        handler
+                            .set(report)
+                            .save()
+                            .then((saved) => {
+                                core.info(`[${handler.constructor.name}] generated [${saved.length}] files`)
+                                files.push(...saved)
+                            })
+                    )
+
+                })
+            )
         }
 
+        await Promise.all(promises)
         return new Promise<string[]>((resolve) => {
             resolve(files)
         })

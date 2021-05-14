@@ -15,7 +15,7 @@ export class GroupAndCount extends Raw implements IOutput {
     process(): Map<string, string> {
         let files:Map<string, string> = new Map<string,string>()
         const flat = GroupPackages.byNameAndLocationWithCounts(this.report.packages)
-        core.info(`[${this.constructor.name}] found [${flat.length}] packages (removing duplications)`)
+        core.info(`[${this.constructor.name}] contains [${flat.length}] packages.`)
         // json
         const json: IOutputContent = {packages: flat}
         files.set('groupedWithCount.json', JSON.stringify(json))

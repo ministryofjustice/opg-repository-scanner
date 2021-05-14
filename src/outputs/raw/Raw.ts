@@ -13,7 +13,7 @@ export class Raw extends Simple implements IOutput {
     process(): Map<string,string> {
         const all:IPackage[] = GroupPackages.toFlat(this.report.packages)
         const obj: IOutputContent = {packages: all}
-        core.info(`[${this.constructor.name}] found [${all.length}] packages.`)
+        core.info(`[${this.constructor.name}] contains [${all.length}] packages.`)
 
         return new Map<string,string>([
             [this.filename, JSON.stringify(obj)]

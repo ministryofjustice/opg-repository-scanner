@@ -23,7 +23,7 @@ export class Simple implements IOutput {
                     .reduce( (arr, i) => { arr.push(i.name); return arr }, new Array<string>() )
                 ) ].sort()
 
-        core.info(`[${this.constructor.name}] found [${all.length}] packages (without duplicates)`)
+        core.info(`[${this.constructor.name}] contains [${all.length}] packages.`)
 
         return new Map<string,string>([
             [this.filename, JSON.stringify(all)]

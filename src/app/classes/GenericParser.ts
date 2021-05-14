@@ -88,7 +88,7 @@ export class GenericParser implements IParser {
     // about what was found for ease
     async run(): Promise<PackageInfo[]> {
         const parserName = this.constructor.name
-        core.info(`[${parserName}] Running`)
+        core.debug(`[${parserName}] Running`)
 
         /* eslint-disable no-console */
         if(core.isDebug()) console.log('Parser object: ', this)

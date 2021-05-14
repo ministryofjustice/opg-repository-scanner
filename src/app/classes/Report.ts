@@ -56,7 +56,7 @@ export class Report {
         for(const p of parsers) {
             promises.push(
                 new Promise( (resolve) => {
-                    core.info(`[${p.constructor.name}] Starting`)
+                    core.debug(`[${p.constructor.name}] Starting`)
                     resolve(
                         p
                         .set(this.repository, this.directory, this.exclusions, this.followSymlinks)
