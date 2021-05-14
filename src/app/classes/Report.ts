@@ -45,49 +45,35 @@ export class Report {
 
     // allPackages processes all parsers configured and pushes all
     // packages into top level array
+    // the `.run()` is called as part of a promise which also outputs
+    // meta details to stdout
     async allPackages(): Promise<void> {
         let packages = []
         const parsers = this.parsers
+        let promises = []
 
-        for(const parser of parsers) {
-            const parserName = parser.constructor.name
-            // run the set for the data
-            parser.set(
-                this.repository, this.directory, this.exclusions, this.followSymlinks
+        // run all the parsers as async
+        for(const p of parsers) {
+            promises.push(
+                new Promise( (resolve) => {
+                    core.info(`[${p.constructor.name}] Starting`)
+                    resolve(
+                        p
+                        .set(this.repository, this.directory, this.exclusions, this.followSymlinks)
+                        .run()
+                        .then((pkgs) => {
+                            this.packages.push(...pkgs)
+                            this.counters.manifest.packages += p._manifests.length
+                            this.counters.manifest.files += p._manifestFiles.length
+                            this.counters.lock.packages += p._locks.length
+                            this.counters.lock.files += p._lockFiles.length
+                        })
+                    )
+                })
             )
-            core.info(`[${parserName}]`)
-
-            /* eslint-disable no-console */
-            if(core.isDebug()) console.log('Parser object: ', parser)
-            /* eslint-enable no-console */
-            const tags = parser.tags()
-            const patterns = parser.patterns()
-            const found = await parser.packages(
-                tags.manifest, tags.lock, patterns.manifest, patterns.lock
-            )
-
-            core.info(
-                `[${parserName}] Found [${found.length}] packages.\n` +
-                `   [${parser._manifests.length}] manifest packages from [${parser._manifestFiles.length}] files.\n` +
-                `   [${parser._locks.length}] lock packages from [${parser._lockFiles.length}] files.\n`
-            )
-            // push the packages into the main data set
-            this.packages.push(...found)
-            // update meta data counters
-            this.counters.manifest.packages += parser._manifests.length
-            this.counters.manifest.files += parser._manifestFiles.length
-            this.counters.lock.packages += parser._locks.length
-            this.counters.lock.files += parser._lockFiles.length
-
         }
 
-        // output total data
-        core.info(
-            `Found [${this.packages.length}] total packages.\n` +
-            `   [${this.counters.manifest.packages}] manifest packages from [${this.counters.manifest.files}] files.\n` +
-            `   [${this.counters.lock.packages}] lock packages from [${this.counters.lock.files}] files.\n`
-        )
-
+        await Promise.all(promises)
         // return empty
         return new Promise<void>( (resolve) => {
             resolve()

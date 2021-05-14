@@ -31,4 +31,7 @@ export interface IParser {
         lockTags: string[],
         manifestPatterns: string[],
         lockPatterns: string[]): Promise<PackageInfo[]>
+
+    // run calls packages function with all options pre-done
+    run(): Promise<PackageInfo[]>
 }

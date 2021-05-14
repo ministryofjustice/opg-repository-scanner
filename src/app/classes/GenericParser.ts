@@ -83,4 +83,33 @@ export class GenericParser implements IParser {
             resolve(packages)
         })
     }
+
+    // run calls packages and outputs some details
+    // about what was found for ease
+    async run(): Promise<PackageInfo[]> {
+        const parserName = this.constructor.name
+        core.info(`[${parserName}] Running`)
+
+        /* eslint-disable no-console */
+        if(core.isDebug()) console.log('Parser object: ', this)
+        /* eslint-enable no-console */
+        const tags = this.tags()
+        const patterns = this.patterns()
+        const found = await this.packages(
+            tags.manifest,
+            tags.lock,
+            patterns.manifest,
+            patterns.lock
+        )
+
+        core.info(
+            `[${parserName}] Found [${found.length}] packages.\n` +
+            `   [${this._manifests.length}] manifest packages from [${this._manifestFiles.length}] files.\n` +
+            `   [${this._locks.length}] lock packages from [${this._lockFiles.length}] files.\n`
+        )
+
+        return new Promise<PackageInfo[]>( (resolve) => {
+            resolve(found)
+        })
+    }
 }
