@@ -7,7 +7,7 @@ on:
       - "releases/*"
 
 jobs:
-  release:
+  tag_and_release:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout source code"
