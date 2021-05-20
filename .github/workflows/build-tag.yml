@@ -1,5 +1,5 @@
 ---
-name: "Build"
+name: "Build and Tag"
 
 on:
   push:
@@ -27,3 +27,12 @@ jobs:
           git add ./dist/ --force
           git commit -m "Build files for release"
           git push origin main --force
+      - name: Increment and push tag
+        uses: anothrNick/github-tag-action@1.33.0
+        id: create_tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INITIAL_VERSION: 0.1.0
+          DEFAULT_BUMP: patch
+          RELEASE_BRANCHES: main
+          WITH_V: true
