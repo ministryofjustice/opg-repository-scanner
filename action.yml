@@ -8,7 +8,7 @@ inputs:
   source_directory:
     required: false
     description: 'Directory to use as the base for scanning.'
-    default: './'
+    default: ${{ github.workspace }}
   source_follow_symlinks:
     required: false
     description: 'Instruction to filesystem handling to follow symlinks or not.'
