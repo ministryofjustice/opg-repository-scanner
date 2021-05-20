@@ -1,10 +1,10 @@
 ---
-name: "Tag and release"
+name: "Release"
 
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "v*"
 
 jobs:
   release:

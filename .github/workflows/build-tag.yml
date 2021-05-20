@@ -9,12 +9,11 @@ on:
       - 'dist/**'
 
 jobs:
-  build:
+  build_and_tag:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout source code"
         uses: "actions/checkout@v2"
-
       - name: "Run build process"
         run: |
           rm -Rf ./dist/
