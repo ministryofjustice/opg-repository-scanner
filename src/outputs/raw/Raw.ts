@@ -7,8 +7,6 @@ import { Simple } from '../simple/Simple';
 
 export class Raw extends Simple implements IOutput {
     filename:string = 'raw.json'
-    directory:string = './__artifacts__/'
-    report: Report = new Report('', '', [], false, [])
 
     process(): Map<string,string> {
         const all:IPackage[] = GroupPackages.toFlat(this.report.packages)

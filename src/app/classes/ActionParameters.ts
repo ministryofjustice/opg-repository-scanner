@@ -18,7 +18,8 @@ export class ActionParameters implements IActionParameters{
     ]
     // name of the uploaded file
     artifact_name: string = 'repository-scan-result'
-
+    //
+    artifact_base_directory: string = ''
 
     static fromCoreInput() : IActionParameters {
         let input: ActionParameters = new ActionParameters()
@@ -31,10 +32,16 @@ export class ActionParameters implements IActionParameters{
         core.debug(`symlink: ${symlink}`)
         const exclude = core.getInput('source_exclude')
         core.debug(`source_exclude: ${exclude}`)
+        const artifact_name = core.getInput('artifact_name')
+        core.debug(`artifact_name: ${exclude}`)
+        const artifact_base_directory = core.getInput('artifact_base_directory')
+        core.debug(`artifact_base_directory: ${exclude}`)
 
         if (repoName && repoName.length > 0) input.repository_name = repoName
         if (dir && dir.length > 0) input.source_directory = dir
         if (exclude && exclude.length > 0) input.source_exclude = JSON.parse(exclude)
+        if (artifact_name && artifact_name.length > 0) input.artifact_name = artifact_name
+        if (artifact_base_directory && artifact_base_directory.length > 0) input.artifact_base_directory = artifact_base_directory
 
         input.source_follow_symlinks = symlink
 

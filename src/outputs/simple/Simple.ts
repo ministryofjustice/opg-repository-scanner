@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import * as path from 'path';
 
 import { Files, GroupPackages, Report } from "../../app/classes";
 import { IOutput, IPackage } from "../../app/interfaces";
@@ -11,8 +12,10 @@ export class Simple implements IOutput {
     report: Report = new Report('', '', [], false, [])
 
 
-    set(report: Report) : IOutput {
+    set(report: Report, artifactDir?:string) : IOutput {
         this.report = report
+        if(typeof artifactDir !== 'undefined') this.directory = path.resolve(artifactDir, '__artifacts__/') + '/'
+        core.info(`[${this.constructor.name}] Artifact directory set to: ${this.directory}`)
         return this
     }
 

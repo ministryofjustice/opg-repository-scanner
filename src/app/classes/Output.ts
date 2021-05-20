@@ -14,7 +14,11 @@ export class Output{
 
 
     // Use the report to pass into each Outputter
-    async from(report:Report): Promise<string[]> {
+    async from(
+        report:Report,
+        artifactDir:string = './__artifacts__/'
+    ): Promise<string[]> {
+
         let files:string[] = []
         let promises = []
 
@@ -24,7 +28,7 @@ export class Output{
                     core.debug(`[${handler.constructor.name}] Starting`)
                     resolve(
                         handler
-                            .set(report)
+                            .set(report, artifactDir)
                             .save()
                             .then((saved) => {
                                 core.info(`[${handler.constructor.name}] generated [${saved.length}] files`)

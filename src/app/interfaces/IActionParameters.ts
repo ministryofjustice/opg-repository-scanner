@@ -11,4 +11,6 @@ export interface IActionParameters {
     // name of the uploaded file
     artifact_name: string
 
+    artifact_base_directory: string
+
 }

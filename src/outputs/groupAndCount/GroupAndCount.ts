@@ -8,9 +8,6 @@ import { IOutputContent } from '../../app/interfaces/IOutputContent';
 
 export class GroupAndCount extends Raw implements IOutput {
 
-    directory:string = './__artifacts__/'
-    report: Report = new Report('', '', [], false, [])
-
 
     process(): Map<string, string> {
         let files:Map<string, string> = new Map<string,string>()
