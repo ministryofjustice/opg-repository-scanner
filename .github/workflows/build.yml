@@ -1,5 +1,5 @@
 ---
-name: "Build"
+name: "Build and Tag"
 
 on:
   push:
@@ -26,3 +26,4 @@ jobs:
           git config --global user.name "Github Action"
           git add ./dist/ --force
           git commit -m "Build files for release"
+          git push origin main --force
