@@ -1,0 +1,28 @@
+---
+name: "Build"
+
+on:
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - 'dist/**'
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout source code"
+        uses: "actions/checkout@v2"
+
+      - name: "Run build process"
+        run: |
+          rm -Rf ./dist/
+          npm install
+          npm run all
+      - name: "Commit the build files"
+        run: |
+          git config --global user.email "tools@digital.justice.gov.uk"
+          git config --global user.name "Github Action"
+          git add ./dist/ --force
+          git commit -m "Build files for release"

@@ -1,42 +1,20 @@
 ---
-name: "Build, tag and release"
+name: "Tag and release"
 
 on:
   push:
     branches:
       - "main"
+    paths:
+      - "dist/**"
+
 
 jobs:
   release:
     runs-on: "ubuntu-latest"
     steps:
-      - id: date
-        name: "Date"
-        run: echo "::set-output name=date::$(date +'%Y%m%dT%H%M%S')"
-
       - name: "Checkout source code"
         uses: "actions/checkout@v2"
-
-      - name: "Run build process"
-        run: |
-          npm install
-          npm run all
-
-      - name: "Push the build files"
-        run: |
-          git config --global user.email "tools@digital.justice.gov.uk"
-          git config --global user.name "Github Action"
-          git checkout -b releases/${{steps.date.outputs.date}}
-          git add ./dist/ --force
-          git commit -m "Build files for release"
-          git push origin releases/${{steps.date.outputs.date}}
-
-      - name: "Checkout source code at release branch - releases/${{steps.date.outputs.date}}"
-        uses: "actions/checkout@v2"
-        with:
-          ref: releases/${{steps.date.outputs.date}}
-          fetch-depth: 0
-
       - name: Increment and push tag based on the release branch
         uses: anothrNick/github-tag-action@1.33.0
         id: create_tag
@@ -46,7 +24,6 @@ jobs:
           DEFAULT_BUMP: patch
           RELEASE_BRANCHES: main,releases/*
           WITH_V: true
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
