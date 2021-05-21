@@ -23,8 +23,8 @@ inputs:
     default: 'repository-scan-result'
   artifact_directory:
     required: false
-    description: 'Location of the artifact'
-    default: ${{ github.action_path }}
+    description: 'Location to create artifact storage directory'
+    default: ${{ github.workspace }}
 
 runs:
   using: 'node12'

@@ -14,7 +14,7 @@ export class Simple implements IOutput {
 
     set(report: Report, artifactDir?:string) : IOutput {
         this.report = report
-        if(typeof artifactDir !== 'undefined') this.directory = path.resolve(artifactDir, '__artifacts__/') + '/'
+        if(typeof artifactDir !== 'undefined') this.directory = path.resolve(artifactDir, `__artifacts-${Date.now()}`) + '/'
         core.info(`[${this.constructor.name}] Artifact directory set to: ${this.directory}`)
         return this
     }
