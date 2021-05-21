@@ -47,7 +47,7 @@ async function run(): Promise<void> {
         /* eslint-enable no-console */
 
         const out = new Output(OUTPUTS)
-        const files = await out.from(report, parameters.artifact_base_directory)
+        const files = await out.from(report, parameters.artifact_directory)
         core.info(`Created [${files.length}] report files.`)
 
         core.info(`Uploading artifact.`)
