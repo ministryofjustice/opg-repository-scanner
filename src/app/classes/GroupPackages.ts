@@ -46,6 +46,7 @@ export class GroupPackages {
             )
             // fetch unique versions of the other fields, remove emptys using filter, sort for neatness
             const versions = [...new Set( item.meta.map(i => i.version).filter(i => i) ) ]
+
             const types = [...new Set( item.meta.map(i => i.type).filter(i => i) ) ].sort()
             const licenses = [...new Set( item.meta.map(i => i.license).filter(i => i)  ) ].sort()
             // get all the unique tags
@@ -55,12 +56,15 @@ export class GroupPackages {
                     ) ) ].sort()
 
             // generate a IPackage object from this item
+            let v = ''
+            if (versions.length > 1) v = `${versions.shift()} (+${versions.length} others)`
+            else if (versions.length > 0) v = `${versions.shift()}`
+
+
             const pkg:IPackage = {
                 repository: item.repository,
                 name: item.name,
-                version: (
-                    (versions.length > 1 ) ? `${versions.shift()} (+${versions.length} others)` : `${versions.shift()}`
-                ),
+                version: v,
                 type: types.join(', '),
                 license: licenses.join(', '),
                 tags: tags.join(', '),

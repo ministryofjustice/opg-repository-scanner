@@ -13,6 +13,8 @@ test(`+ Test the generated string matches expected content`, async () => {
         new PackageInfo('test-repo', 'php', '7.3|7.4', ManifestTypes.Lock, 'manifest.lock', ['php', 'test', 'lock'], 'MIT'),
 
         new PackageInfo('test-repo', 'laminas', '^3.0', ManifestTypes.Manifest, 'test-manifest', ['php', 'manifest']),
+
+        new PackageInfo('test-repo', 'boto3', '', ManifestTypes.Manifest, 'requirements.txt', ['pip', 'test', 'lock'], 'MIT'),
     ]
     // create a new report, set the packages
     const report = new Report('test-repo', './', [], false, [])
@@ -31,7 +33,7 @@ test(`+ Test the generated string matches expected content`, async () => {
     expect(hasProp).toBeTruthy()
 
     const readPackages = jobj.packages
-    expect(readPackages.length).toEqual(2)
+    expect(readPackages.length).toEqual(3)
 
     const php = readPackages.find(i => i.name === 'php')
     expect(php?.name).toEqual("php")
