@@ -1,5 +1,7 @@
 import * as core from '@actions/core'
 import * as artifact from '@actions/artifact'
+import * as path from 'path';
+
 
 import {ActionParameters, IParser, Report, Output, IOutput} from './app'
 import {NpmParser, PipParser, ComposerParser, GoModParser, YarnParser} from './parsers'
@@ -47,14 +49,14 @@ async function run(): Promise<void> {
         /* eslint-enable no-console */
 
         const out = new Output(OUTPUTS)
-        const files = await out.from(report, parameters.artifact_directory)
+        const artifactDir = path.resolve(parameters.artifact_directory, `${}__artifacts-${Date.now()}` ) + '/'
+        const files = await out.from(report, artifactDir)
         core.info(`Created [${files.length}] report files.`)
 
         core.info(`Uploading artifact.`)
         const artifact_name = parameters.artifact_name
-        const dir = __dirname + '/../'
         const artifact_client = artifact.create()
-        const response = await artifact_client.uploadArtifact(artifact_name, files, dir, {
+        const response = await artifact_client.uploadArtifact(artifact_name, files, artifactDir, {
             continueOnError: false
         })
     } catch (error) {
