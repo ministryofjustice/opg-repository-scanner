@@ -855,6 +855,8 @@ function run() {
             core.info('Starting action.');
             const parameters = app_1.ActionParameters.fromCoreInput();
             core.info('Action inputs loaded.');
+            core.info(`Action path: ${parameters.artifact_base_directory}`);
+            core.info(`Source path: ${parameters.source_directory}`);
             /* eslint-disable no-console */
             if (core.isDebug())
                 console.log(parameters);
@@ -927,19 +929,21 @@ class GroupAndCount extends Raw_1.Raw {
         let files = new Map();
         const flat = classes_1.GroupPackages.byNameAndLocationWithCounts(this.report.packages);
         core.info(`[${this.constructor.name}] contains [${flat.length}] packages.`);
-        // json
-        const json = { packages: flat };
-        files.set('groupedWithCount.json', JSON.stringify(json));
-        // markdown
-        let markdown = "| Repository | Package | Version | Occurances | Tags | License |\n| -- | -- | -- | -- | -- | -- |\n";
-        for (const row of flat) {
-            const cols = [row.repository, row.name, row.version, row.source, row.tags, row.license];
-            // output and escape the column data
-            for (const col of cols)
-                markdown += `| ${col.replace(/\|/g, "\\|")} `;
-            markdown += "|\n";
+        if (flat.length > 0) {
+            // json
+            const json = { packages: flat };
+            files.set('groupedWithCount.json', JSON.stringify(json));
+            // markdown
+            let markdown = "| Repository | Package | Version | Occurances | Tags | License |\n| -- | -- | -- | -- | -- | -- |\n";
+            for (const row of flat) {
+                const cols = [row.repository, row.name, row.version, row.source, row.tags, row.license];
+                // output and escape the column data
+                for (const col of cols)
+                    markdown += `| ${col.replace(/\|/g, "\\|")} `;
+                markdown += "|\n";
+            }
+            files.set('groupedWithCount.md', markdown);
         }
-        files.set('groupedWithCount.md', markdown);
         return files;
     }
 }
@@ -1016,9 +1020,12 @@ class Raw extends Simple_1.Simple {
         const all = classes_1.GroupPackages.toFlat(this.report.packages);
         const obj = { packages: all };
         core.info(`[${this.constructor.name}] contains [${all.length}] packages.`);
-        return new Map([
-            [this.filename, JSON.stringify(obj)]
-        ]);
+        if (all.length > 0) {
+            return new Map([[this.filename, JSON.stringify(obj)]]);
+        }
+        else {
+            return new Map();
+        }
     }
 }
 exports.Raw = Raw;
@@ -1095,9 +1102,10 @@ class Simple {
                 .toFlat(this.report.packages)
                 .reduce((arr, i) => { arr.push(i.name); return arr; }, new Array()))].sort();
         core.info(`[${this.constructor.name}] contains [${all.length}] packages.`);
-        return new Map([
-            [this.filename, JSON.stringify(all)]
-        ]);
+        if (all.length > 0)
+            return new Map([[this.filename, JSON.stringify(all)]]);
+        else
+            return new Map();
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
