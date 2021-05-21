@@ -22,7 +22,7 @@ async function run(): Promise<void> {
         const parameters = ActionParameters.fromCoreInput()
 
         core.info('Action inputs loaded.')
-        core.info(`Action path: ${parameters.artifact_base_directory}`)
+        core.info(`Action path: ${parameters.artifact_directory}`)
         core.info(`Source path: ${parameters.source_directory}`)
         /* eslint-disable no-console */
         if (core.isDebug()) console.log(parameters)

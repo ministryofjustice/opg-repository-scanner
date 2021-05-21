@@ -21,8 +21,8 @@ inputs:
     required: false
     description: 'The finished set of artifacts will be uploaded to this workflow under this name'
     default: 'repository-scan-result'
-  artifact_base_directory:
-    required: true
+  artifact_directory:
+    required: false
     description: 'Location of the artifact'
     default: ${{ github.action_path }}
 
