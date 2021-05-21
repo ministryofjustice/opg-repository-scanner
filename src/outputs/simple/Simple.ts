@@ -28,9 +28,10 @@ export class Simple implements IOutput {
 
         core.info(`[${this.constructor.name}] contains [${all.length}] packages.`)
 
-        return new Map<string,string>([
-            [this.filename, JSON.stringify(all)]
-        ])
+        if (all.length > 0)
+            return new Map<string,string>([ [this.filename, JSON.stringify(all)] ])
+        else
+            return new Map<string,string>()
     }
 
 
