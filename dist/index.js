@@ -48,7 +48,7 @@ class ActionParameters {
         // name of the uploaded file
         this.artifact_name = 'repository-scan-result';
         //
-        this.artifact_base_directory = '';
+        this.artifact_directory = '';
     }
     static fromCoreInput() {
         let input = new ActionParameters();
@@ -62,8 +62,8 @@ class ActionParameters {
         core.debug(`source_exclude: ${exclude}`);
         const artifact_name = core.getInput('artifact_name');
         core.debug(`artifact_name: ${exclude}`);
-        const artifact_base_directory = core.getInput('artifact_base_directory');
-        core.debug(`artifact_base_directory: ${exclude}`);
+        const artifact_directory = core.getInput('artifact_directory');
+        core.debug(`artifact_directory: ${exclude}`);
         if (repoName && repoName.length > 0)
             input.repository_name = repoName;
         if (dir && dir.length > 0)
@@ -72,8 +72,8 @@ class ActionParameters {
             input.source_exclude = JSON.parse(exclude);
         if (artifact_name && artifact_name.length > 0)
             input.artifact_name = artifact_name;
-        if (artifact_base_directory && artifact_base_directory.length > 0)
-            input.artifact_base_directory = artifact_base_directory;
+        if (artifact_directory && artifact_directory.length > 0)
+            input.artifact_directory = artifact_directory;
         input.source_follow_symlinks = symlink;
         return input;
     }
@@ -413,10 +413,15 @@ class GroupPackages {
             // get all the unique tags
             const tags = [...new Set(item.meta.reduce((arr, i) => { arr.push(...i.tags); return arr; }, new Array()))].sort();
             // generate a IPackage object from this item
+            let v = '';
+            if (versions.length > 1)
+                v = `${versions.shift()} (+${versions.length} others)`;
+            else if (versions.length > 0)
+                v = `${versions.shift()}`;
             const pkg = {
                 repository: item.repository,
                 name: item.name,
-                version: ((versions.length > 1) ? `${versions.shift()} (+${versions.length} others)` : `${versions.shift()}`),
+                version: v,
                 type: types.join(', '),
                 license: licenses.join(', '),
                 tags: tags.join(', '),
@@ -836,6 +841,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__webpack_require__(2186));
 const artifact = __importStar(__webpack_require__(2605));
+const path = __importStar(__webpack_require__(5622));
 const app_1 = __webpack_require__(8384);
 const parsers_1 = __webpack_require__(1295);
 const outputs_1 = __webpack_require__(7306);
@@ -855,7 +861,7 @@ function run() {
             core.info('Starting action.');
             const parameters = app_1.ActionParameters.fromCoreInput();
             core.info('Action inputs loaded.');
-            core.info(`Action path: ${parameters.artifact_base_directory}`);
+            core.info(`Action path: ${parameters.artifact_directory}`);
             core.info(`Source path: ${parameters.source_directory}`);
             /* eslint-disable no-console */
             if (core.isDebug())
@@ -874,13 +880,13 @@ function run() {
                 console.log(report);
             /* eslint-enable no-console */
             const out = new app_1.Output(OUTPUTS);
-            const files = yield out.from(report, parameters.artifact_base_directory);
+            const artifactDir = path.resolve(parameters.artifact_directory, `__artifacts-${Date.now()}`) + '/';
+            const files = yield out.from(report, artifactDir);
             core.info(`Created [${files.length}] report files.`);
             core.info(`Uploading artifact.`);
             const artifact_name = parameters.artifact_name;
-            const dir = __dirname + '/../';
             const artifact_client = artifact.create();
-            const response = yield artifact_client.uploadArtifact(artifact_name, files, dir, {
+            const response = yield artifact_client.uploadArtifact(artifact_name, files, artifactDir, {
                 continueOnError: false
             });
         }
@@ -1093,7 +1099,7 @@ class Simple {
     set(report, artifactDir) {
         this.report = report;
         if (typeof artifactDir !== 'undefined')
-            this.directory = path.resolve(artifactDir, '__artifacts__/') + '/';
+            this.directory = path.resolve(artifactDir) + '/';
         core.info(`[${this.constructor.name}] Artifact directory set to: ${this.directory}`);
         return this;
     }
