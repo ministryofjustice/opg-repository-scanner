@@ -24,7 +24,7 @@ inputs:
   artifact_base_directory:
     required: true
     description: 'Location of the artifact'
-    default: ${GITHUB_ACTION_PATH}
+    default: ${{ env.GITHUB_ACTION_PATH }}
 
 runs:
   using: 'node12'
