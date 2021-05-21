@@ -22,9 +22,9 @@ inputs:
     description: 'The finished set of artifacts will be uploaded to this workflow under this name'
     default: 'repository-scan-result'
   artifact_base_directory:
-    required: false
-    description: 'Storage location of the generated artifacts'
-    default: ${{ github.action_path }}
+    required: true
+    description: 'Location of the artifact'
+    default: ${GITHUB_ACTION_PATH}
 
 runs:
   using: 'node12'
