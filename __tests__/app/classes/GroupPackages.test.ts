@@ -55,7 +55,8 @@ test(`+ Converting PackageInfo[] to group & counted data set.`, async () => {
 
     expect(byNameWithCounts.length).toEqual(2)
     const php = byNameWithCounts.find(i => i.name === 'php')
-    expect(php?.version).toEqual('^7.2 (+2 others)')
+    expect(php?.version).toContain('^7.2 (+2 others)')
     expect(php?.tags).toEqual('first, lock, manifest, php')
 
+    console.log(php?.version)
 })
