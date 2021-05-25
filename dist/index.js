@@ -415,7 +415,7 @@ class GroupPackages {
             // generate a IPackage object from this item
             let v = '';
             if (versions.length > 1)
-                v = `${versions.shift()} (+${versions.length} others)`;
+                v = `${versions.shift()} (+${versions.length} others)<span class='hide'>${versions.join('<br>')}</span>`;
             else if (versions.length > 0)
                 v = `${versions.shift()}`;
             const pkg = {
