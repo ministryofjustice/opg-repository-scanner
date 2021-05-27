@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import * as artifact from '@actions/artifact'
 import * as path from 'path'
+import * as fs from 'fs';
 
 import {ActionParameters, IParser, Report, Output, IOutput} from './app'
 import {NpmParser, PipParser, ComposerParser, GoModParser, YarnParser} from './parsers'
@@ -50,15 +51,19 @@ async function run(): Promise<void> {
         const out = new Output(OUTPUTS)
         const artifactDir =
             path.resolve(parameters.artifact_directory, `__artifacts-${Date.now()}`) + '/'
+
+        fs.mkdirSync(artifactDir)
+
         const files = await out.from(report, artifactDir)
         core.info(`Created [${files.length}] report files.`)
-
-        core.info(`Uploading artifact.`)
-        const artifact_name = parameters.artifact_name
-        const artifact_client = artifact.create()
-        const response = await artifact_client.uploadArtifact(artifact_name, files, artifactDir, {
-            continueOnError: false
-        })
+        if (files.length > 0){
+            core.info(`Uploading artifact.`)
+            const artifact_name = parameters.artifact_name
+            const artifact_client = artifact.create()
+            const response = await artifact_client.uploadArtifact(artifact_name, files, artifactDir, {
+                continueOnError: false
+            })
+        }
     } catch (error) {
         core.error(error.message)
         core.setFailed(error.message)
