@@ -42,4 +42,11 @@ test(`+ Test the lock function returns correctly`, async () => {
 
     expect(found.length).toEqual(12)
 
+    let foundQuote = []
+    found.forEach(f => f.meta.forEach(m => {
+        if (m.version.indexOf('"') >= 0) foundQuote.push(f)
+    }))
+
+    expect(foundQuote.length).toEqual(0)
+
 })

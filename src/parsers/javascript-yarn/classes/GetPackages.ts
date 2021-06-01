@@ -48,8 +48,12 @@ export class GetPackages extends BaseGetPackages implements IGetPackages{
                                 // swap the @ back over to a real version
                                 ?.replace('&#64;', '@')
                 // get all the versions from the package declaration line
+                // and trim off the double quotes from the @ symbol wrapping
                 let versions = packageKeys
-                                .map(i => i.split("@").pop()?.replace(':', '').trim())
+                                .map(i => i.split("@")
+                                            .pop()?.replace(':', '')
+                                            .replace(/"/g, '')
+                                            .trim() )
                 // get the version listed in the version field
                 const version = split
                                 .filter(i => (i.indexOf("version") >= 0) )
