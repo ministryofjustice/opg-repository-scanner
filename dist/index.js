@@ -415,7 +415,7 @@ class GroupPackages {
             // generate a IPackage object from this item
             let v = '';
             if (versions.length > 1)
-                v = `${versions.shift()} (+${versions.length} others)`;
+                v = `${versions.shift()} (+${versions.length} others)<span class='hide'>${versions.join('<br>')}</span>`;
             else if (versions.length > 0)
                 v = `${versions.shift()}`;
             const pkg = {
@@ -842,6 +842,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__webpack_require__(2186));
 const artifact = __importStar(__webpack_require__(2605));
 const path = __importStar(__webpack_require__(5622));
+const fs = __importStar(__webpack_require__(5747));
 const app_1 = __webpack_require__(8384);
 const parsers_1 = __webpack_require__(1295);
 const outputs_1 = __webpack_require__(7306);
@@ -881,14 +882,17 @@ function run() {
             /* eslint-enable no-console */
             const out = new app_1.Output(OUTPUTS);
             const artifactDir = path.resolve(parameters.artifact_directory, `__artifacts-${Date.now()}`) + '/';
+            fs.mkdirSync(artifactDir);
             const files = yield out.from(report, artifactDir);
             core.info(`Created [${files.length}] report files.`);
-            core.info(`Uploading artifact.`);
-            const artifact_name = parameters.artifact_name;
-            const artifact_client = artifact.create();
-            const response = yield artifact_client.uploadArtifact(artifact_name, files, artifactDir, {
-                continueOnError: false
-            });
+            if (files.length > 0) {
+                core.info(`Uploading artifact.`);
+                const artifact_name = parameters.artifact_name;
+                const artifact_client = artifact.create();
+                const response = yield artifact_client.uploadArtifact(artifact_name, files, artifactDir, {
+                    continueOnError: false
+                });
+            }
         }
         catch (error) {
             core.error(error.message);
@@ -1710,8 +1714,13 @@ class GetPackages extends GetPackages_1.GetPackages {
                         .map(i => { var _a; return (_a = i.split("@").shift()) === null || _a === void 0 ? void 0 : _a.replace(/"/g, '').trim(); })
                         .shift()) === null || _b === void 0 ? void 0 : _b.replace('&#64;', '@');
                     // get all the versions from the package declaration line
+                    // and trim off the double quotes from the @ symbol wrapping
                     let versions = packageKeys
-                        .map(i => { var _a; return (_a = i.split("@").pop()) === null || _a === void 0 ? void 0 : _a.replace(':', '').trim(); });
+                        .map(i => {
+                        var _a;
+                        return (_a = i.split("@")
+                            .pop()) === null || _a === void 0 ? void 0 : _a.replace(':', '').replace(/"/g, '').trim();
+                    });
                     // get the version listed in the version field
                     const version = split
                         .filter(i => (i.indexOf("version") >= 0))
