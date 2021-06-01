@@ -18,7 +18,7 @@ export class PackageMeta implements IPackageMeta{
     ) {
         if(typeof version !== 'undefined') this.version = version
         if(typeof type !== 'undefined') this.type = type
-        if(typeof source !== 'undefined') this.source = source
+        if(typeof source !== 'undefined') this.source = source.replace( process.cwd(), '.')
         if(typeof tags !== 'undefined') this.tags = tags
         if(typeof license !== 'undefined') this.license = license
 
