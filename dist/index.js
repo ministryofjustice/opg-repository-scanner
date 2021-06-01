@@ -594,7 +594,7 @@ class PackageMeta {
         if (typeof type !== 'undefined')
             this.type = type;
         if (typeof source !== 'undefined')
-            this.source = source;
+            this.source = source.replace(process.cwd(), '.');
         if (typeof tags !== 'undefined')
             this.tags = tags;
         if (typeof license !== 'undefined')
