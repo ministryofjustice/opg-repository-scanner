@@ -24,10 +24,11 @@ export class GetPackages extends BaseGetPackages implements IGetPackages{
             for(const line of filePackages){
 
                 if(line.length > 0) {
+                    const split = line.split("==")
                     packages.push( new PackageInfo(
                         this.repositoryName,
-                        line,
-                        "",
+                        split[0] ?? "",
+                        split[1] ?? "",
                         ManifestTypes.Manifest,
                         file.replace( process.cwd(), '.') ,
                         tags,

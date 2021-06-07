@@ -56,10 +56,10 @@ test(`+ Test versions are returned correctly`, async () => {
     )
     const found = await comp.manifests(Pip.tags.manifest, Pip.filePatterns.manifest)
 
-    let notVersioned = false
+    let notVersioned = 0
     found.forEach(f => {
-        f.meta.forEach(m => { if(m.version.length <= 0){ notVersioned = true} })
+        f.meta.forEach(m => { if(m.version.length <= 0){ notVersioned += 1} } )
     })
 
-    expect(notVersioned).toBeFalsy()
+    expect(notVersioned).toEqual(1)
 })
