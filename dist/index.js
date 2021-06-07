@@ -2088,6 +2088,7 @@ const GetPackages_1 = __webpack_require__(2011);
 class GetPackages extends GetPackages_1.GetPackages {
     // Pip packages are split by newlines only
     get(tags, recursive, reader) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             let packages = [];
             const files = yield this.files();
@@ -2097,7 +2098,8 @@ class GetPackages extends GetPackages_1.GetPackages {
                 const filePackages = content.split('\n');
                 for (const line of filePackages) {
                     if (line.length > 0) {
-                        packages.push(new classes_1.PackageInfo(this.repositoryName, line, "", "manifest" /* Manifest */, file.replace(process.cwd(), '.'), tags, ""));
+                        const split = line.split("==");
+                        packages.push(new classes_1.PackageInfo(this.repositoryName, (_a = split[0]) !== null && _a !== void 0 ? _a : "", (_b = split[1]) !== null && _b !== void 0 ? _b : "", "manifest" /* Manifest */, file.replace(process.cwd(), '.'), tags, ""));
                     }
                 }
             }
