@@ -22,8 +22,8 @@ export class GetPackages extends BaseGetPackages implements IGetPackages{
             const filePackages = content.split('\n')
 
             for(const line of filePackages){
-
-                if(line.length > 0) {
+                // ignore comments in the requirements file
+                if(line.length > 0 && line[0] != "#" ) {
                     const split = line.split("==")
                     packages.push( new PackageInfo(
                         this.repositoryName,
