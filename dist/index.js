@@ -2097,7 +2097,8 @@ class GetPackages extends GetPackages_1.GetPackages {
                 const content = fs.readFileSync(file, 'utf8');
                 const filePackages = content.split('\n');
                 for (const line of filePackages) {
-                    if (line.length > 0) {
+                    // ignore comments in the requirements file
+                    if (line.length > 0 && line[0] != "#") {
                         const split = line.split("==");
                         packages.push(new classes_1.PackageInfo(this.repositoryName, (_a = split[0]) !== null && _a !== void 0 ? _a : "", (_b = split[1]) !== null && _b !== void 0 ? _b : "", "manifest" /* Manifest */, file.replace(process.cwd(), '.'), tags, ""));
                     }
