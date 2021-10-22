@@ -69,7 +69,7 @@ async function run(): Promise<void> {
                 }
             )
         }
-    } catch (error) {
+    } catch (error: any) {
         core.error(error.message)
         core.setFailed(error.message)
     }
