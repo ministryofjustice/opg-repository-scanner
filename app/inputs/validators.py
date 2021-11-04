@@ -22,7 +22,7 @@ def string_to_bool(value:str) -> bool:
         return False
     return True
 
-def string_to_json_array(value:str):
+def json_string_to_list(value:str):
     """
     Convert the string passed from a json array to a list
     """

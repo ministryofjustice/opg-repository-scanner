@@ -41,7 +41,7 @@ class handler:
                             default=False)
         source_group.add_argument('--exclude',
                             help='List of folders / filepaths to exclude from all filesystem operations. This is parsed using JSON.parse to convert from a string.',
-                            type=validators.string_to_json_array,
+                            type=validators.json_string_to_list,
                             default='[]')
 
 
