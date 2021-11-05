@@ -21,6 +21,9 @@ class base:
     tags: dict = {'manifests': [], 'locks': []}
 
     def file_lines(self, reader, file_path:str) -> list:
+        """
+        Use the reader to split file content into lines
+        """
         content = reader.content(file_path)
         if content != None:
             return content.strip().split('\n')
@@ -54,7 +57,6 @@ class base:
         for i, item in enumerate(items):
             if item[key] == new_item[key]:
                 for col in struct:
-                    items[i].setdefault(col, [])
                     items[i][col].extend(new_item[col])
                     items[i][col] = list(set(items[i][col]))
                 found = True
@@ -79,14 +81,14 @@ class base:
                             (locks['exclude'] or []) )
         }
 
-    def parse_manifest(self, file_path:str) -> list:
+    def parse_manifest(self, file_path:str, packages:list) -> list:
         """
         Read manifest file and convert into a dict.
         Should be replaced per subclass
         """
         return []
 
-    def parse_lock(self, file_path:str) -> list:
+    def parse_lock(self, file_path:str, packages:list) -> list:
         """
         Read lock file and convert into a dict.
         Should be replaced per subclass

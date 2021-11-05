@@ -49,8 +49,8 @@ PARSE_TESTS = [
 @pytest.mark.parametrize('path', PARSE_TESTS)
 def test_base_parse_methods(path):
     b = base()
-    m = b.parse_manifest(path)
-    l = b.parse_lock(path)
+    m = b.parse_manifest(path, [])
+    l = b.parse_lock(path, [])
     assert (len(m) == 0) == True
     assert (len(l) == 0) == True
 

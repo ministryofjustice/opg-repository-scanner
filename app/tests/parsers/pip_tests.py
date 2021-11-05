@@ -14,13 +14,18 @@ def test_pip_files_find_requirements_simple():
     assert len(found['manifests']) == 2
     assert len(found['locks']) == 0
 
-
-PIP_MANIFESTS = [
-    "../__samples/parsers/pip/valid/app1/simple_requirements.txt"
-]
-@pytest.mark.parametrize('path', PIP_MANIFESTS)
-def test_pip_parse_manifest(path):
+def test_pip_parse_manifest_simple():
+    spath = "../__samples/parsers/pip/valid/app1/simple_requirements.txt"
     b = pip()
-    manifest = b.parse_manifest(path)
-    assert (len(manifest) == 3) == True
-    assert False
+    smanifest = b.parse_manifest(spath, [])
+    ml = len(smanifest)
+    assert (ml == 3) == True
+
+
+def test_pip_parse_manifest_simple_versioned():
+    path = "../__samples/parsers/pip/valid/app1/versioned_requirements.txt"
+    pv = pip()
+    manifest = pv.parse_manifest(path, [])
+    pp(manifest)
+    assert len(manifest) == 1
+    assert len(manifest[0]['versions']) == 2
