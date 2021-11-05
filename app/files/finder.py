@@ -2,8 +2,6 @@ import glob
 from typing import List
 import re
 
-from pprint import pp
-
 class finder:
     """
     Class to provide file related lookups functionality
