@@ -10,6 +10,7 @@ class base:
     This class generally dealers with reflection methods
     to find suitable parsers and what handles what
     """
+    repository: str = ""
 
     directory: str = "./"
     manifests: dict = {'include': [], 'exclude': []}
@@ -17,10 +18,56 @@ class base:
 
     files: dict = {'manifests': [], 'locks': []}
 
+    tags: dict = {'manifests': [], 'locks': []}
+
+    def file_lines(self, reader, file_path:str) -> list:
+        content = reader.content(file_path)
+        if content != None:
+            return content.strip().split('\n')
+        return []
+
+    def package_info(self, name:str, version:str, file_path:str, license:str, tags:list) -> dict:
+        """
+        Return a dict with standardised keys for the data provided.
+        This package dict is then used elsewhere
+        """
+        return {
+                'name': name,
+                'repositories': [self.repository],
+                'versions': [version],
+                'files': [file_path],
+                'licenses': [license],
+                'tags': tags
+            }
+
+    def merge_into_list(self,
+        items:list,
+        key:str,
+        new_item:dict,
+        struct:list = ['versions', 'repositories', 'tags', 'files']) -> list:
+        """
+        Take a new_item dict (with struct sub lists), look if the key already exists within
+        the items list, if it does, merge the data together (removing duplicates), otherwise
+        append the new version
+        """
+        found = False
+        for i, item in enumerate(items):
+            if item[key] == new_item[key]:
+                for col in struct:
+                    items[i].setdefault(col, [])
+                    items[i][col].extend(new_item[col])
+                    items[i][col] = list(set(items[i][col]))
+                found = True
+        if not found:
+            items.append(new_item)
+        return items
+
+
 
     def files(self, directory:str, manifests:dict, locks:dict) -> dict:
         """
-        Find all files
+        Call the finder class to find the manifest and lock files
+        used by this class
         """
         f = finder()
         return {
@@ -32,6 +79,19 @@ class base:
                             (locks['exclude'] or []) )
         }
 
+    def parse_manifest(self, file_path:str) -> list:
+        """
+        Read manifest file and convert into a dict.
+        Should be replaced per subclass
+        """
+        return []
+
+    def parse_lock(self, file_path:str) -> list:
+        """
+        Read lock file and convert into a dict.
+        Should be replaced per subclass
+        """
+        return []
 
 
     @classmethod

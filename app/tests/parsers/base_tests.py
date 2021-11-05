@@ -24,7 +24,6 @@ def test_base_files_with_defaults():
     assert ( len(found['locks']) == 0) == True
 
 
-
 MANIFEST_PATTERNS = [
     ("*.txt", 3),
     ("*requirements.txt", 2)
@@ -38,6 +37,35 @@ def test_base_files_with_test_files(pattern, length):
             dir,
             {'include': [pattern],'exclude': [] },
             b.locks)
-    pp(found)
+
     assert ( len(found['manifests']) == length) == True
     assert ( len(found['locks']) == 0) == True
+
+
+PARSE_TESTS = [
+    "",
+    "../__samples/parsers/pip/valid/app1/simple_requirements.txt"
+]
+@pytest.mark.parametrize('path', PARSE_TESTS)
+def test_base_parse_methods(path):
+    b = base()
+    m = b.parse_manifest(path)
+    l = b.parse_lock(path)
+    assert (len(m) == 0) == True
+    assert (len(l) == 0) == True
+
+
+def test_base_merge_into_list():
+    b = base()
+    items = [
+        {'name': 't1', 'versions': ['1', '3'], 'licenses': [], 'tags': [], 'files': [], 'repositories': ['source']},
+        {'name': 't2', 'versions': ['1', '3'], 'licenses': [], 'tags': [], 'files': [], 'repositories': ['test']}
+    ]
+    item = {'name': 't1', 'versions': ['2', '3'], 'licenses': [], 'tags': ['test'], 'files': ['text'], 'repositories':[]}
+    merged = b.merge_into_list(items, 'name', item)
+
+    test = merged[0]
+    assert (len(test['versions']) == 3) == True
+    assert (len(test['licenses']) == 0) == True
+    assert (len(test['tags']) == 1) == True
+    assert (len(test['files']) == 1) == True
