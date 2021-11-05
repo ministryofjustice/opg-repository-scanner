@@ -1,7 +1,6 @@
 import argparse
 import os
 import json
-from pprint import pp
 
 def readable_directory(directory:str):
     """
