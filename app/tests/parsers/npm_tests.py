@@ -25,7 +25,6 @@ def test_npm_parse_manifests_nuxt():
 def test_npm_parse_lock_simple():
     p = npm()
     file = "../__samples/parsers/npm/valid/simple/package-lock.json"
-    manifest = p.parse_lock(file, [])
+    lock = p.parse_lock(file, [])
 
-    pp(manifest)
-    assert False
+    assert len(lock) == 3

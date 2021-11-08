@@ -2,7 +2,6 @@ from typing import List
 from . import base
 from files import read
 
-from pprint import pp
 
 class pip(base):
     """

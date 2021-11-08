@@ -2,10 +2,10 @@ from typing import List
 from . import base
 from files import read
 import json
-from pprint import pp
 
 class npm(base):
     """
+    Parse package.json and package-lock.json files for npm
     """
 
 
