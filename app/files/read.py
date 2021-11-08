@@ -22,3 +22,12 @@ class read:
             return content
 
         return None
+
+    def lines(self, file_path:str) -> list:
+        """
+        Split file content into lines and return as a list
+        """
+        content = self.content(file_path)
+        if content != None:
+            return content.strip().split('\n')
+        return []

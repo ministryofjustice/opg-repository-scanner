@@ -16,10 +16,12 @@ class pip(base):
     def parse_manifest(self, file_path:str, packages:list) -> list:
         """
         Read manifest file and convert into a list of dicts.
+        Merge that list of dicts pack in to the packages variable passed along.
+
         """
         seperator = "=="
         reader = read()
-        lines = self.file_lines(reader, file_path)
+        lines = reader.lines(file_path)
         for line in lines:
             split = line.split(seperator)
             if len(split) > 0:
