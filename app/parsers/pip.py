@@ -6,6 +6,8 @@ from pprint import pp
 
 class pip(base):
     """
+    Handle python pip manifest requirement.txt files and generate
+    package lists
     """
 
     manifests: dict = {'include': ['**/*requirements.txt'], 'exclude': []}

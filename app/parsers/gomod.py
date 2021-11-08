@@ -5,6 +5,8 @@ from files import read
 
 class gomod(base):
     """
+    Parse go.mod & go.sum files and generate package lists
+
     """
 
     manifests: dict = {'include': ['**/go.mod'], 'exclude': []}
@@ -13,6 +15,12 @@ class gomod(base):
 
 
     def version(self, lines:list) -> str:
+        """
+        Looks within the file content lines for the line that begins with
+        'go ' which should also contain the version number of go
+
+        Returns just the version number
+        """
         line = list ( filter( lambda l: l.find("go ") == 0, lines) )
         return list ( map (lambda l: l.replace("go ", ''), line) ).pop()
 
