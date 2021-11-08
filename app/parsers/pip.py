@@ -42,6 +42,6 @@ class pip(base):
     @staticmethod
     def handles(tool:str) -> bool:
         """
-        Return true if the tool passed is 'pip' or 'python'
+        Return true if the tool passed is 'pip' or 'python' or '*' (any)
         """
-        return (tool in ['pip', 'python'])
+        return (tool in ['pip', 'python', '*'])

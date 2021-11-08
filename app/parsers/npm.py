@@ -6,4 +6,4 @@ class npm(base):
     """
     @staticmethod
     def handles(tool:str) -> bool:
-        return (tool in ['npm'])
+        return (tool in ['npm', '*'])
