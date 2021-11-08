@@ -1,0 +1,5 @@
+{
+    "scripts": {
+      "md-docs": "swagger-markdown -i api.public.v1.yaml"
+    }
+  }

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "typedjson": "^1.7.0",
+    "yaml": "^1.10.2"
+  }
+}
