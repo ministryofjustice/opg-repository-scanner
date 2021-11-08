@@ -4,7 +4,6 @@ from files import read
 import json
 import re
 
-from pprint import pp
 
 
 class yarn(base):
@@ -51,7 +50,6 @@ class yarn(base):
                 # push the installed version into version list too
                 pkg['versions'].append(installed_version)
                 packages = self.merge_into_list(packages, 'name', pkg)
-
 
         return packages
 
