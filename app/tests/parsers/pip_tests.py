@@ -25,7 +25,6 @@ def test_pip_parse_manifest_simple_versioned():
     path = "../__samples/parsers/pip/valid/app1/versioned_requirements.txt"
     pv = pip()
     manifest = pv.parse_manifest(path, [])
-    pp(manifest)
     assert len(manifest) == 1
     assert len(manifest[0]['versions']) == 2
     assert len(manifest[0]['tags']) == 3
@@ -41,5 +40,23 @@ def test_pip_packages_simple():
     ]
     # these files contain 4 distinct packages, which then have various versions
     found = p.packages(files, True)
+    assert len(found) == 4
+    # get pprintpp package
+    item = {}
+    for i in found:
+        if i['name'] == 'pprintpp':
+            item = i
+
+    assert len(item['files']) == 2
+    assert len(item['tags']) == 3
+
+
+def test_pip_parse_simple():
+    p = pip()
+    found = p.parse('test-repo',
+            '../__samples/parsers/pip/valid/app1',
+            p.manifests,
+            p.locks
+            )
     pp(found)
     assert False
