@@ -151,7 +151,7 @@ class base:
         return packages
 
 
-    def packages(self, files:list, manifest:bool) -> list:
+    def packages(self, files:list, packages: list, manifest:bool) -> list:
         """
         Loop over the file list passed in and then run that file into
         either parse_manifest or parse_lock depending on the value
@@ -164,12 +164,12 @@ class base:
 
             Parameters:
                 files (list)    : List of files to process for packages
+                packages (list) : Existing list of packages that will be expanded
                 manifest (bool) : Flag to determine if these files are manifests (True) or locks (False)
 
             Returns:
                 packages (list) : List of packages, sorted and de-duplicated.
         """
-        packages = []
         for f in files:
             packages = self.parse_manifest(f, packages) if manifest else self.parse_lock(f, packages)
 
@@ -181,7 +181,9 @@ class base:
             repository:str,
             directory:str,
             manifests:dict,
-            locks:dict) -> dict:
+            locks:dict,
+            packages:list,
+            ) -> dict:
         """
         Main method. Parse uses the details passed to return a dict
         of manifest and lock packages found for this class
@@ -191,20 +193,20 @@ class base:
                 directory (str) : File path that will be used
                 manifests (dict): Include and exclude patterns to use to find manifest files (see pip.manifests as example)
                 locks (dict)    : Include and exclude patterns to use to find locks files (same structure as manifests)
+                packages (list) : Existing list of packages that will be expanded
 
             Returns:
-                result (dict)   : Dict of 'manifests' and 'locks' with each being a list of packages generated from package_info
+                packages (list) : List of packages, sorted and de-duplicated.
 
 
         """
         self.repository = repository
 
         files = self.files(directory, manifests=manifests, locks=locks)
-        manifests = self.packages(files['manifests'], True)
-        locks = self.packages(files['locks'], False)
+        packages = self.packages(files['manifests'], packages, True)
+        packages = self.packages(files['locks'], packages, False)
 
-        result = {'manifests': manifests, 'locks': locks}
-        return result
+        return packages
 
 
 

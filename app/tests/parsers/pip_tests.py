@@ -39,7 +39,7 @@ def test_pip_packages_simple():
         "../__samples/parsers/pip/valid/app2/requirements.txt",
     ]
     # these files contain 4 distinct packages, which then have various versions
-    found = p.packages(files, True)
+    found = p.packages(files, [], True)
     assert len(found) == 4
     # get pprintpp package
     item = {}
@@ -56,7 +56,8 @@ def test_pip_parse_simple():
     found = p.parse('test-repo',
             '../__samples/parsers/pip/valid/app1',
             p.manifests,
-            p.locks
+            p.locks,
+            []
             )
-    pp(found)
-    assert False
+
+    assert len(found) == 4
