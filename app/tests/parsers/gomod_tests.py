@@ -27,6 +27,16 @@ def test_gomod_parse_manifest_simple():
     assert version == '1.16'
 
 
+
+def test_gomod_parse_manifest_third_party():
+    spath = "../__samples/parsers/go/valid/tidy/go.mod"
+    p = gomod()
+    manifest = p.parse_manifest(spath, [])
+    xsys = list( filter(lambda l: l['name'] == 'golang.org/x/sys', manifest) )[0]
+    assert ('third-party' in xsys['tags']) == True
+
+
+
 def test_gomod_parse_lock_simple():
     path = "../__samples/parsers/go/valid/simple/go.sum"
     p = gomod()

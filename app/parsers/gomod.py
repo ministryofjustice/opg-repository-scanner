@@ -45,12 +45,17 @@ class gomod(base):
         # reduce the list of lines to just the packages
         items = list( filter(lambda l: (is_a_package in l), lines) )
         # run replaces over each item to clean up the entries
-        mapped = list( map(lambda pkg: pkg.replace('\t', '').split(" "), items) )
+        mapped = list( map(lambda pkg:
+                        pkg
+                            .replace('\t', '')
+                            .replace(is_third_party, is_third_party.replace(' ', ''))
+                            .split(" "),
+                        items) )
 
         for m in mapped:
             tags = self.tags['manifests']
             # if this package is marked as indirect, push a tag
-            if is_third_party in m:
+            if is_third_party.replace(' ', '') in m:
                 tags.append('third-party')
 
             pkg = self.package_info(
