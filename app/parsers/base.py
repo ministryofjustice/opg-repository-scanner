@@ -10,24 +10,20 @@ class base:
     This class generally dealers with reflection methods
     to find suitable parsers and what handles what
     """
+    # repository name used to identify
     repository: str = ""
-
+    # base directory where file patterns start from
     directory: str = "./"
+    # list of manifast patterns to include / exclude
     manifests: dict = {'include': [], 'exclude': []}
+    # list of lock patterns to include / exclude
     locks: dict = {'include': [], 'exclude': []}
-
+    # list of files that have been found matching the patterns
     files: dict = {'manifests': [], 'locks': []}
-
+    # list of tags that will get attached to the packages found within
+    # the files
     tags: dict = {'manifests': [], 'locks': []}
 
-    def file_lines(self, reader, file_path:str) -> list:
-        """
-        Use the reader to split file content into lines
-        """
-        content = reader.content(file_path)
-        if content != None:
-            return content.strip().split('\n')
-        return []
 
     def package_info(self, name:str, version:str, file_path:str, license:str, tags:list) -> dict:
         """
@@ -54,14 +50,22 @@ class base:
         append the new version
         """
         found = False
+        # look for existing version based on the key
         for i, item in enumerate(items):
             if item[key] == new_item[key]:
+                found = True
                 for col in struct:
                     items[i][col].extend(new_item[col])
-                    items[i][col] = list(set(items[i][col]))
-                found = True
+
+        # new item, so add to the list
         if not found:
             items.append(new_item)
+
+        # remove duplicates within each list items data
+        for col in struct:
+            for i, item in enumerate(items):
+                items[i][col] = list(set(items[i][col]))
+
         return items
 
 
@@ -86,14 +90,29 @@ class base:
         Read manifest file and convert into a dict.
         Should be replaced per subclass
         """
-        return []
+        return packages
 
     def parse_lock(self, file_path:str, packages:list) -> list:
         """
         Read lock file and convert into a dict.
         Should be replaced per subclass
         """
-        return []
+        return packages
+
+
+    def packages(self, files:list, manifest:bool) -> list:
+        """
+        Loop over the file list passed in and then run that file into
+        either parse_manifest or parse_lock depending on the value
+        of the manifest boolean passed
+
+        This will then return a de-duplicated list of all packages
+        from the list of files with version data etc merged together
+        """
+        packages = []
+        for f in files:
+            packages = self.parse_manifest(f, packages) if manifest else self.parse_lock(f, packages)
+        return packages
 
 
     @classmethod

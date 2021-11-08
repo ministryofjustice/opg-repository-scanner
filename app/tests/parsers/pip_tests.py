@@ -16,10 +16,9 @@ def test_pip_files_find_requirements_simple():
 
 def test_pip_parse_manifest_simple():
     spath = "../__samples/parsers/pip/valid/app1/simple_requirements.txt"
-    b = pip()
-    smanifest = b.parse_manifest(spath, [])
-    ml = len(smanifest)
-    assert (ml == 3) == True
+    p = pip()
+    smanifest = p.parse_manifest(spath, [])
+    assert len(smanifest) == 3
 
 
 def test_pip_parse_manifest_simple_versioned():
@@ -29,3 +28,18 @@ def test_pip_parse_manifest_simple_versioned():
     pp(manifest)
     assert len(manifest) == 1
     assert len(manifest[0]['versions']) == 2
+    assert len(manifest[0]['tags']) == 3
+
+
+
+def test_pip_packages_simple():
+    p = pip()
+    files = [
+        "../__samples/parsers/pip/valid/app1/simple_requirements.txt",
+        "../__samples/parsers/pip/valid/app1/versioned_requirements.txt",
+        "../__samples/parsers/pip/valid/app2/requirements.txt",
+    ]
+    # these files contain 4 distinct packages, which then have various versions
+    found = p.packages(files, True)
+    pp(found)
+    assert False

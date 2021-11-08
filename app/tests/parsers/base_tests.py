@@ -69,3 +69,17 @@ def test_base_merge_into_list():
     assert (len(test['licenses']) == 0) == True
     assert (len(test['tags']) == 1) == True
     assert (len(test['files']) == 1) == True
+
+
+def test_base_packages_simple():
+    b = base()
+    files = [
+        "",
+        "../__samples/parsers/pip/valid/app1/simple_requirements.txt",
+        "../__samples/parsers/pip/valid/app1/versioned_requirements.txt",
+        "../__samples/parsers/pip/valid/app2/requirements.txt",
+    ]
+
+    found = b.packages(files, True)
+    # should be empty as the base classes parse_manifest/lock returns nothing
+    assert len(found) == 0
