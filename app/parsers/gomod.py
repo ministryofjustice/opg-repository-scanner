@@ -12,16 +12,36 @@ class gomod(base):
     tags: dict = {'manifests': ['go', 'gomod', 'manifest'], 'locks': ['go', 'gomod' 'lock']}
 
 
+    def version(self, lines:list) -> str:
+        line = list ( filter( lambda l: l.find("go ") == 0, lines) )
+        return list ( map (lambda l: l.replace("go ", ''), line) ).pop()
+
+
+
     def parse_manifest(self, file_path:str, packages:list) -> list:
         """
         Read manifest file (go.mod) and convert into a list of dicts.
         Merge that list of dicts pack in to the packages variable passed along.
 
         """
+
+
         is_a_package = ' v'
         is_third_party = '// indirect'
         reader = read()
         lines = reader.lines(file_path)
+
+        # push the go version being used into packages
+        go_version = self.version(lines)
+        if go_version:
+            packages = self.merge_into_list(packages, 'name', self.package_info(
+                'go',
+                go_version,
+                file_path,
+                None,
+                self.tags['manifests']
+            ))
+
         # reduce the list of lines to just the packages
         items = list( filter(lambda l: (is_a_package in l), lines) )
         # run replaces over each item to clean up the entries
