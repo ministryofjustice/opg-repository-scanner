@@ -9,19 +9,26 @@ class base:
     lock files
     This class generally dealers with reflection methods
     to find suitable parsers and what handles what
+
+
+    Attributes
+    ----------
+    repository: str
+       Repository name used to identify
+    directory: str
+        Base directory where file patterns start from
+    manifest: dict
+        List of manifast patterns to include / exclude
+    locks: dict
+        List of lock patterns to include / exclude
+    tags: dict
+        List of tags that will get attached to the packages found within the files
+
     """
-    # repository name used to identify
     repository: str = ""
-    # base directory where file patterns start from
     directory: str = "./"
-    # list of manifast patterns to include / exclude
     manifests: dict = {'include': [], 'exclude': []}
-    # list of lock patterns to include / exclude
     locks: dict = {'include': [], 'exclude': []}
-    # list of files that have been found matching the patterns
-    files: dict = {'manifests': [], 'locks': []}
-    # list of tags that will get attached to the packages found within
-    # the files
     tags: dict = {'manifests': [], 'locks': []}
 
 
@@ -29,6 +36,16 @@ class base:
         """
         Return a dict with standardised keys for the data provided.
         This package dict is then used elsewhere
+
+            Parameters
+                name (str)      : Package name
+                version (str)   : Version string for the this package
+                file_path (str) : File package was found within
+                license (str)   : License details (such as MIT) if available
+                tags (list)     : List of strings used for tagging data
+
+            Return
+                package (dict)  : Standard structure dict
         """
         return {
                 'name': name,
@@ -48,6 +65,15 @@ class base:
         Take a new_item dict (with struct sub lists), look if the key already exists within
         the items list, if it does, merge the data together (removing duplicates), otherwise
         append the new version
+
+            Parameters:
+                items (list)    : The existing list of packages to merge the new_item into
+                key (str)       : Dictonary key to use to check if new_item is already in the items list
+                new_items (dict): New set of data we want to merge into the existing items list
+                struct (list)   : List of keys that exist in elements in items and new_item that should be merged
+
+            Return:
+                items (list)    : An updated version of the items passed in which now contains the new_item data
         """
         found = False
         # look for existing version based on the key
@@ -74,6 +100,16 @@ class base:
         """
         Call the finder class to find the manifest and lock files
         used by this class
+
+
+            Parameters:
+                directory (str) : Directory to look for files within
+                manifests (dict): Include & exclude patterns to find files
+                locks (dict)    : Include & exclude patterns to find files
+
+            Return:
+                dict with manifests and locks keys containg list of files for each
+
         """
         f = finder()
         return {
@@ -89,6 +125,13 @@ class base:
         """
         Read manifest file and convert into a dict.
         Should be replaced per subclass
+
+            Parameters:
+                file_path (str): Location of the file
+                packages (list): Existing set of packages
+
+            Return:
+                packages (list): Updated version
         """
         return packages
 
@@ -96,6 +139,14 @@ class base:
         """
         Read lock file and convert into a dict.
         Should be replaced per subclass
+
+            Parameters:
+                file_path (str): Location of the file
+                packages (list): Existing set of packages
+
+            Return:
+                packages (list): Updated version
+
         """
         return packages
 
@@ -108,11 +159,53 @@ class base:
 
         This will then return a de-duplicated list of all packages
         from the list of files with version data etc merged together
+
+        Packages are then sorted by name
+
+            Parameters:
+                files (list)    : List of files to process for packages
+                manifest (bool) : Flag to determine if these files are manifests (True) or locks (False)
+
+            Returns:
+                packages (list) : List of packages, sorted and de-duplicated.
         """
         packages = []
         for f in files:
             packages = self.parse_manifest(f, packages) if manifest else self.parse_lock(f, packages)
-        return packages
+
+        # sort packages by name
+        return sorted(packages, key = lambda d : d['name'])
+
+
+    def parse(self,
+            repository:str,
+            directory:str,
+            manifests:dict,
+            locks:dict) -> dict:
+        """
+        Main method. Parse uses the details passed to return a dict
+        of manifest and lock packages found for this class
+
+            Paramaters:
+                repository (str): Name of the repository being scanned
+                directory (str) : File path that will be used
+                manifests (dict): Include and exclude patterns to use to find manifest files (see pip.manifests as example)
+                locks (dict)    : Include and exclude patterns to use to find locks files (same structure as manifests)
+
+            Returns:
+                result (dict)   : Dict of 'manifests' and 'locks' with each being a list of packages generated from package_info
+
+
+        """
+        self.repository = repository
+
+        files = self.files(directory, manifests=manifests, locks=locks)
+        manifests = self.packages(files['manifests'], True)
+        locks = self.packages(files['locks'], False)
+
+        result = {'manifests': manifests, 'locks': locks}
+        return result
+
 
 
     @classmethod
@@ -120,6 +213,13 @@ class base:
         """
         Static method to find a list of classes which
         can handle the list of tools passed
+
+            Parameters:
+                tools (list)    : List of tool names to match with classes
+
+            Returns
+                handlers (list) : List of classes that handle the tools requested
+
         """
         possibles = cls.children()
         handlers = []
