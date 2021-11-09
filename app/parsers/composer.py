@@ -2,7 +2,7 @@ from typing import List
 from . import base
 from files import read
 import json
-
+from pprint import pp
 
 
 class composer(base):
@@ -18,18 +18,17 @@ class composer(base):
 
     def parse_manifest(self, file_path: str, packages: list) -> list:
         """
+        Parse the composer.json file
         """
         content = read().content(file_path)
         config = json.loads(content)
 
-        for pkg, ver in config.get('require', {}).items():
-            packages = self.merge_into_list(packages, 'name', self.package_info(
-                            pkg, ver, file_path, None, self.tags['manifests']
-                        ))
-        for pkg, ver in config.get('require-dev', {}).items():
-            packages = self.merge_into_list(packages, 'name', self.package_info(
-                            pkg, ver, file_path, None, self.tags['manifests']
-                        ))
+        # composer.json has two top levels we want to look at, both with same structure
+        for key in ['require', 'require-dev']:
+            for pkg, ver in config.get(key, {}).items():
+                packages = self.merge_into_list(packages, 'name', self.package_info(
+                                pkg, ver, file_path, None, self.tags['manifests']
+                            ))
 
         return packages
 
@@ -38,6 +37,40 @@ class composer(base):
         Parse the composer.lock
 
         """
+        content = read().content(file_path)
+        config = json.loads(content)
+
+        # composer has packages & packages-dev sections, but both have the same structure
+        for key in ['packages', 'packages-dev']:
+            items = list(config.get(key, {}))
+            # each package in that list is a dict in itself
+            for pkg in items:
+                # add this packages data into the the list
+                packages = self.merge_into_list(
+                                packages,
+                                'name',
+                                self.package_info(
+                                    pkg['name'],
+                                    pkg['version'],
+                                    file_path,
+                                    pkg.get('license',[None]).pop(),
+                                    self.tags['locks'])
+                            )
+                # eahc package might have sub requirements of require & require-dev
+                for sub in ['require', 'require-dev']:
+                    part = pkg.get(sub, {})
+
+                    for name, ver in part.items():
+                        packages = self.merge_into_list(
+                                            packages,
+                                            'name',
+                                            self.package_info(
+                                                name,
+                                                ver,
+                                                file_path,
+                                                None,
+                                                self.tags['locks']
+                                            ))
 
         return packages
 
