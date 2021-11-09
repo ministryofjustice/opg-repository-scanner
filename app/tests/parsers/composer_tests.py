@@ -34,3 +34,11 @@ def test_composer_parse_lock_package():
     assert len(pkg['licenses']) == 1
     # 7 variations on version
     assert len(pkg['versions']) == 7
+
+
+
+def test_composer_parse_manifast_invalid_array():
+    p = composer()
+    file = "../__samples/parsers/composer/invalid/array/composer.json"
+    with pytest.raises(ValueError) as e_info:
+        res = p.parse_manifest(file, [])
