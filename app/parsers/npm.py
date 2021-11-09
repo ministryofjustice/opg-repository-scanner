@@ -22,6 +22,8 @@ class npm(base):
         """
         content = read().content(file_path)
         config = json.loads(content)
+        # check data from file
+        self.file_content_type_match(dict, type(config), file_path, "Manifest")
 
         for pkg, ver in config.get('dependencies', {}).items():
             packages = self.merge_into_list(packages, 'name', self.package_info(
@@ -41,6 +43,8 @@ class npm(base):
         """
         content = read().content(file_path)
         config = json.loads(content)
+        # check data from file
+        self.file_content_type_match(dict, type(config), file_path, "Lock")
 
         # loop over packages
         for name, info in config.get('packages', {}).items():

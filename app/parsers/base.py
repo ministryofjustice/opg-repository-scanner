@@ -32,6 +32,11 @@ class base:
     tags: dict = {'manifests': [], 'locks': []}
 
 
+    def file_content_type_match(self, expected, actual, file_path:str, prefix:str):
+        if actual != expected:
+            raise ValueError(f"[{self.__class__}] {prefix} file [{file_path}] data is invalid. Should be a {expected}, found {actual}.")
+
+
     def package_info(self, name:str, version:str, file_path:str, license:str, tags:list) -> dict:
         """
         Return a dict with standardised keys for the data provided.

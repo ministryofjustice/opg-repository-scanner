@@ -22,6 +22,8 @@ class composer(base):
         """
         content = read().content(file_path)
         config = json.loads(content)
+        # check data from file
+        self.file_content_type_match(dict, type(config), file_path, "Manifest")
 
         # composer.json has two top levels we want to look at, both with same structure
         for key in ['require', 'require-dev']:
@@ -39,6 +41,8 @@ class composer(base):
         """
         content = read().content(file_path)
         config = json.loads(content)
+        # check data from file
+        self.file_content_type_match(dict, type(config), file_path, "Lock")
 
         # composer has packages & packages-dev sections, but both have the same structure
         for key in ['packages', 'packages-dev']:
