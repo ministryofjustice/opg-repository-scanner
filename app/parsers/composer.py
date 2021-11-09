@@ -17,7 +17,21 @@ class composer(base):
 
 
     def parse_manifest(self, file_path: str, packages: list) -> list:
-        return super().parse_manifest(file_path, packages)
+        """
+        """
+        content = read().content(file_path)
+        config = json.loads(content)
+
+        for pkg, ver in config.get('require', {}).items():
+            packages = self.merge_into_list(packages, 'name', self.package_info(
+                            pkg, ver, file_path, None, self.tags['manifests']
+                        ))
+        for pkg, ver in config.get('require-dev', {}).items():
+            packages = self.merge_into_list(packages, 'name', self.package_info(
+                            pkg, ver, file_path, None, self.tags['manifests']
+                        ))
+
+        return packages
 
     def parse_lock(self, file_path:str, packages:list) -> list:
         """
@@ -33,4 +47,4 @@ class composer(base):
 
     @staticmethod
     def handles(tool:str) -> bool:
-        return (tool in ['yarn', '*'])
+        return (tool in ['composer', '*'])

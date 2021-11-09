@@ -1,0 +1,6 @@
+{
+    "name": "test/sample",
+    "require": {
+        "doctrine/instantiator": "^1.4"
+    }
+}
