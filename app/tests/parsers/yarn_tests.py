@@ -33,7 +33,4 @@ def test_yarn_parse_lock_simple():
 
     assert foundQuote == False
     assert foundAt == True
-
-
-    assert False
-#    assert len(lock) == 3
+    assert len(lock) == 5
