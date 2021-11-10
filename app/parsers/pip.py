@@ -1,7 +1,8 @@
 from typing import List
 from . import base
 from files import read
-
+import requirements
+from pprint import pp
 
 class pip(base):
     """
@@ -20,22 +21,14 @@ class pip(base):
         Merge that list of dicts pack in to the packages variable passed along.
 
         """
-        seperator = "=="
-        reader = read()
-        lines = reader.lines(file_path)
-        for line in lines:
-            split = line.split(seperator)
-            if len(split) > 0:
-                pkg = self.package_info(
-                        split[0].strip(),
-                        split[1] if len(split) > 1 else None,
-                        file_path,
-                        None,
-                        self.tags['manifests']
-                )
-
-                packages = self.merge_into_list(packages, 'name', pkg)
-
+        with open(file_path, 'r') as f:
+            for req in requirements.parse(f):
+                versions = [None]
+                for v in req.specs:
+                    versions.append(''.join(v))
+                for version in versions:
+                    pkg = self.package_info(req.name, version, file_path, None, self.tags['manifests'] )
+                    packages = self.merge_into_list(packages, 'name', pkg)
         return packages
 
 

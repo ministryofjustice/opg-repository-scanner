@@ -55,9 +55,9 @@ class base:
         return {
                 'name': name,
                 'repositories': [self.repository],
-                'versions': [version],
-                'files': [file_path],
-                'licenses': [license],
+                'versions': [version] if version != None else [],
+                'files': [file_path] if file_path != None else [],
+                'licenses': [license] if license != None else [],
                 'tags': tags
             }
 

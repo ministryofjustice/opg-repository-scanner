@@ -29,6 +29,7 @@ class handler:
                             help='Directory to use as the base for scanning.',
                             type=validators.readable_directory,
                             required=True)
+
         source_group.add_argument('--symlinks',
                             help='Instruction to filesystem handling to follow symlinks or not.',
                             type=validators.string_to_bool,
