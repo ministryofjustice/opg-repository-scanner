@@ -47,7 +47,7 @@ def test_pip_packages_simple():
         if i['name'] == 'pprintpp':
             item = i
 
-    assert len(item['files']) == 2
+    assert len(item['sources']) == 2
     assert len(item['tags']) == 3
 
 

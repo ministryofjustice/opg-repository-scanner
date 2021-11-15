@@ -56,7 +56,7 @@ class base:
                 'name': name,
                 'repositories': [self.repository],
                 'versions': [version] if version != None else [],
-                'files': [file_path] if file_path != None else [],
+                'sources': [file_path] if file_path != None else [],
                 'licenses': [license] if license != None else [],
                 'tags': tags
             }
@@ -65,7 +65,7 @@ class base:
         items:list,
         key:str,
         new_item:dict,
-        struct:list = ['versions', 'repositories', 'tags', 'files']) -> list:
+        struct:list = ['versions', 'repositories', 'tags', 'sources']) -> list:
         """
         Take a new_item dict (with struct sub lists), look if the key already exists within
         the items list, if it does, merge the data together (removing duplicates), otherwise
