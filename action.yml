@@ -13,14 +13,6 @@ inputs:
     required: false
     description: 'List of folders / filepaths to exclude from all filesystem operations. This is parsed using JSON.parse to convert from a string.'
     default: '["(__samples__/*)", "(__tests__/*)", "(node_modules/*)","(vendor/*)"]'
-  artifact_name:
-    required: false
-    description: 'The finished set of artifacts will be uploaded to this workflow under this name'
-    default: 'repository-scan-result'
-  artifact_directory:
-    required: false
-    description: 'Location to create artifact storage directory'
-    default: ${{ github.workspace }}
 outputs:
   artifact_storage_directory:
     description: "Artifact storage directory"
@@ -49,12 +41,7 @@ runs:
         python ${{ github.action_path }}/./app/main.py \
           --repository='${{ inputs.repository_name }}' \
           --directory='${{ inputs.source_directory }}' \
-          --exclude='${{ inputs.source_exclude }}' \
-          --artifact-name='${{ inputs.artifact_name }}' \
-          --artifact-directory='${{ inputs.artifact_directory }}'
-    - id: output-debug
-      shell: bash
-      run: echo ">>>>>>>>> ${{ steps.scanner_runner.outputs.artifact_directory }}"
+          --exclude='${{ inputs.source_exclude }}'
     - id: upload
       name: Upload artifact
       uses: actions/upload-artifact@v2
