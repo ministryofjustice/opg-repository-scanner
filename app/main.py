@@ -18,7 +18,7 @@ def main():
     data = r.generate(args.repository, args.directory, args.exclude)
     location = r.save(args.artifact_directory, data)
 
-    print(f"::set-output name=artifact_directory:{location}")
+    print(f"::set-output name=artifact_directory::{location}")
 
 
 
