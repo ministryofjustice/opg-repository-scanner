@@ -18,7 +18,6 @@ def test_reports_grouped_packages_simple():
     ]
 
     grouped = r.grouped(flat)
-    pp(grouped)
     assert len(grouped) == 2
 
     g_one = list( filter (lambda i: i['name'] == 'one', grouped))
@@ -35,10 +34,3 @@ def test_reports_generate_simple():
     p = f.get('packages', None)
     assert type(p) == list
     assert (len(p) > 3) == True
-
-
-def test_report_saving_simple():
-    r = report()
-    f = r.generate('test-repo', '../__samples/parsers/pip/valid/app1', [], ['*'])
-
-    r.save('../', f)

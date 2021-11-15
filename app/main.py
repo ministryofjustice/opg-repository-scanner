@@ -12,8 +12,6 @@ def main():
     """
     io = handler()
     args = io.parser().parse().args
-    print("Debug:")
-    pp(args)
 
     r = report()
 
