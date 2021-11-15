@@ -44,12 +44,11 @@ class finder:
                 l = re.findall(pattern, item)
                 if  len(l) > 0:
                     remove.append(item)
+        # remove duplicates from the list of items to remove that may have been caught by
+        # multiple exclusion patterns
+        remove = list(set(remove))
         for r in remove:
-            try:
-                items.remove(r)
-            except:
-                print('error on item removal')
-                pp(r)
+            items.remove(r)
 
         return list(set(items))
 
