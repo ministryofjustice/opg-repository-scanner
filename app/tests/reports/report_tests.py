@@ -26,4 +26,20 @@ def test_reports_grouped_packages_simple():
     assert len(g_one[0]['versions']) == 2
     assert len(g_one[0]['tags']) == 3
 
+
+
+def test_reports_generate_simple():
+    r = report()
+    f = r.generate('test-repo', '../__samples/parsers/pip/valid/app1', ['*'])
+
+    p = f.get('packages', None)
+    assert type(p) == list
+    assert (len(p) > 3) == True
+
+
+def test_report_saving_simple():
+    r = report()
+    f = r.generate('test-repo', '../__samples/parsers/pip/valid/app1', ['*'])
+
+    r.save('../', f)
     assert False

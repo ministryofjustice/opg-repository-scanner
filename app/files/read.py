@@ -2,10 +2,14 @@ import os
 
 class read:
     """
+    Read utilities
     """
 
     def is_file(self, file_path:str) -> bool:
         """
+        Checks if the file_path passed along is a file and is readable
+
+        Returns a bool
         """
         if os.path.isfile(file_path) and os.access(file_path, os.R_OK):
             return True
@@ -14,6 +18,8 @@ class read:
 
     def content(self, file_path:str) -> str:
         """
+        If the file_path is readable, the read the content of the
+        file_path and return a string
         """
         if self.is_file(file_path):
             file = open(file_path, "r")

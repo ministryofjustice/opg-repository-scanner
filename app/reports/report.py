@@ -1,5 +1,7 @@
+from files import *
 from parsers import *
-
+from pathlib import Path
+from datetime import datetime
 
 class report:
     """
@@ -7,13 +9,39 @@ class report:
     can be found
     """
 
+    def generate(self, repository:str, directory:str, tools:list = ['*']) -> dict:
+        """
+        Generate the report dict to then save elsewhere
+        """
+        packages = self.packages(repository, directory, tools)
+        return {
+            'packages': packages
+        }
+
+
+    def save(self, artifact_directory:str, report:dict) -> str:
+        """
+        Use the artifact_directory as the root and then append
+        a known directory structure underneath to save the
+        report output into
+
+        """
+        ts = datetime.today().strftime('%Y-%m-%d-%H%M%S')
+        dir = Path(f"{artifact_directory}/__artifacts__/{ts}/")
+        file = f"{dir}/raw.json"
+        w = write()
+        w.as_json(file, report)
+        return dir
+
+
+
 
     def packages(self, repository:str, directory:str, tools:list = ['*']) -> list:
         """
         Find all packages used within directory that matches the tools requested
         and return that as a list.
 
-        Returned list is a flat structure, so contains a entry for every package it finds
+        Returned list is a flat structure, so contains an entry for every package it finds
         """
         packages = []
         handlers = base.handlers(tools)

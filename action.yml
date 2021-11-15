@@ -25,14 +25,52 @@ inputs:
     required: false
     description: 'Location to create artifact storage directory'
     default: ${{ github.workspace }}
+outputs:
+  artifact_storage_directory:
+    description: "Artifact storage directory"
+    value: ${{ steps.scanner-runner.outputs.artifact_directory }}
 
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - "--repository=${{ inputs.repository_name }}"
-    - "--directory=${{ inputs.source_directory }}"
-    - "--symlinks=${{ inputs.source_follow_symlinks }}"
-    - "--exclude=${{ inputs.source_exclude }}"
-    - "--artifact-name=${{ inputs.artifact_name }}"
-    - "--artifact-directory=${{ inputs.artifact_directory }}"
+  using: "composite"
+  steps:
+    - id: checkout
+      name: Checkout code
+      uses: actions/checkout@v2
+    - id: setup-python-3
+      name: Setup python 3
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9.7'
+    - id: pip-install
+      name: Run pip install
+      run: pip install -r ./app/requirements.txt
+    - id: scanner-runner
+      name: Run python script
+      run: |
+        python ./app/main.py \
+          --repository="${{ inputs.repository_name }}" \
+          --directory="${{ inputs.source_directory }}" \
+          --symlinks="${{ inputs.source_follow_symlinks }}" \
+          --exclude="${{ inputs.source_exclude }}" \
+          --artifact-name="${{ inputs.artifact_name }}" \
+          --artifact-directory="${{ inputs.artifact_directory }}"
+    - id: upload
+      name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'repository-scan-result'
+        path: ${{ steps.scanner-runner.outputs.artifact_directory }}
+
+
+
+
+  # using: 'docker'
+  # image: 'Dockerfile'
+
+  # args:
+  #   - "--repository=${{ inputs.repository_name }}"
+  #   - "--directory=${{ inputs.source_directory }}"
+  #   - "--symlinks=${{ inputs.source_follow_symlinks }}"
+  #   - "--exclude=${{ inputs.source_exclude }}"
+  #   - "--artifact-name=${{ inputs.artifact_name }}"
+  #   - "--artifact-directory=${{ inputs.artifact_directory }}"
