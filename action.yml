@@ -9,10 +9,6 @@ inputs:
     required: false
     description: 'Directory to use as the base for scanning.'
     default: ${{ github.workspace }}
-  source_follow_symlinks:
-    required: false
-    description: 'Instruction to filesystem handling to follow symlinks or not.'
-    default: false
   source_exclude:
     required: false
     description: 'List of folders / filepaths to exclude from all filesystem operations. This is parsed using JSON.parse to convert from a string.'
@@ -60,7 +56,6 @@ runs:
         python ${{ github.action_path }}/./app/main.py \
           --repository='${{ inputs.repository_name }}' \
           --directory='${{ inputs.source_directory }}' \
-          --symlinks='${{ inputs.source_follow_symlinks }}' \
           --exclude='${{ inputs.source_exclude }}' \
           --artifact-name='${{ inputs.artifact_name }}' \
           --artifact-directory='${{ inputs.artifact_directory }}'
@@ -70,17 +65,3 @@ runs:
       with:
         name: 'repository-scan-result'
         path: ${{ steps.scanner-runner.outputs.artifact_directory }}
-
-
-
-
-  # using: 'docker'
-  # image: 'Dockerfile'
-
-  # args:
-  #   - "--repository=${{ inputs.repository_name }}"
-  #   - "--directory=${{ inputs.source_directory }}"
-  #   - "--symlinks=${{ inputs.source_follow_symlinks }}"
-  #   - "--exclude=${{ inputs.source_exclude }}"
-  #   - "--artifact-name=${{ inputs.artifact_name }}"
-  #   - "--artifact-directory=${{ inputs.artifact_directory }}"
