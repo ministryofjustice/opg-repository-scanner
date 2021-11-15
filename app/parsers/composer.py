@@ -29,7 +29,7 @@ class composer(base):
         for key in ['require', 'require-dev']:
             for pkg, ver in config.get(key, {}).items():
                 packages = self.merge_into_list(packages, 'name', self.package_info(
-                                pkg, ver, file_path, None, self.tags['manifests']
+                                pkg, ver, file_path, None, self.tags['manifests'], 'manifest'
                             ))
 
         return packages
@@ -58,7 +58,9 @@ class composer(base):
                                     pkg['version'],
                                     file_path,
                                     pkg.get('license',[None]).pop(),
-                                    self.tags['locks'])
+                                    self.tags['locks'],
+                                    'lock'
+                                    )
                             )
                 # eahc package might have sub requirements of require & require-dev
                 for sub in ['require', 'require-dev']:
@@ -73,7 +75,8 @@ class composer(base):
                                                 ver,
                                                 file_path,
                                                 None,
-                                                self.tags['locks']
+                                                self.tags['locks'],
+                                                'lock'
                                             ))
 
         return packages

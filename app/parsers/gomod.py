@@ -47,7 +47,8 @@ class gomod(base):
                 go_version,
                 file_path,
                 None,
-                self.tags['manifests']
+                self.tags['manifests'],
+                'manifest'
             ))
 
         # reduce the list of lines to just the packages
@@ -71,7 +72,8 @@ class gomod(base):
                     m[1] if len(m) > 1 else None,
                     file_path,
                     None,
-                    tags
+                    tags,
+                    'manifest'
                 )
             packages = self.merge_into_list(packages, 'name', pkg)
 
@@ -98,7 +100,8 @@ class gomod(base):
                     m[1].replace("/go.mod", "") if len(m) > 1 else None,
                     file_path,
                     None,
-                    self.tags['locks']
+                    self.tags['locks'],
+                    'lock'
                 )
             packages = self.merge_into_list(packages, 'name', pkg)
 

@@ -46,7 +46,8 @@ class yarn(base):
                         name_version[1] if len(name_version) > 1 else None,
                         file_path,
                         None,
-                        self.tags['locks'] )
+                        self.tags['locks'],
+                        'lock' )
                 # push the installed version into version list too
                 pkg['versions'].append(installed_version)
                 packages = self.merge_into_list(packages, 'name', pkg)

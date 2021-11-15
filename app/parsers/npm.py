@@ -27,11 +27,11 @@ class npm(base):
 
         for pkg, ver in config.get('dependencies', {}).items():
             packages = self.merge_into_list(packages, 'name', self.package_info(
-                            pkg, ver, file_path, None, self.tags['manifests']
+                            pkg, ver, file_path, None, self.tags['manifests'], 'manifest'
                         ))
         for pkg, ver in config.get('devDependencies', {}).items():
             packages = self.merge_into_list(packages, 'name', self.package_info(
-                            pkg, ver, file_path, None, self.tags['manifests']
+                            pkg, ver, file_path, None, self.tags['manifests'], 'manifest'
                         ))
         return packages
 
@@ -51,17 +51,17 @@ class npm(base):
             # if it has a name, then should be a version field too, so add the package
             if len(name) > 0:
                 packages = self.merge_into_list(packages, 'name',
-                            self.package_info(name.replace("node_modules/", ""), info['version'], file_path, None, self.tags['locks']
+                            self.package_info(name.replace("node_modules/", ""), info['version'], file_path, None, self.tags['locks'], 'lock'
                         ))
             # look at the sub items of packages
             for sub_name, sub_version in info.get('dependencies', {}).items():
                 packages = self.merge_into_list(packages, 'name',
-                            self.package_info(sub_name, sub_version, file_path, None, self.tags['locks']
+                            self.package_info(sub_name, sub_version, file_path, None, self.tags['locks'], 'lock'
                         ))
         # check dependancies
         for name, info in config.get('dependencies', {}).items():
             packages = self.merge_into_list(packages, 'name',
-                            self.package_info(name, info['version'], file_path, None, self.tags['locks']
+                            self.package_info(name, info['version'], file_path, None, self.tags['locks'], 'lock'
                         ))
         return packages
 

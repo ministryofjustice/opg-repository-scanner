@@ -27,7 +27,7 @@ class pip(base):
                 for v in req.specs:
                     versions.append(''.join(v))
                 for version in versions:
-                    pkg = self.package_info(req.name, version, file_path, None, self.tags['manifests'] )
+                    pkg = self.package_info(req.name, version, file_path, None, self.tags['manifests'], 'manifest' )
                     packages = self.merge_into_list(packages, 'name', pkg)
         return packages
 

@@ -37,7 +37,7 @@ class base:
             raise ValueError(f"[{self.__class__}] {prefix} file [{file_path}] data is invalid. Should be a {expected}, found {actual}.")
 
 
-    def package_info(self, name:str, version:str, file_path:str, license:str, tags:list) -> dict:
+    def package_info(self, name:str, version:str, file_path:str, license:str, tags:list, type:str) -> dict:
         """
         Return a dict with standardised keys for the data provided.
         This package dict is then used elsewhere
