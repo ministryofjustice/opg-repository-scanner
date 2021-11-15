@@ -9,11 +9,11 @@ class report:
     can be found
     """
 
-    def generate(self, repository:str, directory:str, tools:list = ['*']) -> dict:
+    def generate(self, repository:str, directory:str, exclude:list = [], tools:list = ['*']) -> dict:
         """
         Generate the report dict to then save elsewhere
         """
-        packages = self.packages(repository, directory, tools)
+        packages = self.packages(repository, directory, exclude, tools)
         return {
             'packages': packages
         }
@@ -36,7 +36,7 @@ class report:
 
 
 
-    def packages(self, repository:str, directory:str, tools:list = ['*']) -> list:
+    def packages(self, repository:str, directory:str, excludes:list = [], tools:list = ['*']) -> list:
         """
         Find all packages used within directory that matches the tools requested
         and return that as a list.
@@ -47,7 +47,7 @@ class report:
         handlers = base.handlers(tools)
         for h in handlers:
             handler = h()
-            packages = handler.parse(repository, directory, handler.manifests, handler.locks, packages)
+            packages = handler.parse(repository, directory, handler.manifests, handler.locks, packages, excludes=excludes)
         return packages
 
 

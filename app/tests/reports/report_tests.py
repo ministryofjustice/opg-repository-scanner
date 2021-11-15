@@ -5,7 +5,7 @@ from reports import report
 
 def test_reports_packages_simple():
     r = report()
-    f = r.packages('test-repo', '../__samples/parsers/pip/valid/app1', ['*'])
+    f = r.packages('test-repo', '../__samples/parsers/pip/valid/app1', [], ['*'])
     assert (len(f) > 3) == True
 
 
@@ -30,7 +30,7 @@ def test_reports_grouped_packages_simple():
 
 def test_reports_generate_simple():
     r = report()
-    f = r.generate('test-repo', '../__samples/parsers/pip/valid/app1', ['*'])
+    f = r.generate('test-repo', '../__samples/parsers/pip/valid/app1', [], ['*'])
 
     p = f.get('packages', None)
     assert type(p) == list
@@ -39,7 +39,6 @@ def test_reports_generate_simple():
 
 def test_report_saving_simple():
     r = report()
-    f = r.generate('test-repo', '../__samples/parsers/pip/valid/app1', ['*'])
+    f = r.generate('test-repo', '../__samples/parsers/pip/valid/app1', [], ['*'])
 
     r.save('../', f)
-    assert False

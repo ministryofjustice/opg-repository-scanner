@@ -64,7 +64,7 @@ class base:
                 'tags': tags
             }
 
-    def files(self, directory:str, manifests:dict, locks:dict) -> dict:
+    def files(self, directory:str, manifests:dict, locks:dict, excludes:list = []) -> dict:
         """
         Call the finder class to find the manifest and lock files
         used by this class
@@ -80,13 +80,16 @@ class base:
 
         """
         f = finder()
+
+        manifest_excludes = manifests.get('exclude', [])
+        manifest_excludes.extend(excludes)
+
+        lock_excludes = locks.get('exclude', [])
+        lock_excludes.extend(excludes)
+
         return {
-            'manifests': f.get(directory,
-                            (manifests['include'] or [] ),
-                            (manifests['exclude'] or [] )),
-            'locks': f.get(directory,
-                            (locks['include'] or [] ),
-                            (locks['exclude'] or []) )
+            'manifests': f.get( directory, manifests.get('include', []), manifest_excludes ),
+            'locks': f.get(directory, locks.get('include', []), lock_excludes)
         }
 
     def parse_manifest(self, file_path:str, packages:list) -> list:
@@ -151,6 +154,7 @@ class base:
             manifests:dict,
             locks:dict,
             packages:list,
+            excludes:list = []
             ) -> dict:
         """
         Main method. Parse uses the details passed to return a dict
@@ -170,7 +174,7 @@ class base:
         """
         self.repository = repository
 
-        files = self.files(directory, manifests=manifests, locks=locks)
+        files = self.files(directory, manifests=manifests, locks=locks, excludes=excludes)
         packages = self.packages(files['manifests'], packages, True)
         packages = self.packages(files['locks'], packages, False)
 

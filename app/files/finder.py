@@ -2,6 +2,7 @@ import glob
 from typing import List
 import re
 
+
 class finder:
     """
     Class to provide file related lookups functionality
@@ -34,6 +35,9 @@ class finder:
         Removes deuplicates
         """
         remove = []
+        if exclusions == None or len(exclusions) == 0:
+            return items
+
         for pattern in exclusions:
             for item in items:
                 l = re.findall(pattern, item)
