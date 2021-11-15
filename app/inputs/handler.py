@@ -30,10 +30,6 @@ class handler:
                             type=validators.readable_directory,
                             required=True)
 
-        source_group.add_argument('--symlinks',
-                            help='Instruction to filesystem handling to follow symlinks or not.',
-                            type=validators.string_to_bool,
-                            default=False)
         source_group.add_argument('--exclude',
                             help='List of folders / filepaths to exclude from all filesystem operations. This is parsed using JSON.parse to convert from a string.',
                             type=validators.json_string_to_list,
