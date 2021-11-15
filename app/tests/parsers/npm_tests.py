@@ -26,5 +26,4 @@ def test_npm_parse_lock_simple():
     p = npm()
     file = "../__samples/parsers/npm/valid/simple/package-lock.json"
     lock = p.parse_lock(file, [])
-
-    assert len(lock) == 3
+    assert len(lock) == 10

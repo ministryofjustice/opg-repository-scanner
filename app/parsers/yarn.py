@@ -1,8 +1,8 @@
 from typing import List
 from . import base
 from files import read
-import json
 import re
+from pprint import pp
 
 
 
@@ -14,13 +14,14 @@ class yarn(base):
 
     manifests: dict = {'include': [], 'exclude': []}
     locks: dict = {'include': ['**/package-lock.json'], 'exclude': []}
-    tags: dict = {'manifests': ['yarn', 'manifest'], 'locks': ['yarn' 'lock']}
+    tags: dict = {'manifests': ['yarn', 'manifest'], 'locks': ['yarn', 'lock']}
 
 
     def parse_lock(self, file_path:str, packages:list) -> list:
         """
         Parse the packages section of the yarn.lock file and convert
 
+        Note: Currently does not handle the dependancies list within a package
         """
         content = read().content(file_path)
         # find package & version fields in the lock
@@ -48,9 +49,14 @@ class yarn(base):
                         None,
                         self.tags['locks'],
                         'lock' )
+
+                packages.append(pkg)
                 # push the installed version into version list too
-                pkg['versions'].append(installed_version)
-                packages = self.merge_into_list(packages, 'name', pkg)
+                if installed_version != None:
+                    copied = pkg.copy()
+                    copied['version'] = installed_version
+                    packages.append(copied)
+                    installed_version = None
 
         return packages
 

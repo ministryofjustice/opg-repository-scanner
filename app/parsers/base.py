@@ -37,7 +37,7 @@ class base:
             raise ValueError(f"[{self.__class__}] {prefix} file [{file_path}] data is invalid. Should be a {expected}, found {actual}.")
 
 
-    def package_info(self, name:str, version:str, file_path:str, license:str, tags:list, type:str) -> dict:
+    def package_info(self, name:str, version:str, file_path:str, license:str, tags:list, type_of:str) -> dict:
         """
         Return a dict with standardised keys for the data provided.
         This package dict is then used elsewhere
@@ -48,58 +48,21 @@ class base:
                 file_path (str) : File package was found within
                 license (str)   : License details (such as MIT) if available
                 tags (list)     : List of strings used for tagging data
+                type_of (str)   : String, generally 'manifest' or 'lock'
 
             Return
                 package (dict)  : Standard structure dict
         """
+        r = self.repository
         return {
-                'name': name,
-                'repositories': [self.repository],
-                'versions': [version] if version != None else [],
-                'sources': [file_path] if file_path != None else [],
-                'licenses': [license] if license != None else [],
+                'name': name if name != None and len(name) > 0 else None,
+                'repository': r if r != None and len(r) > 0 else None,
+                'version': version if version != None and len(version) > 0 else None,
+                'source': file_path if file_path != None and len(file_path) > 0 else None,
+                'license': license if license != None and len(license) > 0 else None,
+                'type': type_of if type_of !=  None and len(type_of) > 0 else None,
                 'tags': tags
             }
-
-    def merge_into_list(self,
-        items:list,
-        key:str,
-        new_item:dict,
-        struct:list = ['versions', 'repositories', 'tags', 'sources']) -> list:
-        """
-        Take a new_item dict (with struct sub lists), look if the key already exists within
-        the items list, if it does, merge the data together (removing duplicates), otherwise
-        append the new version
-
-            Parameters:
-                items (list)    : The existing list of packages to merge the new_item into
-                key (str)       : Dictonary key to use to check if new_item is already in the items list
-                new_items (dict): New set of data we want to merge into the existing items list
-                struct (list)   : List of keys that exist in elements in items and new_item that should be merged
-
-            Return:
-                items (list)    : An updated version of the items passed in which now contains the new_item data
-        """
-        found = False
-        # look for existing version based on the key
-        for i, item in enumerate(items):
-            if item[key] == new_item[key]:
-                found = True
-                for col in struct:
-                    items[i][col].extend(new_item[col])
-
-        # new item, so add to the list
-        if not found:
-            items.append(new_item)
-
-        # remove duplicates within each list items data
-        for col in struct:
-            for i, item in enumerate(items):
-                items[i][col] = list(set(items[i][col]))
-
-        return items
-
-
 
     def files(self, directory:str, manifests:dict, locks:dict) -> dict:
         """

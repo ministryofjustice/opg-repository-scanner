@@ -42,14 +42,9 @@ class gomod(base):
         # push the go version being used into packages
         go_version = self.version(lines)
         if go_version:
-            packages = self.merge_into_list(packages, 'name', self.package_info(
-                'go',
-                go_version,
-                file_path,
-                None,
-                self.tags['manifests'],
-                'manifest'
-            ))
+            packages.append(
+                self.package_info('go', go_version, file_path, None, self.tags['manifests'], 'manifest')
+            )
 
         # reduce the list of lines to just the packages
         items = list( filter(lambda l: (is_a_package in l), lines) )
@@ -75,7 +70,7 @@ class gomod(base):
                     tags,
                     'manifest'
                 )
-            packages = self.merge_into_list(packages, 'name', pkg)
+            packages.append(pkg)
 
         return packages
 
@@ -103,7 +98,7 @@ class gomod(base):
                     self.tags['locks'],
                     'lock'
                 )
-            packages = self.merge_into_list(packages, 'name', pkg)
+            packages.append(pkg)
 
         return packages
 

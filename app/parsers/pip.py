@@ -23,12 +23,14 @@ class pip(base):
         """
         with open(file_path, 'r') as f:
             for req in requirements.parse(f):
-                versions = [None]
+                versions = []
                 for v in req.specs:
                     versions.append(''.join(v))
+                if len(versions) == 0:
+                    versions.append(None)
                 for version in versions:
                     pkg = self.package_info(req.name, version, file_path, None, self.tags['manifests'], 'manifest' )
-                    packages = self.merge_into_list(packages, 'name', pkg)
+                    packages.append(pkg)
         return packages
 
 

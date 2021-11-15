@@ -23,7 +23,7 @@ def test_gomod_parse_manifest_simple():
 
     goversion = list ( filter(lambda p: p['name'] == 'go', smanifest) )
     assert len(goversion) == 1
-    version = goversion[0]['versions'][0]
+    version = goversion[0]['version']
     assert version == '1.16'
 
 

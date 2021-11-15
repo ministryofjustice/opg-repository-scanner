@@ -55,21 +55,6 @@ def test_base_parse_methods(path):
     assert (len(l) == 0) == True
 
 
-def test_base_merge_into_list():
-    b = base()
-    items = [
-        {'name': 't1', 'versions': ['1', '3'], 'licenses': [], 'tags': [], 'sources': [], 'repositories': ['source']},
-        {'name': 't2', 'versions': ['1', '3'], 'licenses': [], 'tags': [], 'sources': [], 'repositories': ['test']}
-    ]
-    item = {'name': 't1', 'versions': ['2', '3'], 'licenses': [], 'tags': ['test'], 'sources': ['text'], 'repositories':[]}
-    merged = b.merge_into_list(items, 'name', item)
-
-    test = merged[0]
-    assert (len(test['versions']) == 3) == True
-    assert (len(test['licenses']) == 0) == True
-    assert (len(test['tags']) == 1) == True
-    assert (len(test['sources']) == 1) == True
-
 
 def test_base_packages_simple():
     b = base()

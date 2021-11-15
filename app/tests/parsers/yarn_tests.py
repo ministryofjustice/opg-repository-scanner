@@ -19,7 +19,13 @@ def test_yarn_parse_lock_simple():
     p = yarn()
     file = "../__samples/parsers/yarn/valid/sample/yarn.lock"
     lock = p.parse_lock(file, [])
-    assert len(lock) == 5
+    assert len(lock) == 12
+
+    fil = list( filter(lambda l: l['name'] == '@types/pk1', lock))
+    assert len(fil) == 3
+
+    ver = list( filter(lambda l: l['version'] == '3.0.3', fil))
+    assert len(ver) == 1
 
     # check the double quotes have been removed correctly
     # and the @ has been kept at the start of name
@@ -33,4 +39,3 @@ def test_yarn_parse_lock_simple():
 
     assert foundQuote == False
     assert foundAt == True
-    assert len(lock) == 5

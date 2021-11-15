@@ -28,9 +28,9 @@ class composer(base):
         # composer.json has two top levels we want to look at, both with same structure
         for key in ['require', 'require-dev']:
             for pkg, ver in config.get(key, {}).items():
-                packages = self.merge_into_list(packages, 'name', self.package_info(
-                                pkg, ver, file_path, None, self.tags['manifests'], 'manifest'
-                            ))
+                packages.append(
+                    self.package_info(pkg, ver, file_path, None, self.tags['manifests'], 'manifest')
+                )
 
         return packages
 
@@ -50,34 +50,16 @@ class composer(base):
             # each package in that list is a dict in itself
             for pkg in items:
                 # add this packages data into the the list
-                packages = self.merge_into_list(
-                                packages,
-                                'name',
-                                self.package_info(
-                                    pkg['name'],
-                                    pkg['version'],
-                                    file_path,
-                                    pkg.get('license',[None]).pop(),
-                                    self.tags['locks'],
-                                    'lock'
-                                    )
-                            )
+                packages.append(
+                    self.package_info(pkg['name'], pkg['version'], file_path,pkg.get('license', None).pop(), self.tags['locks'], 'lock')
+                )
                 # eahc package might have sub requirements of require & require-dev
                 for sub in ['require', 'require-dev']:
                     part = pkg.get(sub, {})
-
                     for name, ver in part.items():
-                        packages = self.merge_into_list(
-                                            packages,
-                                            'name',
-                                            self.package_info(
-                                                name,
-                                                ver,
-                                                file_path,
-                                                None,
-                                                self.tags['locks'],
-                                                'lock'
-                                            ))
+                        packages.append(
+                            self.package_info(name, ver, file_path, None, self.tags['locks'], 'lock')
+                        )
 
         return packages
 
