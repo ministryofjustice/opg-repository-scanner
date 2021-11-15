@@ -43,9 +43,11 @@ runs:
         python-version: '3.9.7'
     - id: pip-install
       name: Run pip install
+      shell: bash
       run: pip install -r ./app/requirements.txt
     - id: scanner-runner
       name: Run python script
+      shell: bash
       run: |
         python ./app/main.py \
           --repository="${{ inputs.repository_name }}" \
