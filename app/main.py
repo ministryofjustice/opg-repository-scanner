@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 from argparse import Namespace
-import pprint
+from pprint import pp
 from inputs.handler import handler
 from reports import report
-pp = pprint.PrettyPrinter(indent=4)
+
 
 
 def main():
@@ -12,6 +12,8 @@ def main():
     """
     io = handler()
     args = io.parser().parse().args
+    print("Debug:")
+    pp(args)
 
     r = report()
 
