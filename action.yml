@@ -44,7 +44,9 @@ runs:
     - id: pip-install
       name: Run pip install
       shell: bash
-      run: pip --disable-pip-version-check install -r ./app/requirements.txt
+      run: |
+        ls -lart
+        pip --disable-pip-version-check install -r ./app/requirements.txt
     - id: scanner-runner
       name: Run python script
       shell: bash
