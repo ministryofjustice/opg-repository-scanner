@@ -45,7 +45,10 @@ runs:
       name: Run pip install
       shell: bash
       run: |
-        ls -lart
+        ls -lart ${{ github.workspace }}
+        echo "dir"
+        pwd
+        ls -lart .
         pip --disable-pip-version-check install -r ./app/requirements.txt
     - id: scanner-runner
       name: Run python script
