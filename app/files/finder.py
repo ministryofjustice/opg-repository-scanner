@@ -1,3 +1,4 @@
+from pprint import pp
 import glob
 from typing import List
 import re
@@ -44,7 +45,11 @@ class finder:
                 if  len(l) > 0:
                     remove.append(item)
         for r in remove:
-            items.remove(r)
+            try:
+                items.remove(r)
+            except:
+                print('error on item removal')
+                pp(r)
 
         return list(set(items))
 
