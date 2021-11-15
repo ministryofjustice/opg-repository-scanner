@@ -15,8 +15,8 @@ def main():
 
     r = report()
 
-    data = r.generate(args['repository'], args['directory'])
-    location = r.save(args['artifact-directory'], data)
+    data = r.generate(args.repository, args.directory)
+    location = r.save(args.artifact_directory, data)
 
     print(f"::set-output name=artifact_directory:{location}")
 
