@@ -41,20 +41,23 @@ runs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.9.7'
-    - id: pip-install
-      name: Run pip install
+    - id: action-debugging
       shell: bash
       run: |
         pwd
         ls -lart ${{ github.workspace }}
         ls -lart ${{ github.workspace }}/../
         ls -lart ${{ github.action_path }}
-        pip --disable-pip-version-check install -r ./app/requirements.txt
+    - id: pip-install
+      name: Run pip install
+      shell: bash
+      run: |
+        pip --disable-pip-version-check install -r ${{ github.action_path }}/./app/requirements.txt
     - id: scanner-runner
       name: Run python script
       shell: bash
       run: |
-        python ./app/main.py \
+        python ${{ github.action_path }}/./app/main.py \
           --repository="${{ inputs.repository_name }}" \
           --directory="${{ inputs.source_directory }}" \
           --symlinks="${{ inputs.source_follow_symlinks }}" \
