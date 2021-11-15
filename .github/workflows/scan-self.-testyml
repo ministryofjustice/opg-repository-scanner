@@ -1,0 +1,14 @@
+name: 'Scan Self Test'
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+jobs:
+  scan_self_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: charlesmmarshall/test-action@v0
