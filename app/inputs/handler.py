@@ -33,7 +33,7 @@ class handler:
         source_group.add_argument('--exclude',
                             help='List of folders / filepaths to exclude from all filesystem operations. This is parsed using JSON.parse to convert from a string.',
                             type=validators.json_string_to_list,
-                            default='[]')
+                            default='["(__samples/*)", "(__samples__/*)", "(__tests__/*)", "(node_modules/*)","(vendor/*)"]')
 
 
         artifact_group = self.arg_parser.add_argument_group("Artifact options.")
