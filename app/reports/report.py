@@ -16,9 +16,12 @@ class report:
         """
         out.debug("Starting fetching packages")
         packages = self.packages(repository, directory, exclude, tools)
+        sources = [p.get('source') for p in packages]
+        sources = list ( set (sources) )
         out.debug("Finished fetching packages")
         return {
-            'packages': packages
+            'packages': packages,
+            'sources': sources
         }
 
 
