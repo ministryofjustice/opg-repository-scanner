@@ -1,10 +1,10 @@
 ---
-name: "Release"
+name: "[Typescript] Release from master"
 
 on:
   push:
     tags:
-      - "v*"
+      - "typescript-latest"
 
 jobs:
   release:
@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: "Checkout source code"
         uses: "actions/checkout@v2"
+        with:
+          ref: 'master'
       - name: Get the tag
         id: get_tag
         run: echo ::set-output name=TAG::${GITHUB_REF/refs\/tags\//}

@@ -1,10 +1,10 @@
 ---
-name: "Build and Tag"
+name: "[Typescript] Build and Tag from master"
 
 on:
   push:
     branches:
-      - "main"
+      - "master"
     paths-ignore:
       - 'dist/**'
 
@@ -12,9 +12,13 @@ jobs:
   build_and_tag:
     runs-on: "ubuntu-latest"
     steps:
+      - name: Get date based timestamp for tagging
+        id: datelabel
+        run: echo "::set-output name=label::$(date +'%Y-%m-%d-%H%M%S')"
       - name: "Checkout source code"
         uses: "actions/checkout@v2"
         with:
+          ref: 'master'
           token: ${{ secrets.ORG_ACCESS_TOKEN }}
       - name: "Run build process"
         run: |
@@ -28,15 +32,14 @@ jobs:
           echo "${GITHUB_SHA}" > ./dist/sha.txt
           git add ./dist/ --force
           git commit -m "Build files for release"
-          git tag -fa "latest" -m "latest"
-          git push origin main --force
-          git push origin latest --force
+          git tag -fa "typescript-${{ steps.datelabel.outputs.label }}" -m "typescript latest"
+          git push origin master --force
+          git push origin typescript-${{ steps.datelabel.outputs.label }} --force
       - name: Increment and push tag
         uses: anothrNick/github-tag-action@1.33.0
         id: create_tag
         env:
           GITHUB_TOKEN: ${{ secrets.ORG_ACCESS_TOKEN }}
-          INITIAL_VERSION: 0.0.0
-          DEFAULT_BUMP: patch
-          RELEASE_BRANCHES: main
-          WITH_V: true
+          RELEASE_BRANCHES: master
+          WITH_V: false
+          CUSTOM_TAG: "typescript-latest"

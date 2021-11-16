@@ -1,10 +1,9 @@
-name: 'Scan Self'
+name: '[Typescript] Scan Self'
 on:
   pull_request:
   push:
     branches:
-      - main
-      - 'releases/*'
+      - master
 
 jobs:
   scan_self:
