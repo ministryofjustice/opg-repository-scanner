@@ -43,7 +43,7 @@ class handler:
 
         artifact_group.add_argument('--artifact-directory',
                             help='Location to create artifact storage directory',
-                            default=f"./__artifacts/{datetime.datetime.now()}")
+                            default=f"../")
 
         return self
 

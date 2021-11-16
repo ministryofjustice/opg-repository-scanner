@@ -1,7 +1,7 @@
 from typing import List
 from pprint import pp
 from files import finder
-
+from out import out
 
 class base:
     """
@@ -34,7 +34,7 @@ class base:
 
     def file_content_type_match(self, expected, actual, file_path:str, prefix:str):
         if actual != expected:
-            raise ValueError(f"[{self.__class__}] {prefix} file [{file_path}] data is invalid. Should be a {expected}, found {actual}.")
+            raise ValueError(f"[{type(self).__class__}] {prefix} file [{file_path}] data is invalid. Should be a {expected}, found {actual}.")
 
 
     def package_info(self, name:str, version:str, file_path:str, license:str, tags:list, type_of:str) -> dict:
@@ -79,17 +79,24 @@ class base:
                 dict with manifests and locks keys containg list of files for each
 
         """
-        f = finder()
+        out.debug(f"[{type(self).__name__}] Files start")
 
+        f = finder()
         manifest_excludes = manifests.get('exclude', [])
         manifest_excludes.extend(excludes)
+        manifests = f.get( directory, manifests.get('include', []), manifest_excludes )
+        out.debug(f"[{type(self).__name__}] Files for manifests found: [{len(manifests)}]")
 
         lock_excludes = locks.get('exclude', [])
         lock_excludes.extend(excludes)
+        locks = f.get(directory, locks.get('include', []), lock_excludes)
+        out.debug(f"[{type(self).__name__}] Files for locks found: [{len(locks)}]")
+
+        out.debug(f"[{type(self).__name__}] Files end")
 
         return {
-            'manifests': f.get( directory, manifests.get('include', []), manifest_excludes ),
-            'locks': f.get(directory, locks.get('include', []), lock_excludes)
+            'manifests': manifests,
+            'locks': locks
         }
 
     def parse_manifest(self, file_path:str, packages:list) -> list:
@@ -141,9 +148,12 @@ class base:
             Returns:
                 packages (list) : List of packages, sorted and de-duplicated.
         """
+        out.debug(f"[{type(self).__name__}] Packages starting")
         for f in files:
+            out.debug(f"[{type(self).__name__}] Package file: [{f}] is a manifest? [{manifest}]")
             packages = self.parse_manifest(f, packages) if manifest else self.parse_lock(f, packages)
 
+        out.debug(f"[{type(self).__name__}] Packages ending")
         # sort packages by name
         return sorted(packages, key = lambda d : d['name'])
 
@@ -172,12 +182,17 @@ class base:
 
 
         """
-        self.repository = repository
+        out.debug(f"[{type(self).__name__}] Parse start")
 
+        self.repository = repository
+        out.debug(f"[{type(self).__name__}] Parse files")
         files = self.files(directory, manifests=manifests, locks=locks, excludes=excludes)
+        out.debug(f"[{type(self).__name__}] Parse manifest packages")
         packages = self.packages(files['manifests'], packages, True)
+        out.debug(f"[{type(self).__name__}] Parse lock packages")
         packages = self.packages(files['locks'], packages, False)
 
+        out.debug(f"[{type(self).__name__}] Parse end")
         return packages
 
 

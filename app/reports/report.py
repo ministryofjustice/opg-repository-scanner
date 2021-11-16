@@ -2,6 +2,7 @@ from files import *
 from parsers import *
 from pathlib import Path, PosixPath
 from datetime import datetime
+from out import out
 
 class report:
     """
@@ -13,7 +14,9 @@ class report:
         """
         Generate the report dict to then save elsewhere
         """
+        out.debug("Starting fetching packages")
         packages = self.packages(repository, directory, exclude, tools)
+        out.debug("Finished fetching packages")
         return {
             'packages': packages
         }
@@ -31,15 +34,18 @@ class report:
         ts = datetime.utcnow().strftime('%Y-%m-%d-%H%M%S')
         dir = Path(f"{artifact_directory}/__artifacts__/{ts}/")
         w = write()
+        out.debug(f"Saving to directory: [{dir}]")
 
         # unedited list
         raw = f"{dir}/raw.json"
         w.as_json(raw, report)
+        out.debug(f"Saved report data to [{raw}]")
 
         # just package names, no duplicates
         simple = f"{dir}/simple.json"
         simplified = self.simplified_packages(report.get('packages', []))
         w.as_json(simple, simplified)
+        out.debug(f"Saved report data to [{simple}]")
 
         return dir.resolve()
 
@@ -53,10 +59,19 @@ class report:
         """
         packages = []
         handlers = base.handlers(tools)
+        count = len(packages)
+
+        out.log(f"Found [{len(handlers)}] handlers for tools [{', '.join(tools)}]")
         for h in handlers:
             handler = h()
+            out.group_start(f"Parser [{h.__name__}]")
+
             packages = handler.parse(repository, directory, handler.manifests, handler.locks, packages, excludes=excludes)
 
+            out.log(f"Found [{len(packages) - count}] packages.")
+            out.group_end()
+
+            count = len(packages)
         return packages
 
 
