@@ -1,5 +1,5 @@
 ---
-name: "[Python] Release from main"
+name: "[Python] Release from main with v2 tagging"
 
 on:
   push:

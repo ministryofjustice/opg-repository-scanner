@@ -12,7 +12,7 @@ inputs:
   source_exclude:
     required: false
     description: 'List of folders / filepaths to exclude from all filesystem operations. This is parsed using JSON.parse to convert from a string.'
-    default: '["(__samples__/*)", "(__tests__/*)", "(node_modules/*)","(vendor/*)"]'
+    default: '["(__samples/*)", "(__samples__/*)", "(__tests__/*)", "(node_modules/*)","(vendor/*)"]'
 outputs:
   artifact_storage_directory:
     description: "Artifact storage directory"
