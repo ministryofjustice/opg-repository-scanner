@@ -44,8 +44,6 @@ class report:
         return dir.resolve()
 
 
-
-
     def packages(self, repository:str, directory:str, excludes:list = [], tools:list = ['*']) -> list:
         """
         Find all packages used within directory that matches the tools requested
@@ -61,13 +59,13 @@ class report:
         return packages
 
 
-
-    def simplified_packages(self, packages: list):
+    def simplified_packages(self, packages: list) -> list:
         """
         Take just the list of names and remove duplicates
         """
         packages = [item.get('name', None) for item in packages]
-        return list( set ( packages ) )
+        return sorted ( list( set ( packages ) ) )
+
 
     def package_from_list(self, name:str, main_list:list, default_value:dict) -> tuple:
         """
