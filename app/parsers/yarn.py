@@ -17,7 +17,7 @@ class yarn(base):
     tags: dict = {'manifests': ['yarn', 'manifest'], 'locks': ['yarn', 'lock']}
 
 
-    def parse_lock(self, file_path:str, packages:list) -> list:
+    def parse_lock(self, file_path:str, packages:list, file_name:str = None) -> list:
         """
         Parse the packages section of the yarn.lock file and convert
 
@@ -45,7 +45,7 @@ class yarn(base):
                 pkg = self.package_info(
                         name_version[0].replace('&#64;', '@'),
                         name_version[1] if len(name_version) > 1 else None,
-                        file_path,
+                        file_name if file_name != None else file_path,
                         None,
                         self.tags['locks'],
                         'lock' )
