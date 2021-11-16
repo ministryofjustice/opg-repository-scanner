@@ -61,7 +61,7 @@ class composer(base):
                         pkg['name'],
                         pkg['version'],
                         file_name if file_name != None else file_path,
-                        pkg.get('license', None).pop(),
+                        pkg.get('license', [None]).pop(),
                         self.tags['locks'],
                         'lock')
                 )
