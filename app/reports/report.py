@@ -1,6 +1,6 @@
 from files import *
 from parsers import *
-from pathlib import Path
+from pathlib import Path, PosixPath
 from datetime import datetime
 
 class report:
@@ -19,19 +19,29 @@ class report:
         }
 
 
-    def save(self, artifact_directory:str, report:dict) -> str:
+    def save(self, artifact_directory:str, report:dict) -> PosixPath:
         """
         Use the artifact_directory as the root and then append
         a known directory structure underneath to save the
         report output into
 
+        Return PosixPath of the directory created
+
         """
         ts = datetime.today().strftime('%Y-%m-%d-%H%M%S')
         dir = Path(f"{artifact_directory}/__artifacts__/{ts}/")
-        file = f"{dir}/raw.json"
         w = write()
-        w.as_json(file, report)
-        return dir
+
+        # unedited list
+        raw = f"{dir}/raw.json"
+        w.as_json(raw, report)
+
+        # just package names, no duplicates
+        simple = f"{dir}/simple.json"
+        simplified = self.simplified_packages(report.get('packages', []))
+        w.as_json(simple, simplified)
+
+        return dir.resolve()
 
 
 
@@ -51,6 +61,13 @@ class report:
         return packages
 
 
+
+    def simplified_packages(self, packages: list):
+        """
+        Take just the list of names and remove duplicates
+        """
+        packages = [item.get('name', None) for item in packages]
+        return list( set ( packages ) )
 
     def package_from_list(self, name:str, main_list:list, default_value:dict) -> tuple:
         """
