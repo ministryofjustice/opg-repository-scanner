@@ -1,4 +1,4 @@
-name: 'Test Scanner'
+name: 'OPG Repository Scanner'
 description: 'This action scans the repository for manifest & lock files and generates a series of reports for visibility'
 author: ''
 inputs:
