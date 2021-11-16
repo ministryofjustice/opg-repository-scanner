@@ -17,8 +17,8 @@ jobs:
         run: |
           git config --global user.email "tools@digital.justice.gov.uk"
           git config --global user.name "Github Action"
-          git tag -fa "python-latest" -m "python-latest"
-          git push origin python-latest --force
+          git tag -fa "latest" -m "latest"
+          git push origin latest --force
       - name: Increment and push tag
         uses: anothrNick/github-tag-action@1.33.0
         id: create_tag
