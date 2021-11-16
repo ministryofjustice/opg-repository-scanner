@@ -1,12 +1,12 @@
 ---
-name: "Tag"
+name: "[Python] Tag from main"
 
 on:
   push:
     branches:
       - "main"
 jobs:
-  tag:
+  python_tag:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout source code"
@@ -17,8 +17,8 @@ jobs:
         run: |
           git config --global user.email "tools@digital.justice.gov.uk"
           git config --global user.name "Github Action"
-          git tag -fa "latest" -m "latest"
-          git push origin latest --force
+          git tag -fa "python-latest" -m "python-latest"
+          git push origin python-latest --force
       - name: Increment and push tag
         uses: anothrNick/github-tag-action@1.33.0
         id: create_tag
