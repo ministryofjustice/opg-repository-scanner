@@ -54,6 +54,7 @@ class base:
                 package (dict)  : Standard structure dict
         """
         r = self.repository
+        out.debug(f"Creating package info for [{name} {version}] from [{file_path}] as [{type_of}]")
         return {
                 'name': name if name != None and len(name) > 0 else None,
                 'repository': r if r != None and len(r) > 0 else None,
