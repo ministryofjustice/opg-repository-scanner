@@ -27,3 +27,12 @@ def test_npm_parse_lock_simple():
     file = "../__samples/parsers/npm/valid/simple/package-lock.json"
     lock = p.parse_lock(file, [])
     assert len(lock) == 10
+
+
+def test_npm_parse_lock_nesting():
+    p = npm()
+    file = "../__samples/parsers/npm/valid/nesting/package-lock.json"
+    lock = p.parse_lock(file, [])
+
+    semver = list( filter (lambda i: i['name'] == 'semver', lock) )
+    assert len(semver) == 5

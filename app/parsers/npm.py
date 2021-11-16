@@ -2,6 +2,8 @@ from typing import List
 from . import base
 from files import read
 import json
+from pprint import pp
+
 
 class npm(base):
     """
@@ -25,15 +27,24 @@ class npm(base):
         # check data from file
         self.file_content_type_match(dict, type(config), file_path, "Manifest")
 
-        for pkg, ver in config.get('dependencies', {}).items():
-            packages.append(
-                self.package_info(pkg, ver, file_name if file_name != None else file_path, None, self.tags['manifests'], 'manifest')
-            )
-        for pkg, ver in config.get('devDependencies', {}).items():
-            packages.append(
-                self.package_info(pkg, ver, file_name if file_name != None else file_path, None, self.tags['manifests'], 'manifest')
-            )
+        for toplevel in ['dependencies', 'devDependencies']:
+            for pkg, ver in config.get(toplevel, {}).items():
+                packages.append(
+                    self.package_info(pkg, ver, file_name if file_name != None else file_path, None, self.tags['manifests'], 'manifest')
+                )
         return packages
+
+
+    def clean_package_name(self, package_name:str) -> str:
+        """
+        As npm package names get path like structures for sub requirements
+        (ie node_modules/@babel/core/node_modules/semver) we split on the
+        node_modules and return the last entry, which should be the real
+        package name (ie semver)
+
+        """
+        return package_name.split("node_modules/").pop() if package_name != None else None
+
 
 
     def parse_lock(self, file_path:str, packages:list, file_name:str = None) -> list:
@@ -46,31 +57,40 @@ class npm(base):
         # check data from file
         self.file_content_type_match(dict, type(config), file_path, "Lock")
 
-        # loop over packages
-        for name, info in config.get('packages', {}).items():
-            name = name.replace("node_modules/", "")
-            # if it has a name, then should be a version field too, so add the package
-            if len(name) > 0:
-                packages.append(
-                    self.package_info(name, info['version'], file_name if file_name != None else file_path, None, self.tags['locks'], 'lock')
-                )
-            # look at the sub items of packages
-            for sub_name, sub_version in info.get('dependencies', {}).items():
-                sub_name = sub_name.replace("node_modules/", "")
-                packages.append(
-                    self.package_info(sub_name, sub_version, file_name if file_name != None else file_path, None, self.tags['locks'], 'lock')
-                )
-        # check dependancies
-        for name, info in config.get('dependencies', {}).items():
-            name = name.replace("node_modules/", "")
-            packages.append(
-                 self.package_info(name, info['version'], file_name if file_name != None else file_path, None, self.tags['locks'], 'lock')
-            )
-            for sub_name, sub_version in info.get('requires', {}).items():
-                sub_name = sub_name.replace("node_modules/", "")
-                packages.append(
-                    self.package_info(sub_name, sub_version, file_name if file_name != None else file_path, None, self.tags['locks'], 'lock')
-                )
+
+        # firstly, go over the contents and make a flatter version as theres lots of nesting
+        lock_packages = []
+        # top level config items
+        for key in ['packages', 'dependencies']:
+            for name, info in config.get(key, {}).items():
+                # push info
+                pkg = self.package_info(
+                    name,
+                    info.get('version', None),
+                    file_name if file_name != None else file_path,
+                    None,
+                    self.tags['locks'],
+                    'lock')
+                lock_packages.append(pkg)
+                # loop over sub iteme
+                for sub_key in ['dependencies', 'requires', 'peerDependencies']:
+                    for sub_name, sub_ver in info.get(sub_key, {}).items():
+                        sub_pkg = self.package_info(
+                            sub_name,
+                            sub_ver,
+                            file_name if file_name != None else file_path,
+                            None,
+                            self.tags['locks'],
+                            'lock')
+                        lock_packages.append(sub_pkg)
+
+        # now, clean up the names of each of the packages found in the tree
+        # and push on to the package list
+        for l in lock_packages:
+            l['name'] = self.clean_package_name(l.get('name', None))
+            if l['name'] != None:
+                packages.append(l)
+
         return packages
 
 
