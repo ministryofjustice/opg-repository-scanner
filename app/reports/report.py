@@ -28,7 +28,7 @@ class report:
         Return PosixPath of the directory created
 
         """
-        ts = datetime.today().strftime('%Y-%m-%d-%H%M%S')
+        ts = datetime.utcnow().strftime('%Y-%m-%d-%H%M%S')
         dir = Path(f"{artifact_directory}/__artifacts__/{ts}/")
         w = write()
 
@@ -56,6 +56,7 @@ class report:
         for h in handlers:
             handler = h()
             packages = handler.parse(repository, directory, handler.manifests, handler.locks, packages, excludes=excludes)
+
         return packages
 
 
