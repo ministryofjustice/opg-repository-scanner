@@ -19,6 +19,9 @@ def main():
     location = r.save(args.artifact_directory, data)
 
     out.group_start("Output values")
+    out.log(f"Found [{len(data.get('packages', []))}] total distinct packages")
+
+    out.log(f"Reports generated in directory: [{location}]")
     out.set_var("artifact_directory", location)
     out.group_end()
 
