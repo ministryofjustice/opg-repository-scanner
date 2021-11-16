@@ -65,6 +65,6 @@ def test_base_packages_simple():
         "../__samples/parsers/pip/valid/app2/requirements.txt",
     ]
 
-    found = b.packages(files, [], True)
+    found = b.packages("../__samples", files, [], True)
     # should be empty as the base classes parse_manifest/lock returns nothing
     assert len(found) == 0

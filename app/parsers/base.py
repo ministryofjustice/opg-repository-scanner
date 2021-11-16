@@ -99,7 +99,7 @@ class base:
             'locks': locks
         }
 
-    def parse_manifest(self, file_path:str, packages:list) -> list:
+    def parse_manifest(self, file_path:str, packages:list, file_name:str = None) -> list:
         """
         Read manifest file and convert into a dict.
         Should be replaced per subclass
@@ -113,7 +113,7 @@ class base:
         """
         return packages
 
-    def parse_lock(self, file_path:str, packages:list) -> list:
+    def parse_lock(self, file_path:str, packages:list, file_name:str = None) -> list:
         """
         Read lock file and convert into a dict.
         Should be replaced per subclass
@@ -129,7 +129,7 @@ class base:
         return packages
 
 
-    def packages(self, files:list, packages: list, manifest:bool) -> list:
+    def packages(self, directory:str, files:list, packages: list, manifest:bool) -> list:
         """
         Loop over the file list passed in and then run that file into
         either parse_manifest or parse_lock depending on the value
@@ -150,8 +150,9 @@ class base:
         """
         out.debug(f"[{type(self).__name__}] Packages starting")
         for f in files:
+            file_name = f.replace(directory, "./")
             out.debug(f"[{type(self).__name__}] Package file: [{f}] is a manifest? [{manifest}]")
-            packages = self.parse_manifest(f, packages) if manifest else self.parse_lock(f, packages)
+            packages = self.parse_manifest(f, packages, file_name) if manifest else self.parse_lock(f, packages, file_name)
 
         out.debug(f"[{type(self).__name__}] Packages ending")
         # sort packages by name
@@ -188,9 +189,9 @@ class base:
         out.debug(f"[{type(self).__name__}] Parse files")
         files = self.files(directory, manifests=manifests, locks=locks, excludes=excludes)
         out.debug(f"[{type(self).__name__}] Parse manifest packages")
-        packages = self.packages(files['manifests'], packages, True)
+        packages = self.packages(directory, files['manifests'], packages, True)
         out.debug(f"[{type(self).__name__}] Parse lock packages")
-        packages = self.packages(files['locks'], packages, False)
+        packages = self.packages(directory, files['locks'], packages, False)
 
         out.debug(f"[{type(self).__name__}] Parse end")
         return packages

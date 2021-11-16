@@ -10,7 +10,7 @@ def test_npm_handles():
 def test_yarn_parse_manifests_empty():
     p = yarn()
     file = "../__samples/parsers/yarn/valid/"
-    manifest = p.packages(file, [], True)
+    manifest = p.packages("../__samples", file, [], True)
     assert manifest == []
     assert len(manifest) == 0
 

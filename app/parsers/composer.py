@@ -16,7 +16,7 @@ class composer(base):
     tags: dict = {'manifests': ['php','composer', 'manifest'], 'locks': ['php', 'composer', 'lock']}
 
 
-    def parse_manifest(self, file_path: str, packages: list) -> list:
+    def parse_manifest(self, file_path: str, packages: list, file_name:str = None) -> list:
         """
         Parse the composer.json file
         """
@@ -29,12 +29,18 @@ class composer(base):
         for key in ['require', 'require-dev']:
             for pkg, ver in config.get(key, {}).items():
                 packages.append(
-                    self.package_info(pkg, ver, file_path, None, self.tags['manifests'], 'manifest')
+                    self.package_info(
+                        pkg,
+                        ver,
+                        file_name if file_name != None else file_path,
+                        None,
+                        self.tags['manifests'],
+                        'manifest')
                 )
 
         return packages
 
-    def parse_lock(self, file_path:str, packages:list) -> list:
+    def parse_lock(self, file_path:str, packages:list, file_name:str = None) -> list:
         """
         Parse the composer.lock
 
@@ -51,14 +57,26 @@ class composer(base):
             for pkg in items:
                 # add this packages data into the the list
                 packages.append(
-                    self.package_info(pkg['name'], pkg['version'], file_path,pkg.get('license', None).pop(), self.tags['locks'], 'lock')
+                    self.package_info(
+                        pkg['name'],
+                        pkg['version'],
+                        file_name if file_name != None else file_path,
+                        pkg.get('license', None).pop(),
+                        self.tags['locks'],
+                        'lock')
                 )
                 # eahc package might have sub requirements of require & require-dev
                 for sub in ['require', 'require-dev']:
                     part = pkg.get(sub, {})
                     for name, ver in part.items():
                         packages.append(
-                            self.package_info(name, ver, file_path, None, self.tags['locks'], 'lock')
+                            self.package_info(
+                                name,
+                                ver,
+                                file_name if file_name != None else file_path,
+                                None,
+                                self.tags['locks'],
+                                'lock')
                         )
 
         return packages

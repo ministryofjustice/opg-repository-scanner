@@ -26,7 +26,7 @@ class gomod(base):
 
 
 
-    def parse_manifest(self, file_path:str, packages:list) -> list:
+    def parse_manifest(self, file_path:str, packages:list, file_name:str = None) -> list:
         """
         Read manifest file (go.mod) and convert into a list of dicts.
         Merge that list of dicts pack in to the packages variable passed along.
@@ -43,7 +43,13 @@ class gomod(base):
         go_version = self.version(lines)
         if go_version:
             packages.append(
-                self.package_info('go', go_version, file_path, None, self.tags['manifests'], 'manifest')
+                self.package_info(
+                    'go',
+                    go_version,
+                    file_name if file_name != None else file_path,
+                    None,
+                    self.tags['manifests'],
+                    'manifest')
             )
 
         # reduce the list of lines to just the packages
@@ -65,7 +71,7 @@ class gomod(base):
             pkg = self.package_info(
                     m[0].strip(),
                     m[1] if len(m) > 1 else None,
-                    file_path,
+                    file_name if file_name != None else file_path,
                     None,
                     tags,
                     'manifest'
@@ -76,7 +82,7 @@ class gomod(base):
 
 
 
-    def parse_lock(self, file_path:str, packages:list) -> list:
+    def parse_lock(self, file_path:str, packages:list, file_name:str = None) -> list:
         """
         Read lock file (go.sum) and convert into a list of dicts.
         Merge that list of dicts pack in to the packages variable passed along.
@@ -93,7 +99,7 @@ class gomod(base):
             pkg = self.package_info(
                     m[0].strip(),
                     m[1].replace("/go.mod", "") if len(m) > 1 else None,
-                    file_path,
+                    file_name if file_name != None else file_path,
                     None,
                     self.tags['locks'],
                     'lock'

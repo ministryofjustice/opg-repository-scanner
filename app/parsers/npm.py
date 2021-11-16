@@ -14,7 +14,7 @@ class npm(base):
     tags: dict = {'manifests': ['npm', 'manifest'], 'locks': ['npm', 'lock']}
 
 
-    def parse_manifest(self, file_path:str, packages:list) -> list:
+    def parse_manifest(self, file_path:str, packages:list, file_name:str = None) -> list:
         """
         Parse the dependencies and devDependencies section of the
         package.json file and convert
@@ -27,16 +27,16 @@ class npm(base):
 
         for pkg, ver in config.get('dependencies', {}).items():
             packages.append(
-                self.package_info(pkg, ver, file_path, None, self.tags['manifests'], 'manifest')
+                self.package_info(pkg, ver, file_name if file_name != None else file_path, None, self.tags['manifests'], 'manifest')
             )
         for pkg, ver in config.get('devDependencies', {}).items():
             packages.append(
-                self.package_info(pkg, ver, file_path, None, self.tags['manifests'], 'manifest')
+                self.package_info(pkg, ver, file_name if file_name != None else file_path, None, self.tags['manifests'], 'manifest')
             )
         return packages
 
 
-    def parse_lock(self, file_path:str, packages:list) -> list:
+    def parse_lock(self, file_path:str, packages:list, file_name:str = None) -> list:
         """
         Parse the packages section of the package-lock.json file and convert
 
@@ -52,24 +52,24 @@ class npm(base):
             # if it has a name, then should be a version field too, so add the package
             if len(name) > 0:
                 packages.append(
-                    self.package_info(name, info['version'], file_path, None, self.tags['locks'], 'lock')
+                    self.package_info(name, info['version'], file_name if file_name != None else file_path, None, self.tags['locks'], 'lock')
                 )
             # look at the sub items of packages
             for sub_name, sub_version in info.get('dependencies', {}).items():
                 sub_name = sub_name.replace("node_modules/", "")
                 packages.append(
-                    self.package_info(sub_name, sub_version, file_path, None, self.tags['locks'], 'lock')
+                    self.package_info(sub_name, sub_version, file_name if file_name != None else file_path, None, self.tags['locks'], 'lock')
                 )
         # check dependancies
         for name, info in config.get('dependencies', {}).items():
             name = name.replace("node_modules/", "")
             packages.append(
-                 self.package_info(name, info['version'], file_path, None, self.tags['locks'], 'lock')
+                 self.package_info(name, info['version'], file_name if file_name != None else file_path, None, self.tags['locks'], 'lock')
             )
             for sub_name, sub_version in info.get('requires', {}).items():
                 sub_name = sub_name.replace("node_modules/", "")
                 packages.append(
-                    self.package_info(sub_name, sub_version, file_path, None, self.tags['locks'], 'lock')
+                    self.package_info(sub_name, sub_version, file_name if file_name != None else file_path, None, self.tags['locks'], 'lock')
                 )
         return packages
 

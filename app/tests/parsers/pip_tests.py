@@ -37,7 +37,7 @@ def test_pip_packages_simple():
         "../__samples/parsers/pip/valid/app2/requirements.txt",
     ]
     # these files contain 4 distinct packages, which then have various versions
-    found = p.packages(files, [], True)
+    found = p.packages("../__samples", files, [], True)
     assert len(found) == 7
     # get pprintpp package
     pp_package = list( filter(lambda p: p['name'] == 'pprintpp', found) )

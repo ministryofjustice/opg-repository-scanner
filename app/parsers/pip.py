@@ -15,7 +15,7 @@ class pip(base):
 
 
 
-    def parse_manifest(self, file_path:str, packages:list) -> list:
+    def parse_manifest(self, file_path:str, packages:list, file_name:str = None) -> list:
         """
         Read manifest file and convert into a list of dicts.
         Merge that list of dicts pack in to the packages variable passed along.
@@ -29,7 +29,7 @@ class pip(base):
                 if len(versions) == 0:
                     versions.append(None)
                 for version in versions:
-                    pkg = self.package_info(req.name, version, file_path, None, self.tags['manifests'], 'manifest' )
+                    pkg = self.package_info(req.name, version, file_name if file_name != None else file_path, None, self.tags['manifests'], 'manifest' )
                     packages.append(pkg)
         return packages
 
