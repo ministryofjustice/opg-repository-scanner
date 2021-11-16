@@ -1,7 +1,7 @@
 from datetime import datetime
 from pprint import pp
 
-class gha:
+class out:
     """
     Static helper class to handle action output
     """
@@ -27,11 +27,11 @@ class gha:
         print(f"::error file={file},line={line},endLine={endLine},title={title}::[{gha.ts()}] {message}")
 
     @staticmethod
-    def groupStart(title:str):
+    def group_start(title:str):
         print(f"::group::{title}")
 
     @staticmethod
-    def groupEnd():
+    def group_end():
         print(f"::endgroup::")
 
     @staticmethod
