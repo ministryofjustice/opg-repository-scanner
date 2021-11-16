@@ -151,7 +151,7 @@ class base:
         """
         out.debug(f"[{type(self).__name__}] Packages starting")
         for f in files:
-            file_name = f.replace(directory, "./")
+            file_name = f.replace(directory, ".")
             out.debug(f"[{type(self).__name__}] Package file: [{f}] is a manifest? [{manifest}]")
             packages = self.parse_manifest(f, packages, file_name) if manifest else self.parse_lock(f, packages, file_name)
 

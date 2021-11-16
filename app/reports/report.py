@@ -38,7 +38,11 @@ class report:
 
         # unedited list
         raw = f"{dir}/raw.json"
-        w.as_json(raw, report)
+        flat_tags = report.copy()
+        # flattern the tags list on each package
+        for i in flat_tags.get('packages', []):
+            i['tags'] = ', '.join(i.get('tags', []))
+        w.as_json(raw, flat_tags)
         out.debug(f"Saved report data to [{raw}]")
 
         # just package names, no duplicates
