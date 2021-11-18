@@ -75,6 +75,11 @@ class npm(base):
                 # loop over sub iteme
                 for sub_key in ['dependencies', 'requires', 'peerDependencies']:
                     for sub_name, sub_ver in info.get(sub_key, {}).items():
+                        # for some sub items they are actually a dict, not a key value pair,
+                        # so get the version key
+                        if type(sub_ver) == dict:
+                            sub_ver = sub_ver.get('version', None)
+
                         sub_pkg = self.package_info(
                             sub_name,
                             sub_ver,

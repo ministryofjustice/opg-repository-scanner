@@ -36,3 +36,21 @@ def test_npm_parse_lock_nesting():
 
     semver = list( filter (lambda i: i['name'] == 'semver', lock) )
     assert len(semver) == 5
+
+def test_npm_parse_lock_versions_are_flat():
+    """
+    Targeted at npm lock files to ensure the dependancies under a package
+    pulls the version
+    """
+    p = npm()
+    file = "../__samples/parsers/npm/valid/project/package-lock.json"
+    lock = p.parse_lock(file, [])
+
+    string_width = list ( filter (lambda i: i['name'] == "string-width", lock ) )
+    version_as_dict = False
+    # look over all string with packages and make sure they are all flat versions
+    for p in string_width:
+        if type(p.get('version', None)) == dict:
+            version_as_dict = True
+
+    assert version_as_dict == False
