@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 import argparse
 import datetime
 from . import validators
@@ -41,9 +43,10 @@ class handler:
                             default='repository-scan-result',
                             help='The finished set of artifacts will be uploaded to this workflow under this name' )
 
+        dir = Path( os.path.dirname(__file__ ) + "/../../" ).resolve()
         artifact_group.add_argument('--artifact-directory',
-                            help='Location to create artifact storage directory',
-                            default=f"../")
+                            help=f'Location to create artifact storage directory',
+                            default=dir)
 
         return self
 
