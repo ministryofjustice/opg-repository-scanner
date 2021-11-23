@@ -1,10 +1,12 @@
 ---
-name: "[Python] Release from main with v2 tagging"
+name: "[Python] Run tests"
 
 on:
-  push:
-    tags:
-      - "v2*"
+  pull_request:
+    branches: "*"
+  schedule:
+    - cron: '15 6 * * 1'
+
 
 jobs:
   python_release:
