@@ -1,6 +1,10 @@
 import pytest
 from pprint import pp
 from parsers import npm
+import os
+from pathlib import Path
+_ROOT_DIR = Path( os.path.dirname(__file__ ) + "/../../../" ).resolve()
+
 
 def test_npm_handles():
     assert npm.handles('npm') == True
@@ -9,7 +13,7 @@ def test_npm_handles():
 
 def test_npm_parse_manifests_empty():
     p = npm()
-    file = "../__samples/parsers/npm/valid/empty/package.json"
+    file = f"{_ROOT_DIR}/__samples/parsers/npm/valid/empty/package.json"
     manifest = p.parse_manifest(file, [])
     assert manifest == []
     assert len(manifest) == 0
@@ -17,21 +21,21 @@ def test_npm_parse_manifests_empty():
 
 def test_npm_parse_manifests_nuxt():
     p = npm()
-    file = "../__samples/parsers/npm/valid/nuxt/package.json"
+    file = f"{_ROOT_DIR}/__samples/parsers/npm/valid/nuxt/package.json"
     manifest = p.parse_manifest(file, [])
     assert len(manifest) == 2
 
 
 def test_npm_parse_lock_simple():
     p = npm()
-    file = "../__samples/parsers/npm/valid/simple/package-lock.json"
+    file = f"{_ROOT_DIR}/__samples/parsers/npm/valid/simple/package-lock.json"
     lock = p.parse_lock(file, [])
     assert len(lock) == 10
 
 
 def test_npm_parse_lock_nesting():
     p = npm()
-    file = "../__samples/parsers/npm/valid/nesting/package-lock.json"
+    file = f"{_ROOT_DIR}/__samples/parsers/npm/valid/nesting/package-lock.json"
     lock = p.parse_lock(file, [])
 
     semver = list( filter (lambda i: i['name'] == 'semver', lock) )
@@ -43,7 +47,7 @@ def test_npm_parse_lock_versions_are_flat():
     pulls the version
     """
     p = npm()
-    file = "../__samples/parsers/npm/valid/project/package-lock.json"
+    file = f"{_ROOT_DIR}/__samples/parsers/npm/valid/project/package-lock.json"
     lock = p.parse_lock(file, [])
 
     string_width = list ( filter (lambda i: i['name'] == "string-width", lock ) )

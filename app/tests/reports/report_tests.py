@@ -2,11 +2,14 @@ import json
 import pytest
 from pprint import pp
 from reports import report
+import os
+from pathlib import Path
+_ROOT_DIR = Path( os.path.dirname(__file__ ) + "/../../../" ).resolve()
 
 
 def test_reports_packages_simple():
     r = report()
-    f = r.packages('test-repo', '../__samples/parsers/pip/valid/app1', [], ['*'])
+    f = r.packages('test-repo', f"{_ROOT_DIR}/__samples/parsers/pip/valid/app1", [], ['*'])
     assert (len(f) > 3) == True
 
 
@@ -30,7 +33,7 @@ def test_reports_grouped_packages_simple():
 
 def test_reports_generate_simple():
     r = report()
-    f = r.generate('test-repo', '../__samples/parsers/pip/valid/app1', [], ['*'])
+    f = r.generate('test-repo', f"{_ROOT_DIR}/__samples/parsers/pip/valid/app1", [], ['*'])
     p = f.get('packages', None)
     assert type(p) == list
     assert (len(p) > 3) == True
@@ -38,7 +41,7 @@ def test_reports_generate_simple():
 
 def test_reports_save_simple():
     r = report()
-    f = r.generate('test-repo', '../__samples/parsers/pip/valid/app1', [], ['*'])
+    f = r.generate('test-repo', f"{_ROOT_DIR}/__samples/parsers/pip/valid/app1", [], ['*'])
     dir = r.save('../', f)
     # test the simple json has the 4 packages in there and no duplicates
     file_path = f"{dir}/simple.json"

@@ -1,15 +1,20 @@
 import pytest
-
+from pprint import pp
+from reports import report
+import os
+from pathlib import Path
 from inputs.validators import *
-
+_ROOT_DIR = Path( os.path.dirname(__file__ ) + "/../../../" ).resolve()
 
 def test_readable_directory_with_invalid_path():
     with pytest.raises(ValueError) as err:
         readable_directory("./not-a-directory")
 
 def test_readable_directory_with_valid_path():
-    dir = "./tests"
-    assert readable_directory(dir) == dir
+    dir = f"{_ROOT_DIR}/__samples"
+    r = readable_directory(dir)
+    pp(r)
+    assert r == dir
 
 
 POSSIBLE_STRING_BOOLEANS = [

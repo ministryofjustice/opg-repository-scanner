@@ -1,6 +1,11 @@
 import pytest
 from pprint import pp
 from parsers import yarn
+import os
+from pathlib import Path
+_ROOT_DIR = Path( os.path.dirname(__file__ ) + "/../../../" ).resolve()
+
+
 
 def test_npm_handles():
     assert yarn.handles('npm') == False
@@ -9,7 +14,7 @@ def test_npm_handles():
 
 def test_yarn_parse_manifests_empty():
     p = yarn()
-    file = "../__samples/parsers/yarn/valid/"
+    file = f"{_ROOT_DIR}/__samples/parsers/yarn/valid/"
     manifest = p.packages("../__samples", file, [], True)
     assert manifest == []
     assert len(manifest) == 0
@@ -17,7 +22,7 @@ def test_yarn_parse_manifests_empty():
 
 def test_yarn_parse_lock_simple():
     p = yarn()
-    file = "../__samples/parsers/yarn/valid/sample/yarn.lock"
+    file = f"{_ROOT_DIR}/__samples/parsers/yarn/valid/sample/yarn.lock"
     lock = p.parse_lock(file, [])
     assert len(lock) == 12
 
