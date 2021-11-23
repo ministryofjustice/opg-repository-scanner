@@ -13,7 +13,7 @@ on:
 
 
 jobs:
-  python_release:
+  python_tests:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout source code"
@@ -31,4 +31,4 @@ jobs:
           pip --disable-pip-version-check install -r ./app/requirements.txt
       - name: Run tests
         shell: bash
-        run: cd ./app/tests && pytest *.py ./*/*.py
+        run: cd ./app/ && pytest ./tests/*.py ./tests/*/*.py
